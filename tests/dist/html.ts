@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// shortcut: regex over Astro's predictable output; simple selectors only (tag, #id, .class, [attr=value]), no combinators.
+// shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant combinator only
+// ("a b c" checks each outer part is some ancestor; order between ancestors is not enforced).
 type Node = { tag: string; attrs: Record<string, string>; start: number; end: number };
 
 const ATTR = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g;
@@ -29,7 +30,7 @@ function matches(n: Node, sel: string): boolean {
 }
 
 function closeOf(html: string, tag: string, from: number): number {
-  const re = new RegExp(`<(/?)${tag}\b[^>]*>`, 'gi');
+  const re = new RegExp(String.raw`<(/?)${tag}\b[^>]*>`, 'gi');
   re.lastIndex = from;
   let depth = 1;
   for (let m; (m = re.exec(html)); ) if ((depth += m[1] ? -1 : 1) === 0) return m.index;
@@ -39,20 +40,30 @@ function closeOf(html: string, tag: string, from: number): number {
 export const text = (html: string): string =>
   html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
-export function load(file: string) {
-  const html = readFileSync(join('dist', file), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+export const load = (file: string) => parse(readFileSync(join('dist', file), 'utf8'));
+
+export function parse(source: string) {
+  const html = source.replace(/<!--[\s\S]*?-->/g, '');
   const nodes: Node[] = [...html.matchAll(/<([a-z][\w-]*)\b([^>]*)>/gi)].map((m) => ({
     tag: m[1].toLowerCase(),
     attrs: parseAttrs(m[2]),
     start: m.index! + m[0].length,
     end: -1,
   }));
+  const end = (n: Node) => (n.end < 0 ? (n.end = closeOf(html, n.tag, n.start)) : n.end);
   const $ = (sel: string) => {
-    const found = nodes.filter((n) => matches(n, sel));
+    const [last, ...outer] = sel.trim().split(/\s+/).reverse();
+    const found = outer.reduce(
+      (acc, s) => {
+        const scopes = nodes.filter((n) => matches(n, s));
+        return acc.filter((c) => scopes.some((a) => a.start < c.start && c.start < end(a)));
+      },
+      nodes.filter((n) => matches(n, last)),
+    );
     return {
       length: found.length,
       attr: (name: string) => found[0]?.attrs[name.toLowerCase()],
-      text: () => found.map((n) => text(html.slice(n.start, closeOf(html, n.tag, n.start)))).join(' '),
+      text: () => found.map((n) => text(html.slice(n.start, end(n)))).join(' '),
       nodes: found,
     };
   };
