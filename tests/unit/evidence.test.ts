@@ -48,6 +48,16 @@ describe('nenhum número sem origem', () => {
     expect(errs).toContain(`"999" e ${src} não estão na mesma linha de docs/EVIDENCIAS.md`);
   });
 
+  it('reprova valor que só aparece dentro da própria fonte (hash do commit, caminho)', () => {
+    const gh = 'https://github.com/ViancoDeviolo/arapuca-honeyant/tree/f5e8c838c4638232c725d69202f0e0c6e90d5559/docs/adr';
+    const media = 'media/analitic-blitz/analitic-ao-vivo.webp';
+    for (const [value, src] of [['5', gh], ['webp', media]]) {
+      expect(checkData(ficha('x', [{ value, label: l('x'), source: src }]), root)).toContain(
+        `"${value}" e ${src} não estão na mesma linha de docs/EVIDENCIAS.md`,
+      );
+    }
+  });
+
   it('reprova URL do GitHub cujo valor não está na linha da fonte', () => {
     const src = 'https://github.com/ViancoDeviolo/arapuca-honeyant/tree/f5e8c838c4638232c725d69202f0e0c6e90d5559/docs/adr';
     const errs = checkData(ficha('x', [{ value: '12', label: l('x'), source: src }]), root);

@@ -43,7 +43,7 @@ export function checkData(p: Record<string, any>, root: string): string[] {
     } else if (/^media\/[^/]+\/[^/]+\.webp$/.test(e.source) || /^https:\/\/github\.com\//.test(e.source)) {
       if (e.source.startsWith('media/') && !existsSync(`${root}/public/${e.source}`)) errs.push(`falta public/${e.source}`);
       // valor e fonte precisam estar na mesma linha de docs/EVIDENCIAS.md
-      if (!md.some((l) => l.includes(e.source) && exact(v).test(l))) errs.push(`"${v}" e ${e.source} não estão na mesma linha de docs/EVIDENCIAS.md`);
+      if (!md.some((l) => l.includes(e.source) && exact(v).test(l.split(e.source).join(' ')))) errs.push(`"${v}" e ${e.source} não estão na mesma linha de docs/EVIDENCIAS.md`);
     } else errs.push(`origem inválida: ${e.source}`);
     const own = new Set(numbersIn([v]));
     for (const n of numbersIn(walk(e.label ?? {}))) if (!own.has(n)) errs.push(`número "${n}" no rótulo sem estar no valor "${v}"`);
