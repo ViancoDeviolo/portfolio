@@ -10,13 +10,17 @@ const probe = (f: string) =>
   JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', f], { encoding: 'utf8' }));
 
 const videos = ls('public/media', '.mp4');
-const images = [...ls('public/media', '.webp'), ...ls('src/assets/dupla', '.png')];
+const images = [...ls('public/media', '.webp'), ...ls('src/assets/media', '.webp'), ...ls('src/assets/dupla', '.png')];
 
 describe('mídia publicada', () => {
   it('existem vídeos e imagens (script rodou)', () => {
     expect(videos.length).toBe(6);
     expect(images.length).toBeGreaterThan(0);
     expect(existsSync('src/assets/dupla/casual.png') && existsSync('src/assets/dupla/terno.png')).toBe(true);
+  });
+  it('prints ficam em src/assets; em public/media só vídeos e pôsteres', () => {
+    expect(ls('src/assets/media', '.webp').length).toBeGreaterThan(0);
+    expect(ls('public/media', '.webp').every((f) => f.endsWith('-poster.webp'))).toBe(true);
   });
   it('não publica o vídeo completo do Banco Java', () => {
     expect(existsSync('public/media/banco-java/banco-java-completo.mp4')).toBe(false);
@@ -37,7 +41,8 @@ describe('mídia publicada', () => {
   });
   it('toda mídia das fichas existe', () => {
     for (const m of allProjectMedia()) {
-      expect(existsSync(`public${m.src}`), m.src).toBe(true);
+      // prints em src/assets (Astro gera AVIF/WebP); vídeos e pôsteres em public
+      expect(existsSync(m.kind === 'image' ? `src/assets${m.src}` : `public${m.src}`), m.src).toBe(true);
       if (m.kind === 'video') expect(existsSync(`public${m.poster}`), m.poster).toBe(true);
     }
   });

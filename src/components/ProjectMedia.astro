@@ -1,5 +1,5 @@
 ---
-import sharp from 'sharp'; // vem com o Astro (serviço de imagem); só lê largura e altura no build
+import { Picture } from 'astro:assets';
 import type { Project } from '../lib/schema';
 import type { Lang } from '../lib/i18n';
 
@@ -7,25 +7,39 @@ interface Props {
   media: Project['media'][number];
   lang: Lang;
   uid: string;
+  small?: boolean; // miniatura na grade .more do card
 }
 
-const { media, lang, uid } = Astro.props;
+// Prints moram em src/assets/media para o Astro gerar AVIF/WebP responsivos; a ficha continua com '/media/<projeto>/<arquivo>.webp'.
+const prints = import.meta.glob<ImageMetadata>('/src/assets/media/*/*.webp', { import: 'default' });
+// Pôsteres ficam em public/ (URL estável); o import só lê largura e altura para reservar o espaço do vídeo.
+const posters = import.meta.glob<ImageMetadata>('/public/media/*/*-poster.webp', { import: 'default' });
+
+const { media, lang, uid, small = false } = Astro.props;
 const L = {
   pt: { pause: 'Pausar vídeo', desc: 'O que o vídeo mostra' },
   en: { pause: 'Pause video', desc: 'What the video shows' },
 }[lang];
-const still = media.kind === 'video' ? media.poster : media.src;
-const { width, height } = await sharp(`public${still}`).metadata();
+const sizes = small
+  ? '(min-width: 64rem) 300px, (min-width: 40rem) 45vw, calc(100vw - 4rem)'
+  : '(min-width: 64rem) 640px, calc(100vw - 4rem)';
+const print = media.kind === 'image' ? await prints[`/src/assets${media.src}`]?.() : undefined;
+if (media.kind === 'image' && !print) throw new Error(`mídia: print não encontrado em src/assets${media.src}`);
+const poster = media.kind === 'video' ? await posters[`/public${media.poster}`]?.() : undefined;
+if (media.kind === 'video' && !poster) throw new Error(`mídia: pôster não encontrado em public${media.poster}`);
 ---
 <figure class="media">
   {media.kind === 'image' ? (
-    <img src={media.src} alt={media.alt[lang]} width={width} height={height} loading="lazy" decoding="async" />
+    <Picture src={print!} alt={media.alt[lang]} formats={['avif', 'webp']} fallbackFormat="webp" widths={[400, 800, 1200]} sizes={sizes}
+      loading="lazy" decoding="async" />
   ) : (
     <>
-      <video src={media.src} poster={media.poster} width={width} height={height} muted loop playsinline controls
+      <video src={media.src} poster={media.poster} width={poster!.width} height={poster!.height} muted loop playsinline controls
         preload="none" data-autoplay aria-label={media.alt[lang]} aria-describedby={`${uid}-desc`} />
       <div class="video-bar">
-        <button type="button" class="video-toggle" aria-pressed="true" hidden>{L.pause}</button>
+        <button type="button" class="video-toggle" aria-label={L.pause} aria-pressed="true" hidden>
+          <span class="glyph" aria-hidden="true"></span>
+        </button>
         <details>
           <summary>{L.desc}</summary>
           <p id={`${uid}-desc`}>{media.description[lang]}</p>
@@ -47,7 +61,7 @@ const { width, height } = await sharp(`public${still}`).metadata();
     min-width: 0;
   }
 
-  img,
+  .media :global(img),
   video {
     width: 100%;
     border-radius: var(--s-2);
@@ -58,28 +72,38 @@ const { width, height } = await sharp(`public${still}`).metadata();
 
   .video-bar {
     display: flex;
-    flex-wrap: wrap;
     align-items: start;
-    gap: var(--s-2) var(--s-4);
+    gap: var(--s-3);
     font-size: var(--t-small);
   }
 
   .video-toggle {
-    min-height: var(--target);
-    padding-inline: var(--s-4);
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: var(--target);
+    height: var(--target);
+    padding: 0;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: 50%;
     background: transparent;
     color: var(--text);
-    font: inherit;
-    font-weight: var(--weight-strong);
     cursor: pointer;
     transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
   }
 
-  .video-toggle[aria-pressed='true'] {
-    border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  /* Tocando: duas barras de pausa. Pausado (aria-pressed=true): triângulo de play. */
+  .glyph {
+    width: 0.75rem;
+    height: 0.8rem;
+    border-inline: 0.25rem solid currentColor;
+  }
+
+  .video-toggle[aria-pressed='true'] .glyph {
+    width: 0.7rem;
+    border: 0;
+    background: currentColor;
+    clip-path: polygon(10% 0, 100% 50%, 10% 100%);
   }
 
   .video-toggle[hidden] {
@@ -97,7 +121,8 @@ const { width, height } = await sharp(`public${still}`).metadata();
   }
 
   details {
-    flex: 1 1 14rem;
+    flex: 1 1 0;
+    min-width: 0;
     color: var(--muted);
   }
 

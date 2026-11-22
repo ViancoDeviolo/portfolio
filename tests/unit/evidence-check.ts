@@ -44,7 +44,7 @@ export function checkData(p: Record<string, any>, root: string): string[] {
       const f = `${root}/src/content/${e.source}`;
       if (!existsSync(f) || !exact(v).test(readFileSync(f, 'utf8'))) errs.push(`"${v}" não consta em ${e.source}`);
     } else if (/^media\/[^/]+\/[^/]+\.webp$/.test(e.source) || /^https:\/\/github\.com\//.test(e.source)) {
-      if (e.source.startsWith('media/') && !existsSync(`${root}/public/${e.source}`)) errs.push(`falta public/${e.source}`);
+      if (e.source.startsWith('media/') && !existsSync(`${root}/src/assets/${e.source}`)) errs.push(`falta src/assets/${e.source}`);
       // valor e fonte precisam estar na mesma linha de docs/EVIDENCIAS.md
       if (!md.some((l) => l.includes(e.source) && exact(v).test(l.split(e.source).join(' ')))) errs.push(`"${v}" e ${e.source} não estão na mesma linha de docs/EVIDENCIAS.md`);
     } else errs.push(`origem inválida: ${e.source}`);

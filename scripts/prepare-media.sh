@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Gera public/media e src/assets/dupla a partir de kit/media (git-ignored). Idempotente; rodar da raiz do repo.
+# Gera public/media (vídeos e pôsteres), src/assets/media (prints) e src/assets/dupla a partir de kit/media (git-ignored). Idempotente; rodar da raiz do repo.
 set -euo pipefail
 FF="ffmpeg -y -hide_banner -loglevel error"
 SKIP="banco-java/banco-java-completo.mp4" # longo demais para loop; não publicado
@@ -39,15 +39,16 @@ regions_for() {
 
 for dir in kit/media/*/; do
   p=$(basename "$dir"); [ "$p" = dupla ] && continue
-  out="public/media/$p"; mkdir -p "$out"
+  out="public/media/$p"; prints="src/assets/media/$p"
   for f in "$dir"*.png; do
     [ -e "$f" ] || continue
-    b=$(basename "$f" .png); read -ra R <<<"$(regions_for "$p/$b.png")"
-    $FF -i "$f" -filter_complex "$(blur_graph null "${R[@]}")" -map "[o]" -map_metadata -1 -c:v libwebp -quality 88 "$out/$b.webp"
+    b=$(basename "$f" .png); read -ra R <<<"$(regions_for "$p/$b.png")"; mkdir -p "$prints"
+    $FF -i "$f" -filter_complex "$(blur_graph null "${R[@]}")" -map "[o]" -map_metadata -1 -c:v libwebp -quality 88 "$prints/$b.webp"
   done
   for f in "$dir"*.mp4; do
     [ -e "$f" ] || continue
     [ "$p/$(basename "$f")" = "$SKIP" ] && continue
+    mkdir -p "$out"
     b=$(basename "$f" .mp4); crf=28; w=1280; read -ra R <<<"$(regions_for "$p/$b.mp4")"
     while :; do # shortcut: se passar de 2 MB, sobe o crf e reduz a largura (ver relatório); sem limite de tentativas além de crf 40
       $FF -i "$f" -filter_complex "$(blur_graph "scale='min($w,iw)':-2" "${R[@]}")" -map "[o]" -an -map_metadata -1 -fflags +bitexact \

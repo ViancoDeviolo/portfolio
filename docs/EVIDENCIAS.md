@@ -3,7 +3,7 @@
 Regra: nenhum número no site sem origem. Cada `evidence[].source` de uma ficha é uma destas:
 
 - `evidencias/<arquivo>.txt`: o arquivo está em `src/content/evidencias/` e contém o `value` literalmente.
-- `media/<projeto>/<arquivo>.webp`: o arquivo existe em `public/` e aparece aqui, com o trecho conferido. O `.webp` é a conversão do PNG do kit (`kit/media/...`), citado na coluna "fonte do kit".
+- `media/<projeto>/<arquivo>.webp`: o arquivo existe em `src/assets/` (o Astro gera as versões AVIF/WebP publicadas) e aparece aqui, com o trecho conferido. O `.webp` é a conversão do PNG do kit (`kit/media/...`), citado na coluna "fonte do kit".
 - `https://github.com/...`: a URL exata aparece aqui.
 
 Nota sobre os `.txt`: copiados de `kit/evidencias/` sem alteração, exceto o caminho `C:\Users\lucas\` trocado por `~\` (aprovado por Lucas). Só isso mudou.

@@ -56,6 +56,13 @@ describe('cards de projeto', () => {
       && v.attrs.preload === 'none' && v.attrs.poster && 'data-autoplay' in v.attrs)).toBe(true);
     expect($('video[autoplay]').length).toBe(0); // autoplay só via JS
     expect($('button[aria-pressed]').length).toBe(videos.length);
+    expect($('button.video-toggle[aria-label] .glyph[aria-hidden=true]').length).toBe(videos.length);
+
+    // prints responsivos: AVIF + WebP gerados pelo Astro, nunca o arquivo original
+    const prints = $('.project-card img').nodes;
+    expect(prints.length).toBeGreaterThan(0);
+    expect(prints.every((i) => i.attrs.src.startsWith('/_astro/') && /\b400w\b/.test(i.attrs.srcset ?? ''))).toBe(true);
+    expect($('.project-card picture source[type=image/avif]').length).toBe(prints.length);
 
     expect($('pre.terminal').length).toBe(projects.filter((p) => p.terminal).length);
     expect($('pre.terminal[tabindex=0][role=region]').length).toBe($('pre.terminal').length);
