@@ -1,0 +1,66 @@
+order: 3
+side: ia
+title: { pt: Arapuca HoneyAnt, en: Arapuca HoneyAnt }
+problem:
+  pt: Casas conectadas sofrem ataques automáticos todos os dias. O Arapuca mantém uma isca na nuvem que registra esses ataques e prevê por onde um invasor entraria numa casa simulada.
+  en: Connected homes face automated attacks every day. Arapuca keeps a decoy in the cloud that logs those attacks and predicts how an intruder would get into a simulated home.
+aiDid:
+  pt: Ajudou a escrever o código dos módulos e dos testes a partir de prompts com os contratos do core.
+  en: Helped write the module and test code from prompts built on the core contracts.
+iDecided:
+  pt: A arquitetura hexagonal com o core no centro, o CI que reprova um módulo que importa outro e a isca isolada na AWS, com saída aberta só durante os deploys.
+  en: The hexagonal architecture with the core in the middle, the CI that rejects a module importing another, and the decoy isolated on AWS, with outbound traffic open only during deploys.
+team:
+  size: 5
+  role:
+    pt: Fiz o core (contratos), arapuca, pathfinder (fuzzy, ACO e Dijkstra), painel e formigueiro, o twin (configuração, mitigação e capturas), apps/, CI, deploy na AWS, a documentação e a implementação final de intel e sensor. Na equipe, Rafael fez intel e sensor, Kawe a planta da casa do twin, Kauã o replay determinístico e duas ADRs, e Gustavo o login do painel.
+    en: I built the core (contracts), arapuca, pathfinder (fuzzy logic, ACO and Dijkstra), the dashboard and the ant colony, the twin (configuration, mitigation and captures), apps/, CI, the AWS deploy, the docs and the final implementation of intel and sensor. On the team, Rafael built intel and sensor, Kawe the twin's house floor plan, Kauã the deterministic replay and two ADRs, and Gustavo the dashboard login.
+stack: [Python, JavaScript, Docker, AWS, pytest]
+media:
+  - kind: video
+    src: /media/arapuca/arapuca-rota-prevista.mp4
+    poster: /media/arapuca/arapuca-rota-prevista-poster.webp
+    alt:
+      pt: Painel do Arapuca prevendo a rota de invasão na casa simulada.
+      en: Arapuca dashboard predicting the intrusion route in the simulated home.
+    description:
+      pt: Planta de uma casa simulada em Docker com internet, roteador, câmera, lâmpada, tomada, termostato, broker MQTT e fechadura. Formigas percorrem os caminhos e a rota prevista acende da internet até a fechadura, passando pela câmera e pelo broker MQTT.
+      en: Floor plan of a home simulated in Docker, with internet, router, camera, lamp, plug, thermostat, MQTT broker and door lock. Ants walk the paths, and the predicted route lights up from the internet to the door lock, through the camera and the MQTT broker.
+  - kind: video
+    src: /media/arapuca/arapuca-mitigacao.mp4
+    poster: /media/arapuca/arapuca-mitigacao-poster.webp
+    alt:
+      pt: Painel do Arapuca aplicando a mitigação na casa simulada.
+      en: Arapuca dashboard applying the mitigation to the simulated home.
+    description:
+      pt: O painel aplica o perfil seguro e o selo da casa muda de Vulnerável para Protegida. A câmera fica isolada e a nova rota passa pelo roteador. Um aviso diz que a mitigação no painel é só visual. Ao lado, o resumo dos ataques reais do último dia, com Telnet, MQTT e países de origem.
+      en: The dashboard applies the safe profile and the home badge changes from Vulnerável to Protegida. The camera is cut off and the new route goes through the router. A note says the mitigation in the dashboard is visual only. Beside it, the summary of real attacks from the last day, with Telnet, MQTT and countries of origin.
+  - kind: image
+    src: /media/arapuca/arapuca-ataques-reais.webp
+    alt:
+      pt: Resumo da isca na AWS com 330 ataques reais acumulados, quase todos por Telnet, vindos de 37 países.
+      en: Summary of the decoy on AWS with 330 real attacks logged, almost all over Telnet, from 37 countries.
+  - kind: image
+    src: /media/arapuca/arapuca-scanner-usuario.webp
+    alt:
+      pt: Nome de usuário recebido pela isca no Telnet, com a assinatura do scanner, o IP do alvo mascarado e a porta.
+      en: Username received by the decoy over Telnet, with the scanner signature, the masked target IP and the port.
+evidence:
+  - value: '330'
+    label: { pt: ataques reais registrados pela isca, en: real attacks logged by the decoy }
+    source: https://github.com/ViancoDeviolo/arapuca-honeyant/blob/f5e8c838c4638232c725d69202f0e0c6e90d5559/docs/demo/resumo-real-2026-11-07.json
+  - value: '37'
+    label: { pt: países de origem, en: countries of origin }
+    source: media/arapuca/arapuca-ataques-reais.webp
+  - value: '11'
+    label: { pt: ADRs, en: ADRs }
+    source: https://github.com/ViancoDeviolo/arapuca-honeyant/tree/f5e8c838c4638232c725d69202f0e0c6e90d5559/docs/adr
+  - value: '44'
+    label: { pt: testes JS, en: JS tests }
+    source: https://github.com/ViancoDeviolo/arapuca-honeyant/tree/f5e8c838c4638232c725d69202f0e0c6e90d5559/tests/js
+  - value: '5'
+    label: { pt: pessoas na equipe, en: people on the team }
+    source: https://github.com/ViancoDeviolo/arapuca-honeyant/blob/f5e8c838c4638232c725d69202f0e0c6e90d5559/README.md
+repo: { url: 'https://github.com/ViancoDeviolo/arapuca-honeyant' }
+status: concluido
+updated: '2026-11'

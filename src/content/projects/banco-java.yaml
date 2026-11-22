@@ -1,0 +1,25 @@
+order: 1
+side: fund
+anchor: true
+title: { pt: Banco em Java, en: Java Bank }
+problem:
+  pt: Um sistema bancário de mesa com cadastro de cliente, login e depósito.
+  en: A desktop banking app with customer sign-up, login and deposits.
+proves:
+  pt: Escrevi o sistema inteiro à mão em Java, das telas ao acesso aos dados. Foi meu primeiro projeto completo.
+  en: I wrote the whole system by hand in Java, from the screens to the data access. It was my first complete project.
+stack: [Java]
+media:
+  - kind: video
+    src: /media/banco-java/banco-java-cadastro-deposito.mp4
+    poster: /media/banco-java/banco-java-cadastro-deposito-poster.webp
+    alt:
+      pt: Gravação do Banco em Java com cadastro de cliente, login e depósito.
+      en: Screen recording of the Java Bank with sign-up, login and a deposit.
+    description:
+      pt: A janela Cadastro de Cliente pede nome, e-mail, CPF, celular e senha. Uma mensagem recusa o CPF digitado e, na segunda tentativa, o cadastro passa. Depois vêm a tela de login e a conta do cliente, com o saldo zerado e um depósito sendo digitado.
+      en: The Cadastro de Cliente window asks for name, e-mail, CPF, phone and password. A message rejects the CPF entered, and the second attempt goes through. Then come the login screen and the customer account, with a zero balance and a deposit being typed in.
+evidence: []
+repo: { url: 'https://github.com/ViancoDeviolo/banco-java' }
+status: concluido
+updated: '2026-11'

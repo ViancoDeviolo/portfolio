@@ -1,0 +1,58 @@
+order: 4
+side: ia
+title: { pt: EasyFood, en: EasyFood }
+problem:
+  pt: Uma API de delivery. O cliente faz o pedido e o dono do restaurante acompanha cada etapa até a entrega.
+  en: A food delivery API. The customer places an order and the restaurant owner moves it through each step until delivery.
+aiDid:
+  pt: Gerou o código da API e dos testes a partir de prompts que já traziam a arquitetura definida.
+  en: Generated the API and test code from prompts that already carried the chosen architecture.
+iDecided:
+  pt: As decisões estão registradas em ADRs. Oracle como banco, monólito modular em camadas, autenticação com JWT e imagens processadas por uma função serverless.
+  en: The decisions are written down as ADRs. Oracle as the database, a layered modular monolith, JWT authentication and images processed by a serverless function.
+stack: [Node.js, Express, Oracle, Docker]
+media:
+  - kind: video
+    src: /media/easyfood/easyfood-cliente-pedido.mp4
+    poster: /media/easyfood/easyfood-cliente-pedido-poster.webp
+    alt:
+      pt: Cliente monta um pedido no EasyFood.
+      en: A customer builds an order in EasyFood.
+    description:
+      pt: Na página do restaurante Sakura Temaki, o cliente põe um combinado e um hot roll na sacola, preenche o endereço de entrega e faz o pedido.
+      en: On the Sakura Temaki restaurant page, the customer adds a sushi combo and a hot roll to the bag, fills in the delivery address and places the order.
+  - kind: video
+    src: /media/easyfood/easyfood-dono-status.mp4
+    poster: /media/easyfood/easyfood-dono-status-poster.webp
+    alt:
+      pt: Dono do restaurante avança o status do pedido no EasyFood.
+      en: The restaurant owner moves the order status forward in EasyFood.
+    description:
+      pt: Em Meus restaurantes, o dono confirma o pedido, inicia o preparo e marca a saída para entrega. Na conta do cliente, o pedido aparece como saiu para entrega.
+      en: In Meus restaurantes, the owner confirms the order, starts preparing it and marks it as out for delivery. In the customer account, the order shows as out for delivery.
+  - kind: image
+    src: /media/easyfood/easyfood-docker-oracle.webp
+    alt:
+      pt: Terminal com o Docker subindo a API e o banco Oracle. O contêiner do Oracle fica saudável e a API sobe usando o Oracle.
+      en: Terminal with Docker starting the API and the Oracle database. The Oracle container turns healthy and the API starts on Oracle.
+  - kind: image
+    src: /media/easyfood/easyfood-adrs.webp
+    alt:
+      pt: Pasta de ADRs do EasyFood no GitHub, da primeira à oitava, mais o README.
+      en: EasyFood ADR folder on GitHub, from the first to the eighth, plus the README.
+evidence:
+  - value: '73'
+    label: { pt: testes, en: tests }
+    source: evidencias/easyfood-npm-test.txt
+  - value: '12'
+    label: { pt: suítes de teste, en: test suites }
+    source: evidencias/easyfood-npm-test.txt
+  - value: '8'
+    label: { pt: ADRs, en: ADRs }
+    source: media/easyfood/easyfood-adrs.webp
+terminal:
+  file: evidencias/easyfood-npm-test.txt
+  title: { pt: Saída do npm test, en: npm test output }
+repo: { url: 'https://github.com/ViancoDeviolo/easyfood' }
+status: em-evolucao
+updated: '2026-11'

@@ -11,11 +11,14 @@ const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // Correspondência exata: o valor não pode ser pedaço de outro número.
 const exact = (v: string) => new RegExp(`(?<![\\d.,])${esc(v)}(?!\\d|[.,]\\d)`);
 
+// Caminhos e URLs não são prosa: dígitos neles (".mp4", hash de commit) não são afirmações.
+const NOT_PROSE = new Set(['src', 'poster', 'url', 'demo', 'source', 'file']);
+
 const walk = (v: unknown, out: string[] = []): string[] => {
   if (typeof v === 'string') out.push(v);
   else if (typeof v === 'number') out.push(String(v));
   else if (Array.isArray(v)) v.forEach((x) => walk(x, out));
-  else if (v && typeof v === 'object') Object.values(v).forEach((x) => walk(x, out));
+  else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => NOT_PROSE.has(k) || walk(x, out));
   return out;
 };
 

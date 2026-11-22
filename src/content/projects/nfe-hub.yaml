@@ -1,0 +1,31 @@
+order: 6
+side: ia
+title: { pt: NFE Hub, en: NFE Hub }
+problem:
+  pt: Automatizar a emissão de notas fiscais de quem vende em marketplaces. A API já recebe as notificações do Mercado Livre. A emissão ainda não está pronta.
+  en: Automating invoice issuing for people who sell on marketplaces. The API already receives Mercado Livre notifications. Issuing is not built yet.
+aiDid:
+  pt: Gerou rotas, integrações e testes a partir de prompts com a estrutura em camadas.
+  en: Generated routes, integrations and tests from prompts that described the layered structure.
+iDecided:
+  pt: Separei o código em camadas (api, application, core, fiscal, infra e marketplaces). Certificados e tokens ficam guardados cifrados.
+  en: I split the code into layers (api, application, core, fiscal, infra and marketplaces). Certificates and tokens are stored encrypted.
+stack: [Python, pytest]
+media:
+  - kind: image
+    src: /media/nfe-hub/nfehub-api-rotas.webp
+    alt:
+      pt: Documentação da API do NFE Hub com as rotas de autorização e callback do Mercado Livre, verificação de saúde e webhook de notificações.
+      en: NFE Hub API docs with the Mercado Livre authorization and callback routes, a health check and the notifications webhook.
+evidence:
+  - value: '79'
+    label: { pt: testes, en: tests }
+    source: evidencias/nfe-hub-pytest.txt
+terminal:
+  file: evidencias/nfe-hub-pytest.txt
+  title: { pt: Saída do pytest, en: pytest output }
+repo: { private: true }
+status: em-desenvolvimento
+updated: '2026-11'
+nextSteps:
+  - { pt: Implementar a emissão da NF-e., en: Build NF-e issuing. }

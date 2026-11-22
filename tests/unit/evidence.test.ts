@@ -42,6 +42,12 @@ describe('nenhum número sem origem', () => {
     expect(errs).toContain('número "5" na prosa sem evidência');
   });
 
+  it('ignora dígitos em caminhos e URLs, mas não no alt', () => {
+    const media = [{ kind: 'video', src: '/media/x/y.mp4', poster: '/media/x/y2.webp', alt: l('x') }];
+    expect(checkData({ ...ficha('x', []), media, repo: { url: 'https://github.com/a/b2' } }, root)).toEqual([]);
+    expect(checkData({ ...ficha('x', []), media: [{ ...media[0], alt: l('9 telas') }] }, root)).toContain('número "9" na prosa sem evidência');
+  });
+
   it('reprova mídia cujo valor não está na linha da fonte em EVIDENCIAS.md', () => {
     const src = 'media/analitic-blitz/analitic-backtest-2021-2025.webp';
     const errs = checkData(ficha('x', [{ value: '999', label: l('x'), source: src }]), root);
