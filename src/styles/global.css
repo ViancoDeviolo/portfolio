@@ -127,6 +127,27 @@ a {
   color: var(--muted);
 }
 
+.cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-5);
+}
+
+@media (min-width: 64rem) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6);
+  }
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: var(--t-label);
+  font-weight: var(--weight-strong);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .skip-link {
   position: absolute;
   top: var(--s-2);

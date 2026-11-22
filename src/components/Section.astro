@@ -1,0 +1,39 @@
+---
+import { getEntry } from 'astro:content';
+import type { Lang, SectionId } from '../lib/i18n';
+
+interface Props {
+  id: SectionId;
+  lang: Lang;
+  accent?: 'fund' | 'ia';
+}
+
+const { id, lang, accent = 'fund' } = Astro.props;
+const { title, intro } = (await getEntry('site', 'site'))!.data.sections[id];
+---
+<section id={id} class="section" data-side={accent} aria-labelledby={`${id}-title`}>
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id={`${id}-title`}>{title[lang]}</h2>
+      {intro && <p class="lead">{intro[lang]}</p>}
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--s-8) var(--s-9);
+    scroll-margin-top: var(--s-4);
+  }
+
+  .section-head {
+    display: grid;
+    gap: var(--s-3);
+    margin-bottom: var(--s-7);
+  }
+
+  h2 {
+    color: var(--accent);
+  }
+</style>

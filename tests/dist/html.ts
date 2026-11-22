@@ -38,7 +38,14 @@ function closeOf(html: string, tag: string, from: number): number {
 }
 
 export const text = (html: string): string =>
-  html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  html
+    .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&(#39|#x27|quot|lt|gt|amp);/g, (_, e: string) => ENT[e])
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const ENT: Record<string, string> = { '#39': "'", '#x27': "'", quot: '"', lt: '<', gt: '>', amp: '&' };
 
 export const load = (file: string) => parse(readFileSync(join('dist', file), 'utf8'));
 

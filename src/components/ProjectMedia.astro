@@ -1,0 +1,123 @@
+---
+import sharp from 'sharp'; // vem com o Astro (serviço de imagem); só lê largura e altura no build
+import type { Project } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  media: Project['media'][number];
+  lang: Lang;
+  uid: string;
+}
+
+const { media, lang, uid } = Astro.props;
+const L = {
+  pt: { pause: 'Pausar vídeo', desc: 'O que o vídeo mostra' },
+  en: { pause: 'Pause video', desc: 'What the video shows' },
+}[lang];
+const still = media.kind === 'video' ? media.poster : media.src;
+const { width, height } = await sharp(`public${still}`).metadata();
+---
+<figure class="media">
+  {media.kind === 'image' ? (
+    <img src={media.src} alt={media.alt[lang]} width={width} height={height} loading="lazy" decoding="async" />
+  ) : (
+    <>
+      <video src={media.src} poster={media.poster} width={width} height={height} muted loop playsinline controls
+        preload="none" data-autoplay aria-label={media.alt[lang]} aria-describedby={`${uid}-desc`} />
+      <div class="video-bar">
+        <button type="button" class="video-toggle" aria-pressed="true" hidden>{L.pause}</button>
+        <details>
+          <summary>{L.desc}</summary>
+          <p id={`${uid}-desc`}>{media.description[lang]}</p>
+        </details>
+      </div>
+    </>
+  )}
+</figure>
+
+<script>
+  import '../scripts/videos';
+</script>
+
+<style>
+  .media {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    min-width: 0;
+  }
+
+  img,
+  video {
+    width: 100%;
+    border-radius: var(--s-2);
+    border: 1px solid var(--line);
+    background: rgb(0 0 0 / 0.35);
+    accent-color: var(--accent);
+  }
+
+  .video-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: var(--s-2) var(--s-4);
+    font-size: var(--t-small);
+  }
+
+  .video-toggle {
+    min-height: var(--target);
+    padding-inline: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-weight: var(--weight-strong);
+    cursor: pointer;
+    transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
+  }
+
+  .video-toggle[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .video-toggle[hidden] {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .video-toggle:hover {
+      border-color: var(--text);
+    }
+  }
+
+  .video-toggle:active {
+    transform: scale(0.97);
+  }
+
+  details {
+    flex: 1 1 14rem;
+    color: var(--muted);
+  }
+
+  summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 0.2em;
+  }
+
+  details p {
+    padding-bottom: var(--s-2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-toggle:active {
+      transform: none;
+    }
+  }
+</style>

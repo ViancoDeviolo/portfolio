@@ -31,6 +31,12 @@ describe('projectSchema', () => {
     bad({ ...validIa(), iDecided: undefined });
     bad({ ...validFund(), proves: undefined });
   });
+  it('aceita iDecidedLabel opcional no lado IA, com PT e EN', () => {
+    const r = projectSchema.safeParse({ ...validIa(), iDecidedLabel: { pt: 'O que eu aprovei e defendi', en: 'What I approved and defended' } });
+    expect(r.success && r.data.side === 'ia' && r.data.iDecidedLabel?.pt).toBe('O que eu aprovei e defendi');
+    expect(projectSchema.safeParse(validIa()).success).toBe(true);
+    bad({ ...validIa(), iDecidedLabel: { pt: 'X' } });
+  });
   it('rejeita equipe sem papel, vídeo incompleto, data e nextSteps inválidos', () => {
     bad({ ...validIa(), team: { size: 5 } });
     bad({ ...validIa(), media: [{ kind: 'video', src: '/media/x.mp4', alt: L }] });

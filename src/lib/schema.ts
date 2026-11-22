@@ -29,7 +29,7 @@ const common = {
 
 export const projectSchema = z.discriminatedUnion('side', [
   z.object({ ...common, side: z.literal('fund'), proves: l10n, anchor: z.boolean().optional() }),
-  z.object({ ...common, side: z.literal('ia'), aiDid: l10n, iDecided: l10n }),
+  z.object({ ...common, side: z.literal('ia'), aiDid: l10n, iDecided: l10n, iDecidedLabel: l10n.optional() }),
 ]);
 
 const sections = Object.fromEntries(
