@@ -1,5 +1,5 @@
 ﻿kit/
 node_modules/
-dist/
+/dist/
 .astro/
 .env

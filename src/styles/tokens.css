@@ -1,0 +1,56 @@
+:root {
+  /* Paleta fixa (spec 5.2). Cor só em acentos. */
+  --bg: #0f0f10;
+  --text: #edebe6;
+  --muted: #8a8a8e;
+  --accent-fund: #ffc83d;
+  --accent-ia: #ff5a1f;
+  --line: rgb(237 235 230 / 0.14);
+  --accent: var(--accent-fund);
+
+  /* Tipografia: Instrument Sans (texto e títulos) + DM Mono (só terminal e código). */
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --weight-text: 400;
+  --weight-strong: 500;
+  --t-h1: clamp(2.375rem, 1.6rem + 3.4vw, 4.5rem); /* 38 → 72 */
+  --t-h2: clamp(1.875rem, 1.5rem + 1.6vw, 3rem); /* 30 → 48 */
+  --t-h3: clamp(1.5rem, 1.4rem + 0.45vw, 1.75rem); /* 24 → 28 */
+  --t-lead: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem); /* 18 → 20 */
+  --t-body: 1rem;
+  --t-small: 0.875rem;
+  --t-label: 0.8125rem;
+  --track-display: -0.036em;
+  --track-h2: -0.02em;
+  --lh-tight: 1.05;
+  --lh-heading: 1.15;
+  --lh-body: 1.6;
+  --measure: 62ch;
+
+  /* Espaçamento 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128 */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+
+  /* Layout */
+  --wrap: 80rem;
+  --gut: clamp(1rem, 5.5vw, 5rem);
+  --target: 2.75rem;
+  --radius: 0.75rem;
+
+  /* Movimento */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --dur-press: 160ms;
+  --dur-hover: 200ms;
+}
+
+[data-side='ia'] {
+  --accent: var(--accent-ia);
+}

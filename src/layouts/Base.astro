@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getEntry } from 'astro:content';
+import { ROUTES, type Lang } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  route: keyof typeof ROUTES;
+}
+
+const { lang, title, description, route } = Astro.props;
+const site = await getEntry('site', 'site');
+const path = ROUTES[route][lang];
+const abs = (p: string) => new URL(p, Astro.site).href;
+---
+<!doctype html>
+<html lang={lang === 'pt' ? 'pt-BR' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0f0f10" />
+    <link rel="canonical" href={abs(path)} />
+    <link rel="alternate" hreflang="pt-BR" href={abs(ROUTES[route].pt)} />
+    <link rel="alternate" hreflang="en" href={abs(ROUTES[route].en)} />
+    <link rel="alternate" hreflang="x-default" href={abs(ROUTES[route].pt)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <Header lang={lang} path={path} name={site!.data.name} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

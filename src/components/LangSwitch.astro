@@ -1,0 +1,35 @@
+---
+import { switchHref, type Lang } from '../lib/i18n';
+const { lang, path } = Astro.props as { lang: Lang; path: string };
+const to: Lang = lang === 'pt' ? 'en' : 'pt';
+const label = to === 'en' ? 'English version' : 'Versão em português';
+const tag = to === 'en' ? 'en' : 'pt-BR';
+---
+<a class="lang-switch" href={switchHref(path, null, to)} hreflang={tag} lang={tag} aria-label={label} data-lang-switch>
+  {to === 'en' ? 'English' : 'Português'}
+</a>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    padding-inline: var(--s-4);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: var(--t-small);
+    font-weight: var(--weight-strong);
+    text-decoration: none;
+    transition: border-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lang-switch:hover {
+      border-color: var(--text);
+    }
+  }
+
+  .lang-switch:active {
+    transform: scale(0.97);
+  }
+</style>
