@@ -1,44 +1,56 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { parse } from 'yaml'; // transitiva (vem com o Astro); sem dependência nova
 
-export type Evidence = { value: string; source: string };
+export type Evidence = { value: string | number; label?: { pt?: string; en?: string }; source: string };
 
 // Tokens com dígito permitidos em prosa sem evidência: nomes de tecnologia.
 export const ALLOWED_TOKENS = ['Java 17', 'Python 3', 'OAS 3.1'];
 
+const NUM = /\d+(?:[.,]\d+)*/g;
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// Correspondência exata: o valor não pode ser pedaço de outro número.
+const exact = (v: string) => new RegExp(`(?<![\\d.,])${esc(v)}(?!\\d|[.,]\\d)`);
+
 const walk = (v: unknown, out: string[] = []): string[] => {
   if (typeof v === 'string') out.push(v);
+  else if (typeof v === 'number') out.push(String(v));
   else if (Array.isArray(v)) v.forEach((x) => walk(x, out));
   else if (v && typeof v === 'object') Object.values(v).forEach((x) => walk(x, out));
   return out;
 };
 
-// Números em texto PT/EN da ficha (fora de evidence e stack), sem anos de `updated` nem ALLOWED_TOKENS.
+export const numbersIn = (texts: string[]): string[] =>
+  texts
+    .map((s) => ALLOWED_TOKENS.reduce((acc, t) => acc.replace(new RegExp(`\\b${esc(t)}\\b`, 'g'), ' '), s))
+    .flatMap((s) => s.match(NUM) ?? []);
+
+// Números em texto PT/EN da ficha (fora de evidence, stack e order), sem o ano de `updated`.
 export function numbersInProse(p: Record<string, any>): string[] {
-  const { evidence, stack, updated, ...prose } = p;
+  const { evidence, stack, updated, order, ...prose } = p;
   const year = String(updated ?? '').slice(0, 4);
-  return walk(prose)
-    .map((s) => ALLOWED_TOKENS.reduce((acc, t) => acc.split(t).join(' '), s))
-    .flatMap((s) => s.match(/\d+(?:[.,]\d+)*/g) ?? [])
-    .filter((n) => n !== year);
+  return numbersIn(walk(prose)).filter((n) => n !== year);
 }
 
-export function checkProject(file: string, root: string): string[] {
-  const p = parse(readFileSync(file, 'utf8'));
-  const md = readFileSync(`${root}/docs/EVIDENCIAS.md`, 'utf8');
+export function checkData(p: Record<string, any>, root: string): string[] {
+  const md = readFileSync(`${root}/docs/EVIDENCIAS.md`, 'utf8').split('\n');
+  const evs = (p.evidence ?? []) as Evidence[];
   const errs: string[] = [];
-  for (const e of (p.evidence ?? []) as Evidence[]) {
+  for (const e of evs) {
+    const v = String(e.value);
     if (e.source.startsWith('evidencias/')) {
       const f = `${root}/src/content/${e.source}`;
-      if (!existsSync(f) || !readFileSync(f, 'utf8').includes(e.value)) errs.push(`"${e.value}" não consta em ${e.source}`);
-    } else if (/^media\/[^/]+\/[^/]+\.webp$/.test(e.source)) {
-      if (!existsSync(`${root}/public/${e.source}`)) errs.push(`falta public/${e.source}`);
-      if (!md.includes(e.source)) errs.push(`${e.source} fora de docs/EVIDENCIAS.md`);
-    } else if (/^https:\/\/github\.com\//.test(e.source)) {
-      if (!md.includes(e.source)) errs.push(`${e.source} fora de docs/EVIDENCIAS.md`);
+      if (!existsSync(f) || !exact(v).test(readFileSync(f, 'utf8'))) errs.push(`"${v}" não consta em ${e.source}`);
+    } else if (/^media\/[^/]+\/[^/]+\.webp$/.test(e.source) || /^https:\/\/github\.com\//.test(e.source)) {
+      if (e.source.startsWith('media/') && !existsSync(`${root}/public/${e.source}`)) errs.push(`falta public/${e.source}`);
+      // valor e fonte precisam estar na mesma linha de docs/EVIDENCIAS.md
+      if (!md.some((l) => l.includes(e.source) && exact(v).test(l))) errs.push(`"${v}" e ${e.source} não estão na mesma linha de docs/EVIDENCIAS.md`);
     } else errs.push(`origem inválida: ${e.source}`);
+    const own = new Set(numbersIn([v]));
+    for (const n of numbersIn(walk(e.label ?? {}))) if (!own.has(n)) errs.push(`número "${n}" no rótulo sem estar no valor "${v}"`);
   }
-  const all = ((p.evidence ?? []) as Evidence[]).map((e) => e.value).join(' ');
-  for (const n of numbersInProse(p)) if (!all.includes(n)) errs.push(`número "${n}" na prosa sem evidência`);
+  const all = new Set(numbersIn(evs.map((e) => String(e.value))));
+  for (const n of numbersInProse(p)) if (!all.has(n)) errs.push(`número "${n}" na prosa sem evidência`);
   return errs;
 }
+
+export const checkProject = (file: string, root: string) => checkData(parse(readFileSync(file, 'utf8')), root);
