@@ -20,7 +20,8 @@ const ALT = {
   },
 };
 // Sizes are the uncropped width: at most 560 px tall is about 420 px wide; on phones about 75vw.
-const sizes = '(min-width: 60rem) 420px, 75vw';
+const sizes = '(min-width: 60rem) 420px, min(75vw, 420px)';
+const glow = { class: 'glow' };
 ---
 <div class="hero wrap">
   <div class="intro">
@@ -31,12 +32,12 @@ const sizes = '(min-width: 60rem) 420px, 75vw';
   <div class="duo">
     <a class="half" href="#fundamentals">
       <Picture class="figure casual" src={casual} alt={ALT.casual[lang]} formats={['avif', 'webp']}
-        widths={[320, 480, 640, 774]} sizes={sizes} loading="eager" fetchpriority="high" />
+        widths={[320, 480, 640, 774]} sizes={sizes} pictureAttributes={glow} loading="eager" fetchpriority="high" />
       <span class="label">{sections.fundamentals.title[lang]}</span>
     </a>
     <a class="half" href="#ai" data-side="ia">
       <Picture class="figure terno" src={terno} alt={ALT.terno[lang]} formats={['avif', 'webp']}
-        widths={[320, 480, 640, 774, 1086]} sizes={sizes} loading="eager" fetchpriority="high" />
+        widths={[320, 480, 640, 774, 1086]} sizes={sizes} pictureAttributes={glow} loading="eager" fetchpriority="high" />
       <span class="label">{sections.ai.title[lang]}</span>
     </a>
   </div>
@@ -76,42 +77,54 @@ const sizes = '(min-width: 60rem) 420px, 75vw';
     border-radius: var(--radius);
   }
 
-  /* The cutouts carry wide transparent margins; crop them so the two backs meet at the centre. */
-  .figure {
+  /* The glow sits on the wrapper, so the shadow follows the masked silhouette below. */
+  .glow {
+    display: block;
     width: 100%;
-    aspect-ratio: 0.45;
-    object-fit: cover;
     filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--accent) 35%, transparent));
     transition: filter var(--dur-hover) ease;
   }
 
-  .casual {
-    object-position: 5% 0;
-  }
-
-  .terno {
-    object-position: 81% 0;
-  }
-
-  .half:focus-visible .figure {
+  .half:focus-visible .glow {
     filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .half:hover .figure {
+    .half:hover .glow {
       filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .figure {
+    .glow {
       transition: none;
     }
   }
 
+  /* The cutouts carry wide transparent margins; crop them so the two backs meet at the centre.
+     The mask fades the cut feet and the box edges, where the cutout's faint alpha noise would draw a line. */
+  .figure {
+    width: 100%;
+    aspect-ratio: 0.45;
+    object-fit: cover;
+    mask-image: linear-gradient(to top, transparent, #000 10%), var(--fade-x);
+    mask-composite: intersect;
+  }
+
+  .casual {
+    --fade-x: linear-gradient(to right, transparent, #000 15%, #000 96%, transparent);
+    object-position: 10% 0;
+  }
+
+  .terno {
+    --fade-x: linear-gradient(to left, transparent, #000 15%, #000 96%, transparent);
+    object-position: 77% 0;
+  }
+
   .label {
     display: inline-flex;
-    align-items: center;
+    align-items: start;
+    text-wrap: balance;
     min-height: var(--target);
     color: var(--accent);
     font-size: var(--t-lead);
