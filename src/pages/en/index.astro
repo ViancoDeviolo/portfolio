@@ -1,19 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
 import { getEntry } from 'astro:content';
 const { name, tagline } = (await getEntry('site', 'site'))!.data;
 ---
 <Base lang="en" title={name} description={tagline.en} route="home">
-  <div class="wrap intro">
-    <h1>{name}</h1>
-    <p class="lead">{tagline.en}</p>
-  </div>
+  <Hero lang="en" />
 </Base>
-
-<style>
-  .intro {
-    display: grid;
-    gap: var(--s-5);
-    padding-block: var(--s-9);
-  }
-</style>

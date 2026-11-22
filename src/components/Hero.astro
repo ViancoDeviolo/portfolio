@@ -1,0 +1,127 @@
+---
+import { Picture } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import casual from '../assets/dupla/casual.png';
+import terno from '../assets/dupla/terno.png';
+import { formatMonthYear } from '../lib/date';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { name, tagline, livingNote, sections } = (await getEntry('site', 'site'))!.data;
+
+const ALT = {
+  casual: {
+    pt: 'Lucas de perfil, de braços cruzados, com camiseta preta e calça jeans',
+    en: 'Lucas in profile, arms crossed, wearing a black T-shirt and jeans',
+  },
+  terno: {
+    pt: 'Lucas de perfil, de braços cruzados, com terno bege e camisa branca',
+    en: 'Lucas in profile, arms crossed, wearing a beige suit and a white shirt',
+  },
+};
+// Sizes are the uncropped width: at most 560 px tall is about 420 px wide; on phones about 75vw.
+const sizes = '(min-width: 60rem) 420px, 75vw';
+---
+<div class="hero wrap">
+  <div class="intro">
+    <h1>{name}</h1>
+    <p class="lead">{tagline[lang]}</p>
+    <p class="living-note">{livingNote[lang].replace('{date}', formatMonthYear(new Date(), lang))}</p>
+  </div>
+  <div class="duo">
+    <a class="half" href="#fundamentals">
+      <Picture class="figure casual" src={casual} alt={ALT.casual[lang]} formats={['avif', 'webp']}
+        widths={[320, 480, 640, 774]} sizes={sizes} loading="eager" fetchpriority="high" />
+      <span class="label">{sections.fundamentals.title[lang]}</span>
+    </a>
+    <a class="half" href="#ai" data-side="ia">
+      <Picture class="figure terno" src={terno} alt={ALT.terno[lang]} formats={['avif', 'webp']}
+        widths={[320, 480, 640, 774, 1086]} sizes={sizes} loading="eager" fetchpriority="high" />
+      <span class="label">{sections.ai.title[lang]}</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .hero {
+    display: grid;
+    gap: var(--s-6);
+    padding-block: var(--s-6) var(--s-8);
+  }
+
+  .intro {
+    display: grid;
+    gap: var(--s-4);
+    align-content: center;
+  }
+
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+
+  .duo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 15.75rem)); /* 252 px wide at 0.45 = 560 px tall at most */
+    justify-content: center;
+  }
+
+  .half {
+    display: grid;
+    justify-items: center;
+    gap: var(--s-3);
+    text-decoration: none;
+    border-radius: var(--radius);
+  }
+
+  /* The cutouts carry wide transparent margins; crop them so the two backs meet at the centre. */
+  .figure {
+    width: 100%;
+    aspect-ratio: 0.45;
+    object-fit: cover;
+    filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--accent) 35%, transparent));
+    transition: filter var(--dur-hover) ease;
+  }
+
+  .casual {
+    object-position: 5% 0;
+  }
+
+  .terno {
+    object-position: 81% 0;
+  }
+
+  .half:focus-visible .figure {
+    filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .half:hover .figure {
+      filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .figure {
+      transition: none;
+    }
+  }
+
+  .label {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    color: var(--accent);
+    font-size: var(--t-lead);
+    font-weight: var(--weight-strong);
+    text-align: center;
+    line-height: var(--lh-heading);
+  }
+
+  .living-note {
+    color: var(--muted);
+    font-size: var(--t-small);
+  }
+</style>
