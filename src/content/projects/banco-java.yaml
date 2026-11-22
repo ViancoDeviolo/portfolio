@@ -6,8 +6,8 @@ problem:
   pt: Um sistema bancário de mesa com cadastro de cliente, login e depósito.
   en: A desktop banking app with customer sign-up, login and deposits.
 proves:
-  pt: Escrevi o sistema inteiro à mão em Java, das telas ao acesso aos dados. Foi meu primeiro projeto completo.
-  en: I wrote the whole system by hand in Java, from the screens to the data access. It was my first complete project.
+  pt: Escrevi o sistema inteiro à mão em Java, das telas ao acesso aos dados.
+  en: I wrote the whole system by hand in Java, from the screens to the data access.
 stack: [Java]
 media:
   - kind: video
@@ -21,5 +21,7 @@ media:
       en: The Cadastro de Cliente window asks for name, e-mail, CPF, phone and password. A message rejects the CPF entered, and the second attempt goes through. Then come the login screen and the customer account, with a zero balance and a deposit being typed in.
 evidence: []
 repo: { url: 'https://github.com/ViancoDeviolo/banco-java' }
-status: concluido
+status: em-evolucao
 updated: '2026-11'
+nextSteps:
+  - { pt: Levar o banco para um app mobile., en: Bring the bank to a mobile app. }

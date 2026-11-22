@@ -85,7 +85,9 @@ const anchor = p.side === 'fund' && p.anchor;
     {p.terminal && <Terminal file={p.terminal.file} title={p.terminal.title[lang]} />}
 
     <div class="links">
-      {'url' in p.repo ? <a class="pill" href={p.repo.url} {...ext}>{L.repo}</a> : <span class="pill private">{L.private}</span>}
+      {'url' in p.repo && <a class="pill" href={p.repo.url} {...ext}>{L.repo}</a>}
+      {'links' in p.repo && p.repo.links.map((r) => <a class="pill" href={r.url} {...ext}>{L.repo} {r.label[lang]}</a>)}
+      {'private' in p.repo && <span class="pill private">{L.private}</span>}
       {p.demo && <a class="pill" href={p.demo} {...ext}>{L.demo}</a>}
     </div>
 

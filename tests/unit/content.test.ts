@@ -19,6 +19,14 @@ describe('conteúdo do site', () => {
     expect(projects.filter((p) => p.side === 'ia').map((p) => p.id)).toEqual(['arapuca', 'easyfood', 'analitic-blitz', 'nfe-hub', 'renovacao-apolices']);
   });
 
+  it('Calculadoras aponta para os dois repositórios', () => {
+    const calc = projects.find((p) => p.id === 'calculadoras');
+    expect(calc.repo.links.map((r: { url: string }) => r.url)).toEqual([
+      'https://github.com/ViancoDeviolo/calculadora-java',
+      'https://github.com/ViancoDeviolo/calculadora-python',
+    ]);
+  });
+
   it('cada item da seção Stack aparece em ao menos uma ficha', () => {
     const allProjectStacks = projects.flatMap((p) => p.stack);
     for (const item of site.stackGroups.flatMap((g: { items: string[] }) => g.items)) expect(allProjectStacks).toContain(item);

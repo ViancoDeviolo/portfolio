@@ -20,7 +20,11 @@ const common = {
   team: z.object({ size: z.number().int().min(2), role: l10n }).optional(),
   evidence: z.array(z.object({ value: str, label: l10n, source: str })),
   terminal: z.object({ file: str, title: l10n }).optional(),
-  repo: z.union([z.object({ url: z.url() }), z.object({ private: z.literal(true) })]),
+  repo: z.union([
+    z.object({ url: z.url() }),
+    z.object({ links: z.array(z.object({ label: l10n, url: z.url() })).min(2) }), // projeto com mais de um repositório
+    z.object({ private: z.literal(true) }),
+  ]),
   demo: z.url().optional(),
   status: z.enum(STATUS),
   updated: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),

@@ -48,6 +48,7 @@ describe('cards de projeto', () => {
       }
       else expect(card).toContain(p.proves[lang]);
       if (p.repo.url) expect($(`#${p.id} a[href=${p.repo.url}]`).length).toBe(1);
+      for (const r of p.repo.links ?? []) expect($(`#${p.id} a[href=${r.url}]`).text()).toContain(r.label[lang]);
     }
 
     const videos = $('video').nodes;

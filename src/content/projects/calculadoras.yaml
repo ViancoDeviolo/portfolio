@@ -17,12 +17,12 @@ media:
       en: The Java and Python calculators running side by side in VS Code.
     description:
       pt: Duas janelas do VS Code. Nas duas, a calculadora pede dois números e mostra soma, subtração, multiplicação, divisão, resto e potência. Na divisão, Java mostra 0,63 e Python mostra 0,62.
-      en: Two VS Code windows. In both, the calculator asks for two numbers and prints the sum, difference, product, quotient, remainder and power. In the division, Java rounds up and Python rounds down.
+      en: Two VS Code windows. In both, the calculator asks for two numbers and prints the sum, difference, product, quotient, remainder and power. In the division, the two results differ in the last digit.
   - kind: image
     src: /media/calculadoras/calculadoras-lado-a-lado.webp
     alt:
       pt: Saída das duas calculadoras lado a lado. Na divisão, Java mostra 0,63 e Python mostra 0,62.
-      en: Output of both calculators side by side. In the division, Java rounds up and Python rounds down.
+      en: Output of both calculators side by side. In the division, the two results differ in the last digit.
 evidence:
   - value: '0,63'
     label: { pt: resultado em Java, en: result in Java }
@@ -30,6 +30,9 @@ evidence:
   - value: '0,62'
     label: { pt: resultado em Python, en: result in Python }
     source: media/calculadoras/calculadoras-lado-a-lado.webp
-repo: { url: 'https://github.com/ViancoDeviolo/calculadora-java' }
-status: concluido
+repo:
+  links:
+    - { label: { pt: Java, en: Java }, url: 'https://github.com/ViancoDeviolo/calculadora-java' }
+    - { label: { pt: Python, en: Python }, url: 'https://github.com/ViancoDeviolo/calculadora-python' }
+status: em-evolucao
 updated: '2026-11'

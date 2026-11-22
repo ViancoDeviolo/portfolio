@@ -29,14 +29,13 @@ site:
       title: { pt: Sobre, en: About }
     contact:
       title: { pt: Contato, en: Contact }
-      intro:
-        pt: Respondo por e-mail e pelo LinkedIn.
-        en: I reply by e-mail and on LinkedIn.
   studyingNow:
-    - pt: Inteligência computacional e otimização de algoritmos, na faculdade.
-      en: Computational intelligence and algorithm optimization, at university.
-    - pt: Java com Spring para backend.
-      en: Java with Spring for backend work.
+    - pt: Fundamentos de Java e Python do zero.
+      en: Java and Python fundamentals from scratch.
+    - pt: Inteligência computacional e otimização de algoritmos.
+      en: Computational intelligence and algorithm optimization.
+    - pt: Oracle Agentic AI Foundations.
+      en: Oracle Agentic AI Foundations.
   workflow:
     - title: { pt: Construo, en: I build }
       body:

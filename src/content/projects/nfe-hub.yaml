@@ -2,14 +2,14 @@ order: 6
 side: ia
 title: { pt: NFE Hub, en: NFE Hub }
 problem:
-  pt: Automatizar a emissão de notas fiscais de quem vende em marketplaces. A API já recebe as notificações do Mercado Livre. A emissão ainda não está pronta.
-  en: Automating invoice issuing for people who sell on marketplaces. The API already receives Mercado Livre notifications. Issuing is not built yet.
+  pt: Automatizar a emissão de notas fiscais de quem vende em marketplaces. A API já recebe as notificações do Mercado Livre. A emissão da NF-e ainda não foi implementada.
+  en: Automating invoice issuing for people who sell on marketplaces. The API already receives Mercado Livre notifications. NF-e issuing is not implemented yet.
 aiDid:
-  pt: Gerou rotas, integrações e testes a partir de prompts com a estrutura em camadas.
-  en: Generated routes, integrations and tests from prompts that described the layered structure.
+  pt: Claude implementou OAuth, webhook, criptografia e testes, explicando cada conceito.
+  en: Claude implemented OAuth, the webhook, encryption and tests, explaining each concept.
 iDecided:
-  pt: Separei o código em camadas (api, application, core, fiscal, infra e marketplaces). Certificados e tokens ficam guardados cifrados.
-  en: I split the code into layers (api, application, core, fiscal, infra and marketplaces). Certificates and tokens are stored encrypted.
+  pt: Levantei os requisitos com o dono da loja e conectei a conta real do Mercado Livre, com pedidos reais capturados. Cuido do certificado digital e do contato com o contador. Certificados e tokens ficam guardados cifrados.
+  en: I gathered the requirements with the store owner and connected the real Mercado Livre account, capturing real orders. I handle the digital certificate and the contact with the accountant. Certificates and tokens are stored encrypted.
 stack: [Python, pytest]
 media:
   - kind: image

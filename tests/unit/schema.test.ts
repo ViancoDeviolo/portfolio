@@ -37,6 +37,12 @@ describe('projectSchema', () => {
     expect(projectSchema.safeParse(validIa()).success).toBe(true);
     bad({ ...validIa(), iDecidedLabel: { pt: 'X' } });
   });
+  it('aceita mais de um repositório com rótulo PT e EN', () => {
+    const links = [{ label: { pt: 'Java', en: 'Java' }, url: 'https://github.com/a/j' }, { label: { pt: 'Python', en: 'Python' }, url: 'https://github.com/a/p' }];
+    expect(projectSchema.safeParse({ ...validFund(), repo: { links } }).success).toBe(true);
+    bad({ ...validFund(), repo: { links: [links[0]] } });
+    bad({ ...validFund(), repo: { links: [{ ...links[0], label: { pt: 'Java' } }, links[1]] } });
+  });
   it('rejeita equipe sem papel, vídeo incompleto, data e nextSteps inválidos', () => {
     bad({ ...validIa(), team: { size: 5 } });
     bad({ ...validIa(), media: [{ kind: 'video', src: '/media/x.mp4', alt: L }] });
