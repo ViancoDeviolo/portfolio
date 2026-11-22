@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { parse } from 'yaml'; // transitiva (vem com o Astro); sem dependência nova
 
 export type Evidence = { value: string | number; label?: { pt?: string; en?: string }; source: string };
@@ -54,3 +54,12 @@ export function checkData(p: Record<string, any>, root: string): string[] {
 }
 
 export const checkProject = (file: string, root: string) => checkData(parse(readFileSync(file, 'utf8')), root);
+
+// Mídia declarada nas fichas (src/content/projects/*.yaml).
+export function allProjectMedia(root = process.cwd()): { kind: string; src: string; poster?: string }[] {
+  const dir = `${root}/src/content/projects`;
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.yaml'))
+    .flatMap((f) => parse(readFileSync(`${dir}/${f}`, 'utf8')).media ?? []);
+}
