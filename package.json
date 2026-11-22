@@ -1,0 +1,21 @@
+{
+  "name": "portfolio",
+  "type": "module",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run --project unit",
+    "test:dist": "vitest run --project dist",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "@astrojs/check": "0.9.12",
+    "astro": "7.4.13",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  }
+}
