@@ -5,6 +5,7 @@
   --muted: #8a8a8e;
   --accent-fund: #ffc83d;
   --accent-ia: #ff5a1f;
+  --header-h: 4.5rem; /* altura fixa do cabeçalho; também é o scroll-padding */
   --line: rgb(237 235 230 / 0.14);
   --accent: var(--accent-fund);
 
