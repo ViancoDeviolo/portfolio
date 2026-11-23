@@ -11,13 +11,13 @@ interface Props {
 
 const { lang, title, description, route } = Astro.props;
 // Data fixa: texto legal só muda de data quando o texto muda.
-const updated = lang === 'pt' ? 'Última atualização: 22 de novembro de 2026' : 'Last updated: November 22, 2026';
+const updated = lang === 'pt' ? 'Última atualização: 23 de novembro de 2026' : 'Last updated: November 23, 2026';
 ---
 <Base lang={lang} title={`${title} · Lucas Cruz`} description={description} route={route}>
   <article class="wrap legal">
     <div class="head">
       <h1>{title}</h1>
-      <p class="updated"><time datetime="2026-11-22">{updated}</time></p>
+      <p class="updated"><time datetime="2026-11-23">{updated}</time></p>
     </div>
     <slot />
   </article>

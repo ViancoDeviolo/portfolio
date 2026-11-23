@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { load, text } from './html';
 
 const LEGAL_MUST = {
-  pt: ['Lucas Cruz', 'art. 7º', 'art. 18', 'Cloudflare', 'não usa cookies', 'Última atualização'],
-  en: ['Lucas Cruz', 'Art. 7', 'Art. 18', 'Cloudflare', 'does not use', 'Last updated'],
+  pt: ['Lucas Alves da Cruz', 'art. 7º', 'art. 18', 'Cloudflare', 'não usa cookies', 'Última atualização'],
+  en: ['Lucas Alves da Cruz', 'Art. 7', 'Art. 18', 'Cloudflare', 'does not use', 'Last updated'],
 };
 const LEGAL = ['privacidade/index.html', 'en/privacy/index.html', 'termos/index.html', 'en/terms/index.html'];
 const langOf = (f: string) => (f.startsWith('en/') ? 'en' : 'pt');
@@ -22,6 +22,7 @@ describe('páginas legais', () => {
   it.each(['termos/index.html', 'en/terms/index.html'])('termos %s', (f) => {
     const t = text(load(f).html);
     expect(t).toContain('Arapuca');
+    expect(t).toContain('Lucas Alves da Cruz');
     expect(t).toContain(langOf(f) === 'pt' ? 'Última atualização' : 'Last updated');
   });
 
