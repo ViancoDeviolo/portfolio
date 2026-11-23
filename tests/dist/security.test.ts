@@ -1,9 +1,10 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { externalLinks, load, resourceUrls } from './html';
+import { externalLinks, load, resourceUrls, tags } from './html';
 import { SITE_URL } from '../../astro.config.mjs';
 
+const SITE_ORIGIN = new URL(SITE_URL).origin;
 const PAGES = ['index.html', 'en/index.html', 'privacidade/index.html', 'en/privacy/index.html', 'termos/index.html', 'en/terms/index.html'];
 
 const totalJsBytes = (dir: string) =>
@@ -16,15 +17,23 @@ describe.each(PAGES)('superfície %s', (file) => {
     expect(html).not.toMatch(/<style[\s>]|\sstyle="/);
   });
   it('nenhum recurso de terceiros', () => {
-    const own = (u: string) => !/^(https?:)?\/\//.test(u) || u.startsWith(SITE_URL);
+    const own = (u: string) => new URL(u, SITE_URL).origin === SITE_ORIGIN;
     expect(resourceUrls(html).filter((u) => !own(u))).toEqual([]);
   });
   it('canonical e alternate só apontam para o próprio site', () => {
-    for (const u of resourceUrls(html, ['canonical', 'alternate'])) expect(u.startsWith(SITE_URL)).toBe(true);
+    for (const u of resourceUrls(html, ['canonical', 'alternate'])) expect(new URL(u, SITE_URL).origin).toBe(SITE_ORIGIN);
   });
   it('links externos com noopener noreferrer', () => {
     for (const a of externalLinks(html)) expect(a.rel, a.href).toBe('noopener noreferrer');
   });
+});
+
+it('o matcher enxerga elementos (não passa vazio)', () => {
+  const { html } = load('index.html');
+  expect(tags(html, 'a').length).toBeGreaterThan(0);
+  expect(tags(html, 'script').length).toBeGreaterThan(0);
+  expect(resourceUrls(html).length).toBeGreaterThan(0);
+  expect(externalLinks(html).length).toBeGreaterThan(0);
 });
 
 it('JS total abaixo de 15 KB', () => {
