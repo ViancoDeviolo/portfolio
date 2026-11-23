@@ -3,7 +3,7 @@ side: fund
 title: { pt: Calculadoras em Java e Python, en: Java and Python calculators }
 problem:
   pt: A mesma divisão dá 0,63 em Java e 0,62 em Python. A diferença está no arredondamento.
-  en: The same division prints a different result in Java and in Python. The gap comes from rounding.
+  en: The same division gives 0.63 in Java and 0.62 in Python. The gap comes from rounding.
 proves:
   pt: Arredondamento muda o resultado de uma conta. Por isso dinheiro pede BigDecimal em Java e Decimal em Python.
   en: Rounding changes the result of a calculation. That is why money calls for BigDecimal in Java and Decimal in Python.
@@ -17,12 +17,12 @@ media:
       en: The Java and Python calculators running side by side in VS Code.
     description:
       pt: Duas janelas do VS Code. Nas duas, a calculadora pede dois números e mostra soma, subtração, multiplicação, divisão, resto e potência. Na divisão, Java mostra 0,63 e Python mostra 0,62.
-      en: Two VS Code windows. In both, the calculator asks for two numbers and prints the sum, difference, product, quotient, remainder and power. In the division, the two results differ in the last digit.
+      en: Two VS Code windows. In both, the calculator asks for two numbers and prints the sum, difference, product, quotient, remainder and power. In the division, Java prints 0.63 and Python prints 0.62.
   - kind: image
     src: /media/calculadoras/calculadoras-lado-a-lado.webp
     alt:
       pt: Saída das duas calculadoras lado a lado. Na divisão, Java mostra 0,63 e Python mostra 0,62.
-      en: Output of both calculators side by side. In the division, the two results differ in the last digit.
+      en: Output of both calculators side by side. In the division, Java prints 0.63 and Python prints 0.62.
 evidence:
   - value: '0,63'
     label: { pt: resultado em Java, en: result in Java }

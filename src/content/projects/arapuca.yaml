@@ -50,8 +50,8 @@ evidence:
   - value: '330'
     label: { pt: tentativas de invasão registradas pela isca, en: intrusion attempts logged by the decoy }
     source: https://github.com/ViancoDeviolo/arapuca-honeyant/blob/f5e8c838c4638232c725d69202f0e0c6e90d5559/docs/demo/resumo-real-2026-11-07.json
-  - value: '164 em 24 h'
-    label: { pt: tentativas numa janela de um dia, en: attempts in a one-day window }
+  - value: '164'
+    label: { pt: tentativas em 24 h, en: attempts in 24 h }
     source: media/arapuca/arapuca-ataques-reais.webp
   - value: '37'
     label: { pt: países de origem nessa mesma janela, en: countries of origin in that same window }

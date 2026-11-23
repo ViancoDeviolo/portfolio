@@ -25,6 +25,8 @@ const L = {
 const ext = { rel: 'noopener noreferrer' };
 const [lead, ...more] = p.media;
 const anchor = p.side === 'fund' && p.anchor;
+// A ficha guarda o valor como na fonte ("0,63", "2021 a 2025"); em inglês vira "0.63", "2021 to 2025".
+const num = (v: string) => (lang === 'en' ? v.replace(/^(\d+),(\d+)$/, '$1.$2').replace(/^(\d+) a (\d+)$/, '$1 to $2') : v);
 ---
 <article id={id} class:list={['project-card', { anchor }]} aria-labelledby={`${id}-title`}>
   <div class="head">
@@ -76,7 +78,7 @@ const anchor = p.side === 'fund' && p.anchor;
         {p.evidence.map((e) => (
           <div>
             <dt>{e.label[lang]}</dt>
-            <dd>{/^https?:/.test(e.source) ? <a href={e.source} {...ext}>{e.value}</a> : e.value}</dd>
+            <dd>{/^https?:/.test(e.source) ? <a href={e.source} {...ext}>{num(e.value)}</a> : num(e.value)}</dd>
           </div>
         ))}
       </dl>

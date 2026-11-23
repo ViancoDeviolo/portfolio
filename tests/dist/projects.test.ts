@@ -51,6 +51,12 @@ describe('cards de projeto', () => {
       for (const r of p.repo.links ?? []) expect($(`#${p.id} a[href=${r.url}]`).text()).toContain(r.label[lang]);
     }
 
+    // decimal no formato do idioma; nenhum valor de evidência em português na página em inglês
+    expect($('#calculadoras dd').text()).toBe(lang === 'pt' ? '0,63 0,62' : '0.63 0.62');
+    expect($('#analitic-blitz dd').text()).toContain(lang === 'pt' ? '2021 a 2025' : '2021 to 2025');
+    expect($('#arapuca dl').text()).toContain(lang === 'pt' ? 'tentativas em 24 h' : 'attempts in 24 h');
+    if (lang === 'en') expect($('.evidence dd').text()).not.toMatch(/\b(a|em)\b|\d,\d/);
+
     const videos = $('video').nodes;
     expect(videos.length).toBeGreaterThan(0);
     expect(videos.every((v) => 'muted' in v.attrs && 'loop' in v.attrs && 'playsinline' in v.attrs && 'controls' in v.attrs
