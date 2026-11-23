@@ -10,12 +10,12 @@ interface Props {
   lang: Lang;
   title: string;
   description: string;
-  route: keyof typeof ROUTES;
+  route?: keyof typeof ROUTES; // sem rota = página de erro: noindex, sem canonical/alternate/og
 }
 
 const { lang, title, description, route } = Astro.props;
 const site = await getEntry('site', 'site');
-const path = ROUTES[route][lang];
+const path = ROUTES[route ?? 'home'][lang];
 const abs = (p: string) => new URL(p, Astro.site).href;
 ---
 <!doctype html>
@@ -26,10 +26,25 @@ const abs = (p: string) => new URL(p, Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0f0f10" />
-    <link rel="canonical" href={abs(path)} />
-    <link rel="alternate" hreflang="pt-BR" href={abs(ROUTES[route].pt)} />
-    <link rel="alternate" hreflang="en" href={abs(ROUTES[route].en)} />
-    <link rel="alternate" hreflang="x-default" href={abs(ROUTES[route].pt)} />
+    {route ? (
+      <>
+        <link rel="canonical" href={abs(path)} />
+        <link rel="alternate" hreflang="pt-BR" href={abs(ROUTES[route].pt)} />
+        <link rel="alternate" hreflang="en" href={abs(ROUTES[route].en)} />
+        <link rel="alternate" hreflang="x-default" href={abs(ROUTES[route].pt)} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={abs(path)} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content={lang === 'pt' ? 'pt_BR' : 'en_US'} />
+        <meta property="og:locale:alternate" content={lang === 'pt' ? 'en_US' : 'pt_BR'} />
+        <meta property="og:image" content={abs('/og.png')} />
+        <meta property="og:image:alt" content={lang === 'pt' ? 'Lucas Cruz, portfólio de desenvolvimento de software' : 'Lucas Cruz, software development portfolio'} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </>
+    ) : (
+      <meta name="robots" content="noindex" />
+    )}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
   </head>

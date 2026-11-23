@@ -43,3 +43,24 @@ it('JS total abaixo de 15 KB', () => {
 it('o build publica o _headers com a CSP', () => {
   expect(readFileSync('dist/_headers', 'utf8')).toContain('Content-Security-Policy');
 });
+
+it('404.html existe, com noindex e links para as duas home', () => {
+  const { html } = load('404.html');
+  expect(html).toContain('<meta name="robots" content="noindex"');
+  const hrefs = tags(html, 'a').map((a) => a.href);
+  expect(hrefs).toContain('/');
+  expect(hrefs).toContain('/en/');
+  expect(tags(html, 'h1')).toHaveLength(1);
+});
+
+describe.each(['index.html', 'en/index.html', 'privacidade/index.html', 'en/privacy/index.html', 'termos/index.html', 'en/terms/index.html'])('Open Graph %s', (file) => {
+  const { html } = load(file);
+  const og = (p: string) => html.match(new RegExp(`<meta (?:property|name)="${p}" content="([^"]*)"`))?.[1];
+  it('tags completas, URLs absolutas e do próprio site', () => {
+    for (const p of ['og:title', 'og:description', 'og:url', 'og:locale', 'og:locale:alternate', 'og:image', 'og:image:alt']) expect(og(p), p).toBeTruthy();
+    expect(og('og:type')).toBe('website');
+    expect(og('twitter:card')).toBe('summary_large_image');
+    for (const p of ['og:url', 'og:image']) expect(new URL(og(p)!).origin, p).toBe(SITE_ORIGIN);
+    expect(og('og:url')).toBe(resourceUrls(html, ['canonical'])[0]);
+  });
+});
