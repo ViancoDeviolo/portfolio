@@ -29,6 +29,7 @@ export const numbersIn = (texts: string[]): string[] =>
     .map((s) => ALLOWED_TOKENS.reduce((acc, t) => acc.replace(new RegExp(`\\b${esc(t)}\\b(?![.,]\\d)`, 'g'), ' '), s))
     .flatMap((s) => s.match(NUM) ?? []);
 
+// Escopo: só as fichas de projeto; site.yaml e as páginas legais não são varridos.
 // Números em texto PT/EN da ficha (fora de evidence, stack, order e da data `updated`).
 export function numbersInProse(p: Record<string, any>): string[] {
   const { evidence, stack, updated, order, ...prose } = p;
