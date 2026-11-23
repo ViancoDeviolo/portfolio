@@ -38,5 +38,8 @@ it('o matcher enxerga elementos (não passa vazio)', () => {
 
 it('JS total abaixo de 15 KB', () => {
   expect(totalJsBytes('dist/_astro')).toBeLessThan(15 * 1024);
+});
+
+it('o build publica o _headers com a CSP', () => {
   expect(readFileSync('dist/_headers', 'utf8')).toContain('Content-Security-Policy');
 });

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 // Parser mínimo do formato do Cloudflare Pages: linha sem recuo = caminho; linha recuada = "Nome: valor".
-export function parseHeaders(src: string): Record<string, Record<string, string>> {
+function parseHeaders(src: string): Record<string, Record<string, string>> {
   const out: Record<string, Record<string, string>> = {};
   let path = '';
   for (const line of src.split(/\r?\n/)) {
