@@ -12,15 +12,13 @@
     "test:dist": "vitest run --project dist",
     "e2e": "playwright test"
   },
-  "dependencies": {
+  "devDependencies": {
     "@astrojs/check": "0.9.12",
+    "@axe-core/playwright": "4.14.0",
+    "@lhci/cli": "0.16.1",
+    "@playwright/test": "1.65.1",
     "astro": "7.4.13",
     "typescript": "6.0.3",
     "vitest": "5.1.1"
-  },
-  "devDependencies": {
-    "@axe-core/playwright": "4.14.0",
-    "@lhci/cli": "0.16.1",
-    "@playwright/test": "1.65.1"
   }
 }
