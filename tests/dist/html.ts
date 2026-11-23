@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { SITE_URL } from '../../astro.config.mjs';
 
-// shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant and child (>) combinators
-// ("a b c" checks each outer part is some ancestor; order between ancestors is not enforced).
+// shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant and child (>) combinators.
+// Selectors split on whitespace, so an attribute value with a space ([alt="a b"]) is unsupported; move to a real parser if a test needs one.
 type Node = { tag: string; attrs: Record<string, string>; start: number; end: number };
 
 const ATTR = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g;
@@ -76,11 +76,12 @@ export function parse(source: string) {
           return p && matches(p, ps) ? [[c, p] as const] : [];
         });
       } else {
+        // a descendant step moves the anchor up to each matching ancestor, so "a > b c" measures ">" from b
         const scopes = nodes.filter((n) => matches(n, s));
-        pairs = pairs.filter(([c]) => scopes.some((a) => inside(a, c)));
+        pairs = pairs.flatMap(([c, a]) => scopes.filter((sc) => inside(sc, a)).map((sc) => [c, sc] as const));
       }
     }
-    const found = pairs.map(([c]) => c);
+    const found = [...new Set(pairs.map(([c]) => c))];
     return {
       length: found.length,
       attr: (name: string) => found[0]?.attrs[name.toLowerCase()],
@@ -118,6 +119,6 @@ export function resourceUrls(html: string, rels?: string[]): string[] {
 // <a> com href absoluto http(s) para outra origem que o próprio site.
 export function externalLinks(html: string, site = SITE_URL): { href: string; rel?: string }[] {
   return tags(html, 'a')
-    .filter((a) => /^https?:\/\//i.test(a.href ?? '') && new URL(a.href).origin !== new URL(site).origin)
+    .filter((a) => /^https?:\/\//i.test(a.href ?? '') && URL.parse(a.href)?.origin !== new URL(site).origin) // URL inválida conta como externa
     .map((a) => ({ href: a.href, rel: a.rel }));
 }

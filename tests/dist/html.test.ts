@@ -23,3 +23,18 @@ describe('combinador filho', () => {
     expect($('main section').length).toBe(2);
   });
 });
+
+describe('combinador filho depois de descendente', () => {
+  const $ = parse('<ol><li><p><a id="x"></a></p></li></ol><ul><li><a id="y"></a></li></ul><div><ol><li><a id="z"></a></li></ol></div>');
+
+  it('"a > b c" mede o ">" a partir de b, não de c', () => {
+    expect($('ol > li a').nodes.map((n) => n.attrs.id)).toEqual(['x', 'z']);
+    expect($('div > ol a').nodes.map((n) => n.attrs.id)).toEqual(['z']);
+    expect($('ul > li a').nodes.map((n) => n.attrs.id)).toEqual(['y']);
+  });
+
+  it('ordem entre ancestrais conta e sem repetidos', () => {
+    expect($('li ol a').length).toBe(0);
+    expect($('ol li a').length).toBe(2);
+  });
+});

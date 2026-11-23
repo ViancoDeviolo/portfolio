@@ -14,9 +14,9 @@ describe.each([
   it('fluxo em 3 passos, sem logos, passo 3 aponta para Fundamentos', () => {
     expect($('#workflow ol > li').length).toBe(3);
     expect($('#workflow img').length).toBe(0);
-    expect($('#workflow ol > li').nodes.length).toBe(3);
+    // dentro da lista e depois do início do 3º (e último) item: o link está no passo 3, não no rodapé da seção
     const third = $('#workflow ol > li').nodes[2];
-    expect($('#workflow a[href=#fundamentals]').nodes.some((a) => a.start > third.start)).toBe(true);
+    expect($('#workflow ol > li a[href=#fundamentals]').nodes.some((a) => a.start > third.start)).toBe(true);
   });
 
   it('stack sem barras de nível nem logos', () => {
