@@ -41,12 +41,12 @@
 ## 3. Mídia: fotos e vídeos dos projetos
 
 - [x] **[obrigatório] Remover metadados EXIF das fotos** (podem conter GPS da sua casa e modelo do celular). Verificar com `exiftool` antes de publicar. — `tests/unit/media.test.ts` confere ausência de EXIF/XMP com sharp, sem exiftool; vídeos com `-map_metadata -1`
-- [ ] **[obrigatório] Revisar cada gravação de tela quadro a quadro** antes de publicar: (Lucas: confirmação vídeo a vídeo; borrões aplicados em `scripts/prepare-media.sh`)
+- [x] **[obrigatório] Revisar cada gravação de tela quadro a quadro** antes de publicar: — Lucas viu os 6 vídeos publicados e as prévias dos borrões e aprovou em 2026-11-22; contact sheets inspecionadas na Task 5; borrões em `scripts/prepare-media.sh`
   - NFE Hub: CPF/CNPJ, nomes e endereços de clientes da loja, chaves de NF-e, certificados → borrar ou usar dados fictícios
   - Analitic Blitz: saldo, número de conta, chaves de API da Binance/XP
   - Arapuca / EasyFood / qualquer um: tokens, `.env`, URLs internas, abas abertas, notificações
 - [x] Vídeos sem trilha de áudio (evita gravar conversa ou notificação por engano). — `tests/unit/media.test.ts` ("sem áudio")
-- [ ] Se aparecer colega de equipe (foto/nome), ter o ok da pessoa. (Lucas: ok da pessoa, ver handle no print easyfood-adrs)
+- [x] Se aparecer colega de equipe (foto/nome), ter o ok da pessoa. — o handle "ViancoDeviolo" no print easyfood-adrs é do próprio Lucas (confirmado em 2026-11-22); trechos do Arapuca vêm do pitch da equipe e estão creditados nos Termos
 
 ## 4. Acessibilidade — meta WCAG 2.2 nível AA
 
@@ -82,4 +82,4 @@
 
 - [x] Lighthouse ≥ 95 em Performance, Acessibilidade, Boas práticas e SEO — nas duas línguas, mobile e desktop. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, home e política nas duas línguas, todas as categorias 100
 - [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
-- [ ] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. (textos legais revisados em 2026-11-23; falta cada vídeo, Lucas)
+- [x] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. — textos legais revisados em 2026-11-23 e vídeos em 2026-11-22
