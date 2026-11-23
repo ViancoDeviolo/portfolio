@@ -148,6 +148,34 @@ a {
   text-transform: uppercase;
 }
 
+/* Lista rótulo → valor com filetes (Stack, Contato). */
+.rows {
+  margin: 0;
+}
+
+.rows .row {
+  display: grid;
+  gap: var(--s-2);
+  padding-block: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+
+.rows .row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.rows dd {
+  margin: 0;
+}
+
+@media (min-width: 48rem) {
+  .rows .row {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--s-5);
+    align-items: baseline;
+  }
+}
+
 .skip-link {
   position: absolute;
   top: var(--s-2);

@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Section from './Section.astro';
+import ProjectCard from './ProjectCard.astro';
+import BuildingCard from './BuildingCard.astro';
+import Workflow from './Workflow.astro';
+import Stack from './Stack.astro';
+import About from './About.astro';
+import Contact from './Contact.astro';
+import { getCollection, getEntry } from 'astro:content';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { name, tagline } = (await getEntry('site', 'site'))!.data;
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const side = (s: 'fund' | 'ia') => projects.filter((p) => p.data.side === s);
+---
+<Base lang={lang} title={name} description={tagline[lang]} route="home">
+  <Hero lang={lang} />
+  <Section id="fundamentals" lang={lang}>
+    <div class="cards">
+      {side('fund').map((p) => <ProjectCard id={p.id} p={p.data} lang={lang} />)}
+      <BuildingCard lang={lang} />
+    </div>
+  </Section>
+  <Section id="ai" lang={lang} accent="ia">
+    <div class="cards">
+      {side('ia').map((p) => <ProjectCard id={p.id} p={p.data} lang={lang} />)}
+    </div>
+  </Section>
+  <Workflow lang={lang} />
+  <Stack lang={lang} />
+  <About lang={lang} />
+  <Contact lang={lang} />
+</Base>

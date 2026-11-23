@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant combinator only
+// shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant and child (>) combinators
 // ("a b c" checks each outer part is some ancestor; order between ancestors is not enforced).
 type Node = { tag: string; attrs: Record<string, string>; start: number; end: number };
 
@@ -28,6 +28,8 @@ function matches(n: Node, sel: string): boolean {
   }
   return true;
 }
+
+const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
 
 function closeOf(html: string, tag: string, from: number): number {
   const re = new RegExp(String.raw`<(/?)${tag}\b[^>]*>`, 'gi');
@@ -57,16 +59,27 @@ export function parse(source: string) {
     start: m.index! + m[0].length,
     end: -1,
   }));
-  const end = (n: Node) => (n.end < 0 ? (n.end = closeOf(html, n.tag, n.start)) : n.end);
+  const end = (n: Node) => (n.end < 0 ? (n.end = VOID.has(n.tag) ? n.start : closeOf(html, n.tag, n.start)) : n.end);
+  const inside = (a: Node, c: Node) => a.start < c.start && c.start < end(a);
+  const parentOf = (c: Node) => nodes.findLast((a) => a.start < c.start && inside(a, c));
   const $ = (sel: string) => {
-    const [last, ...outer] = sel.trim().split(/\s+/).reverse();
-    const found = outer.reduce(
-      (acc, s) => {
+    const [last, ...outer] = sel.trim().split(/\s*(>)\s*|\s+/).filter(Boolean).reverse();
+    // each candidate carries an anchor: the element a child combinator is measured from
+    let pairs = nodes.filter((n) => matches(n, last)).map((n) => [n, n] as const);
+    for (let i = 0; i < outer.length; i++) {
+      const s = outer[i];
+      if (s === '>') {
+        const ps = outer[++i];
+        pairs = pairs.flatMap(([c, a]) => {
+          const p = parentOf(a);
+          return p && matches(p, ps) ? [[c, p] as const] : [];
+        });
+      } else {
         const scopes = nodes.filter((n) => matches(n, s));
-        return acc.filter((c) => scopes.some((a) => a.start < c.start && c.start < end(a)));
-      },
-      nodes.filter((n) => matches(n, last)),
-    );
+        pairs = pairs.filter(([c]) => scopes.some((a) => inside(a, c)));
+      }
+    }
+    const found = pairs.map(([c]) => c);
     return {
       length: found.length,
       attr: (name: string) => found[0]?.attrs[name.toLowerCase()],

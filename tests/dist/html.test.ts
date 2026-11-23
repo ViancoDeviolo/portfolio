@@ -14,3 +14,12 @@ describe('helper de HTML', () => {
     expect($('p').length).toBe(3);
   });
 });
+
+describe('combinador filho', () => {
+  const $ = parse('<main><img src="x"><section id="a"><section id="b"></section></section></main><section id="c"></section>');
+
+  it('só filhos diretos', () => {
+    expect($('main > section').nodes.map((n) => n.attrs.id)).toEqual(['a']);
+    expect($('main section').length).toBe(2);
+  });
+});

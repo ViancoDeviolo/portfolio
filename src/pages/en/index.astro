@@ -1,25 +1,4 @@
 ---
-import Base from '../../layouts/Base.astro';
-import Hero from '../../components/Hero.astro';
-import Section from '../../components/Section.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import BuildingCard from '../../components/BuildingCard.astro';
-import { getCollection, getEntry } from 'astro:content';
-const { name, tagline } = (await getEntry('site', 'site'))!.data;
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const side = (s: 'fund' | 'ia') => projects.filter((p) => p.data.side === s);
+import Home from '../../components/Home.astro';
 ---
-<Base lang="en" title={name} description={tagline.en} route="home">
-  <Hero lang="en" />
-  <Section id="fundamentals" lang="en">
-    <div class="cards">
-      {side('fund').map((p) => <ProjectCard id={p.id} p={p.data} lang="en" />)}
-      <BuildingCard lang="en" />
-    </div>
-  </Section>
-  <Section id="ai" lang="en" accent="ia">
-    <div class="cards">
-      {side('ia').map((p) => <ProjectCard id={p.id} p={p.data} lang="en" />)}
-    </div>
-  </Section>
-</Base>
+<Home lang="en" />
