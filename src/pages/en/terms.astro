@@ -1,0 +1,24 @@
+---
+import Legal from '../../layouts/Legal.astro';
+import Email from '../../components/Email.astro';
+import { ROUTES } from '../../lib/i18n';
+---
+<Legal lang="en" route="terms" title="Terms of use" description="Authorship of the content, credit for team projects, trademarks and external links in this portfolio.">
+  <h2>Authorship</h2>
+  <p>The text, images and videos in this portfolio are by Lucas Cruz, unless another author is credited.</p>
+
+  <h2>Team projects</h2>
+  <p>Some projects were built by a team. Arapuca HoneyAnt is the work of the Arapuca team, and its project card states my role. Credit for the shared work belongs to everyone who took part.</p>
+
+  <h2>Trademarks</h2>
+  <p>Company, product and technology names mentioned here belong to their owners. Mentioning them does not imply partnership or sponsorship.</p>
+
+  <h2>External links</h2>
+  <p>The site links to third-party pages, such as GitHub and LinkedIn. I do not control their content and am not responsible for it.</p>
+
+  <h2>No warranty</h2>
+  <p>The content is here to present my work and is provided as is, without warranty of any kind. I may correct or change anything here at any time.</p>
+
+  <h2>Privacy and contact</h2>
+  <p>How data is handled is explained in the <a href={ROUTES.privacy.en}>Privacy Policy</a>. Questions about these terms: <Email lang="en" />.</p>
+</Legal>

@@ -74,9 +74,17 @@ test('no topo a troca vai para a raiz do outro idioma', async ({ page }) => {
   await expect(page).toHaveURL(/localhost:4321\/$/);
 });
 
-// Páginas legais chegam na Task 11.
-test.fixme('troca em página legal vai para a contraparte', async ({ page }) => {
+test('troca em página legal vai para a contraparte', async ({ page }) => {
   await page.goto('/en/privacy/');
-  await page.getByRole('link', { name: 'Versão em português' }).click();
+  await page.locator('header').getByRole('link', { name: 'Versão em português' }).click();
   await expect(page).toHaveURL(/\/privacidade\/$/);
+  await page.locator('footer').getByRole('link', { name: 'Termos de uso' }).click();
+  await expect(page).toHaveURL(/\/termos\/$/);
+  await page.locator('header').getByRole('link', { name: 'English version' }).click();
+  await expect(page).toHaveURL(/\/en\/terms\/$/);
+});
+
+test('contato da política monta o e-mail', async ({ page }) => {
+  await page.goto('/privacidade/');
+  await expect(page.locator('main a.email').first()).toHaveAttribute('href', /^mailto:.+@.+/);
 });

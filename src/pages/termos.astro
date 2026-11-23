@@ -1,0 +1,24 @@
+---
+import Legal from '../layouts/Legal.astro';
+import Email from '../components/Email.astro';
+import { ROUTES } from '../lib/i18n';
+---
+<Legal lang="pt" route="terms" title="Termos de uso" description="Autoria do conteúdo, créditos dos projetos em equipe, marcas e links externos deste portfólio.">
+  <h2>Autoria</h2>
+  <p>Os textos, as imagens e os vídeos deste portfólio são de Lucas Cruz, salvo quando outra autoria estiver indicada.</p>
+
+  <h2>Projetos em equipe</h2>
+  <p>Alguns projetos foram feitos em equipe. O Arapuca HoneyAnt é trabalho da equipe do Arapuca, e a ficha do projeto diz qual foi o meu papel. O crédito pelo que foi feito em conjunto é de todos que participaram.</p>
+
+  <h2>Marcas</h2>
+  <p>Nomes de empresas, produtos e tecnologias citados aqui pertencem aos seus donos. Citá-los não indica parceria nem patrocínio.</p>
+
+  <h2>Links externos</h2>
+  <p>O site aponta para páginas de terceiros, como GitHub e LinkedIn. Não controlo o conteúdo dessas páginas e não respondo por ele.</p>
+
+  <h2>Sem garantia</h2>
+  <p>O conteúdo serve para apresentar o meu trabalho e é oferecido como está, sem garantia de qualquer tipo. Posso corrigir ou mudar o que está aqui a qualquer momento.</p>
+
+  <h2>Privacidade e contato</h2>
+  <p>O tratamento de dados está explicado na <a href={ROUTES.privacy.pt}>Política de Privacidade</a>. Dúvidas sobre estes termos: <Email lang="pt" />.</p>
+</Legal>

@@ -1,13 +1,14 @@
 ---
 import { getEntry } from 'astro:content';
 import Section from './Section.astro';
+import Email from './Email.astro';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
 const { contact } = (await getEntry('site', 'site'))!.data;
 const L = {
-  pt: { email: 'E-mail', at: 'arroba', cv: 'Currículo', cvLink: 'Baixar PDF', cvHref: '/lucas-cruz-cv.pdf' },
-  en: { email: 'Email', at: 'at', cv: 'Résumé', cvLink: 'Download PDF', cvHref: '/lucas-cruz-cv-en.pdf' },
+  pt: { email: 'E-mail', cv: 'Currículo', cvLink: 'Baixar PDF', cvHref: '/lucas-cruz-cv.pdf' },
+  en: { email: 'Email', cv: 'Résumé', cvLink: 'Download PDF', cvHref: '/lucas-cruz-cv-en.pdf' },
 }[lang];
 const ext = { rel: 'noopener noreferrer' };
 const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g, '');
@@ -17,9 +18,7 @@ const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g,
     <div class="row">
       <dt class="eyebrow">{L.email}</dt>
       <dd>
-        {/* Sem href até o JS montar o endereço; sem JS vale o texto do noscript. */}
-        <a class="email" data-user={contact.emailUser} data-domain={contact.emailDomain} hidden></a>
-        <noscript>{contact.emailUser} [{L.at}] {contact.emailDomain}</noscript>
+        <Email lang={lang} />
       </dd>
     </div>
     <div class="row">
@@ -37,10 +36,6 @@ const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g,
   </dl>
 </Section>
 
-<script>
-  import '../scripts/email';
-</script>
-
 <style>
   dd {
     font-size: var(--t-h3);
@@ -52,9 +47,5 @@ const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g,
     display: inline-flex;
     align-items: center;
     min-height: var(--target);
-  }
-
-  a[hidden] {
-    display: none;
   }
 </style>

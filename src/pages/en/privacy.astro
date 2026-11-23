@@ -1,0 +1,43 @@
+---
+import Legal from '../../layouts/Legal.astro';
+import Email from '../../components/Email.astro';
+const ext = { rel: 'noopener noreferrer' };
+---
+<Legal lang="en" route="privacy" title="Privacy Policy" description="What data this site handles, why, for how long, and how to exercise your rights under Brazil's LGPD.">
+  <h2>Who is responsible</h2>
+  <p>This site belongs to Lucas Cruz, a private individual. I am the data controller under Brazil's General Data Protection Law (LGPD, Law No. 13,709/2018). For any privacy matter, write to <Email lang="en" />.</p>
+
+  <h2>What the site collects</h2>
+  <p>Nothing. The site has no forms or sign-ups and does not use cookies. It also does not track visits or load scripts or fonts from other companies: everything is served from its own domain.</p>
+
+  <h2>Hosting</h2>
+  <p>The site is hosted on Cloudflare Pages. As with any web server, Cloudflare may record the visitor's IP address, the date and time, the page requested and browser details in technical logs. It uses these logs to deliver the site and protect it from attacks, and handles them under its own <a href="https://www.cloudflare.com/privacypolicy/" {...ext}>privacy policy</a>.</p>
+
+  <h2>If you email me</h2>
+  <p>When you click the address, your email app opens a new message. Sending it happens outside this site. I receive your email address, the name attached to it and whatever you write.</p>
+  <p>I use this data only to reply and do not pass it on to anyone. The legal basis is Art. 7 of the LGPD:</p>
+  <ul>
+    <li>item V, when the conversation is about a job, a project or a proposal you started;</li>
+    <li>item IX (legitimate interest) in other cases, such as a question or a comment: replying to the person who wrote.</li>
+  </ul>
+  <p>Messages are kept in my Gmail inbox, a Google service, which stores them under <a href="https://policies.google.com/privacy?hl=en" {...ext}>Google's privacy policy</a>.</p>
+
+  <h2>How long I keep it</h2>
+  <p>I keep the conversation while it is ongoing. I delete the messages within 12 months of the last exchange, or sooner if you ask. If the conversation leads to a contract, I keep only what the law requires, for as long as it requires.</p>
+
+  <h2>Your rights</h2>
+  <p>Art. 18 of the LGPD lets you ask, at any time, for:</p>
+  <ul>
+    <li>confirmation that I hold your data, and access to it;</li>
+    <li>correction of incomplete, wrong or outdated data;</li>
+    <li>anonymization, blocking or deletion of data that is unnecessary or handled against the law;</li>
+    <li>portability of your data to another provider;</li>
+    <li>information about who your data was shared with;</li>
+    <li>withdrawal of consent, where consent is the basis;</li>
+    <li>objection to processing based on legitimate interest.</li>
+  </ul>
+  <p>To make a request, write to the same address. I reply within 15 days. If you feel your request was not met, you can complain to Brazil's <a href="https://www.gov.br/anpd/" {...ext}>National Data Protection Authority (ANPD)</a>.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If this policy changes, the new version goes up on this page with the date at the top.</p>
+</Legal>

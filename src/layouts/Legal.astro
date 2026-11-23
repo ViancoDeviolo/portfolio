@@ -1,0 +1,57 @@
+---
+import Base from './Base.astro';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  route: 'privacy' | 'terms';
+}
+
+const { lang, title, description, route } = Astro.props;
+// Data fixa: texto legal só muda de data quando o texto muda.
+const updated = lang === 'pt' ? 'Última atualização: 22 de novembro de 2026' : 'Last updated: November 22, 2026';
+---
+<Base lang={lang} title={`${title} · Lucas Cruz`} description={description} route={route}>
+  <article class="wrap legal">
+    <div class="head">
+      <h1>{title}</h1>
+      <p class="updated"><time datetime="2026-11-22">{updated}</time></p>
+    </div>
+    <slot />
+  </article>
+</Base>
+
+<style>
+  .legal {
+    display: grid;
+    gap: var(--s-4);
+    padding-block: var(--s-7) var(--s-9);
+  }
+
+  .head {
+    display: grid;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+
+  .updated {
+    color: var(--muted);
+    font-size: var(--t-small);
+  }
+
+  .legal :global(h2) {
+    margin-top: var(--s-6);
+    font-size: var(--t-h3);
+    letter-spacing: normal;
+  }
+
+  .legal :global(ul) {
+    display: grid;
+    gap: var(--s-2);
+    max-width: var(--measure);
+    margin: 0;
+    padding-left: var(--s-5);
+  }
+</style>

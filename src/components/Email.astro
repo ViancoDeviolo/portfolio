@@ -1,0 +1,26 @@
+---
+import { getEntry } from 'astro:content';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { emailUser, emailDomain } = (await getEntry('site', 'site'))!.data.contact;
+---
+{/* Sem href até o JS montar o endereço; sem JS vale o texto do noscript. */}
+<a class="email" data-user={emailUser} data-domain={emailDomain} hidden></a>
+<noscript>{emailUser} [{lang === 'pt' ? 'arroba' : 'at'}] {emailDomain}</noscript>
+
+<script>
+  import '../scripts/email';
+</script>
+
+<style>
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+  }
+
+  a[hidden] {
+    display: none;
+  }
+</style>
