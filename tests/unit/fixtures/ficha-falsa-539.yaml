@@ -1,0 +1,11 @@
+# Ficha falsa: o resumo do Analitic Blitz diz 537, nunca 539. O teste tem de reprovar.
+order: 1
+side: ia
+title: { pt: Falsa, en: Fake }
+problem: { pt: Teste com 539 testes, en: Test with 539 tests }
+stack: [Python]
+media: []
+evidence:
+  - value: '539'
+    label: { pt: testes, en: tests }
+    source: evidencias/analitic-blitz-pytest-resumo.txt

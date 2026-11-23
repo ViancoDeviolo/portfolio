@@ -1,5 +1,8 @@
 ﻿kit/
 node_modules/
-dist/
+/dist/
 .astro/
 .env
+test-results/
+playwright-report/
+.lighthouseci/

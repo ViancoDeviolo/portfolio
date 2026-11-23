@@ -1,0 +1,88 @@
+# O loader `file` trata cada chave do topo como uma entrada: tudo fica sob `site`.
+site:
+  name: Lucas Cruz
+  tagline:
+    pt: Backend em Java e Python. Construo com IA e sei fazer sem ela.
+    en: Backend in Java and Python. I build with AI, and I can build without it.
+  heroAlt:
+    casual:
+      pt: Lucas de perfil, de braços cruzados, com camiseta preta e calça jeans
+      en: Lucas in profile, arms crossed, wearing a black T-shirt and jeans
+    terno:
+      pt: Lucas de perfil, de braços cruzados, com terno bege e camisa branca
+      en: Lucas in profile, arms crossed, wearing a beige suit and a white shirt
+  livingNote:
+    pt: 'Portfólio vivo: os projetos continuam evoluindo. Atualizado em {date}.'
+    en: 'Living portfolio: the projects keep evolving. Updated {date}.'
+  sections:
+    fundamentals:
+      title: { pt: Fundamentos, en: Fundamentals }
+      intro:
+        pt: Projetos feitos à mão, para mostrar a base por baixo do resto.
+        en: Projects built by hand, to show the groundwork under everything else.
+    ai:
+      title: { pt: Engenharia com IA, en: AI engineering }
+      intro:
+        pt: Em cada projeto, o que a IA fez e o que eu decidi.
+        en: For each project, what the AI did and what I decided.
+    workflow:
+      title: { pt: Como eu trabalho com IA, en: How I work with AI }
+    stack:
+      title: { pt: Stack, en: Stack }
+      intro:
+        pt: Tecnologias que aparecem nos projetos acima.
+        en: Technologies used in the projects above.
+    about:
+      title: { pt: Sobre, en: About }
+    contact:
+      title: { pt: Contato, en: Contact }
+  studyingNow:
+    - pt: Fundamentos de Java e Python do zero.
+      en: Java and Python fundamentals from scratch.
+    - pt: Inteligência computacional e otimização de algoritmos.
+      en: Computational intelligence and algorithm optimization.
+    - pt: Oracle Agentic AI Foundations.
+      en: Oracle Agentic AI Foundations.
+  workflow:
+    - title: { pt: Construo, en: I build }
+      body:
+        pt: Uso Claude e Claude Code com prompts estruturados para arquitetura e código. Reviso tudo o que entra.
+        en: I use Claude and Claude Code with structured prompts for architecture and code. I review everything that goes in.
+    - title: { pt: Valido, en: I check }
+      body:
+        pt: Faço a mesma pergunta ao GPT, ao Gemini e ao Copilot. Quando as respostas divergem, investigo.
+        en: I ask GPT, Gemini and Copilot the same question. When the answers disagree, I dig in.
+    - title: { pt: Decido, en: I decide }
+      body:
+        pt: A decisão é minha, com testes, leitura do código e os fundamentos que mostro na seção Fundamentos.
+        en: The call is mine, based on tests, reading the code and the fundamentals shown in the Fundamentals section.
+  workflowFooter:
+    pt: 'Também monto agentes com CrewAI e Groq. Curso: Oracle Agentic AI Foundations.'
+    en: 'I also build agents with CrewAI and Groq. Course: Oracle Agentic AI Foundations.'
+  stackGroups:
+    - label: { pt: Linguagens, en: Languages }
+      items: [Java, Python, JavaScript]
+    - label: { pt: Backend e dados, en: Backend and data }
+      items: [Node.js, Express, Oracle]
+    - label: { pt: Infraestrutura, en: Infrastructure }
+      items: [Docker, AWS]
+    - label: { pt: Testes, en: Testing }
+      items: [pytest]
+    - label: { pt: Agentes de IA, en: AI agents }
+      items: [CrewAI]
+  about:
+    - pt: Sou analista júnior na MAPFRE. Comecei no atendimento, passei pelo Backoffice Cliente e hoje estou no CNO Broker.
+      en: I'm a junior analyst at MAPFRE. I started in customer service, moved to the Backoffice Cliente team and now work at CNO Broker.
+    - pt: Estudo Engenharia de Computação na UniFECAF, com formatura prevista para 2027.
+      en: I study Computer Engineering at UniFECAF and expect to graduate in 2027.
+    - pt: Quero trabalhar com backend em bancos e seguradoras, usando Java, Spring, PostgreSQL e Python.
+      en: I want to work on backend systems at banks and insurers, with Java, Spring, PostgreSQL and Python.
+  contact:
+    emailUser: lucascruzcorp
+    emailDomain: gmail.com
+    linkedin: https://www.linkedin.com/in/lucas-alves-cruz/
+    github: https://github.com/ViancoDeviolo
+  statusLabels:
+    concluido: { pt: Concluído, en: Completed }
+    em-evolucao: { pt: Em evolução, en: Evolving }
+    em-desenvolvimento: { pt: Em desenvolvimento, en: In development }

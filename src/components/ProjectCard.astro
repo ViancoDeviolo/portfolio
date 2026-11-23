@@ -1,0 +1,316 @@
+---
+import ProjectMedia from './ProjectMedia.astro';
+import StatusBadge from './StatusBadge.astro';
+import Terminal from './Terminal.astro';
+import type { Project } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  id: string;
+  p: Project;
+  lang: Lang;
+}
+
+const { id, p, lang } = Astro.props;
+const L = {
+  pt: {
+    role: 'Meu papel', aiDid: 'O que a IA fez', iDecided: 'O que eu decidi', proves: 'O que este projeto prova',
+    evidence: 'Evidência', private: 'repositório privado', repo: 'Ver repositório', demo: 'Ver demo', next: 'Próximos passos',
+  },
+  en: {
+    role: 'My role', aiDid: 'What AI did', iDecided: 'What I decided', proves: 'What this project proves',
+    evidence: 'Evidence', private: 'private repository', repo: 'View repository', demo: 'View demo', next: 'Next steps',
+  },
+}[lang];
+const ext = { rel: 'noopener noreferrer' };
+const [lead, ...more] = p.media;
+const anchor = p.side === 'fund' && p.anchor;
+// A ficha guarda o valor como na fonte ("0,63", "2021 a 2025"); em inglês vira "0.63", "2021 to 2025".
+const num = (v: string) => (lang === 'en' ? v.replace(/^(\d+),(\d+)$/, '$1.$2').replace(/^(\d+) a (\d+)$/, '$1 to $2') : v);
+---
+<article id={id} class:list={['project-card', { anchor }]} aria-labelledby={`${id}-title`}>
+  <div class="head">
+    <h3 id={`${id}-title`}>{p.title[lang]}</h3>
+    <p class="problem">{p.problem[lang]}</p>
+  </div>
+
+  <div class="visuals">
+    <ProjectMedia media={lead} lang={lang} uid={`${id}-m0`} />
+    {more.length > 0 && (
+      <div class="more">
+        {more.map((m, i) => <ProjectMedia media={m} lang={lang} uid={`${id}-m${i + 1}`} small={more.length > 1} />)}
+      </div>
+    )}
+  </div>
+
+  <div class="body">
+    <ul class="stack" aria-label="Stack" translate="no">
+      {p.stack.map((s) => <li>{s}</li>)}
+    </ul>
+
+    {p.team && (
+      <div class="note">
+        <p class="eyebrow">{L.role}</p>
+        <p>{p.team.role[lang]}</p>
+      </div>
+    )}
+
+    {p.side === 'ia' ? (
+      <div class="split">
+        <div class="note">
+          <p class="eyebrow">{L.aiDid}</p>
+          <p>{p.aiDid[lang]}</p>
+        </div>
+        <div class="note">
+          <p class="eyebrow">{p.iDecidedLabel?.[lang] ?? L.iDecided}</p>
+          <p>{p.iDecided[lang]}</p>
+        </div>
+      </div>
+    ) : (
+      <div class="note">
+        <p class="eyebrow">{L.proves}</p>
+        <p>{p.proves[lang]}</p>
+      </div>
+    )}
+
+    {p.evidence.length > 0 && (
+      <dl class="evidence" aria-label={L.evidence}>
+        {p.evidence.map((e) => (
+          <div>
+            <dt>{e.label[lang]}</dt>
+            <dd>{/^https?:/.test(e.source) ? <a href={e.source} {...ext}>{num(e.value)}</a> : num(e.value)}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    {p.terminal && <Terminal file={p.terminal.file} title={p.terminal.title[lang]} />}
+
+    <div class="links">
+      {'url' in p.repo && <a class="pill" href={p.repo.url} {...ext}>{L.repo}</a>}
+      {'links' in p.repo && p.repo.links.map((r) => <a class="pill" href={r.url} {...ext}>{L.repo} {r.label[lang]}</a>)}
+      {'private' in p.repo && <span class="pill private">{L.private}</span>}
+      {p.demo && <a class="pill" href={p.demo} {...ext}>{L.demo}</a>}
+    </div>
+
+    <div class="foot">
+      <StatusBadge status={p.status} updated={p.updated} lang={lang} />
+      {p.nextSteps && (
+        <div class="next">
+          <p class="eyebrow">{L.next}</p>
+          <ul>{p.nextSteps.map((s) => <li>{s[lang]}</li>)}</ul>
+        </div>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-5);
+    padding: var(--s-5);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--text) 2.5%, transparent);
+  }
+
+  .head,
+  .body,
+  .visuals,
+  .note,
+  .next {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    min-width: 0;
+  }
+
+  .body {
+    gap: var(--s-5);
+  }
+
+  .visuals {
+    gap: var(--s-3);
+  }
+
+  .more {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--s-3);
+    align-items: start;
+  }
+
+  .problem {
+    color: var(--muted);
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    padding: 0.125rem var(--s-2);
+    border: 1px solid var(--line);
+    border-radius: var(--s-1);
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+  }
+
+  .split {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .evidence {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
+    gap: var(--s-4);
+    margin: 0;
+    padding-block: var(--s-4);
+    border-block: 1px solid var(--line);
+  }
+
+  .evidence div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: var(--s-1);
+  }
+
+  dt {
+    color: var(--muted);
+    font-size: var(--t-label);
+    line-height: 1.35;
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--t-h3);
+    font-weight: var(--weight-strong);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--track-h2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  dd a {
+    position: relative;
+    text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  /* Área de toque de 44 px sem mexer no layout: o número tem 29 px de altura. */
+  dd a::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--target) - 100%) / -2) calc(var(--s-2) * -1);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    padding-inline: var(--s-4);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: var(--t-small);
+    font-weight: var(--weight-strong);
+    text-decoration: none;
+    transition: background-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
+  }
+
+  a.pill:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.pill:hover {
+      background: color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+  }
+
+  .private {
+    border-color: var(--line);
+    color: var(--muted);
+  }
+
+  .foot {
+    display: grid;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+
+  .next {
+    color: var(--muted);
+    font-size: var(--t-small);
+  }
+
+  .next ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  @media (min-width: 40rem) {
+    .split {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Card largo: o âncora e o último card sozinho na linha. Mídia à direita, a ordem do DOM continua a do §5.5. */
+  @media (min-width: 64rem) {
+    .anchor,
+    .project-card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      grid-template-areas: 'head visuals' 'body visuals';
+      grid-template-rows: auto 1fr;
+      column-gap: var(--s-7);
+      padding: var(--s-6);
+    }
+
+    .anchor .head,
+    .project-card:last-child:nth-child(odd) .head {
+      grid-area: head;
+    }
+
+    .anchor .visuals,
+    .project-card:last-child:nth-child(odd) .visuals {
+      grid-area: visuals;
+      align-self: start;
+    }
+
+    .anchor .body,
+    .project-card:last-child:nth-child(odd) .body {
+      grid-area: body;
+      align-content: start;
+    }
+  }
+
+  .anchor h3 {
+    font-size: var(--t-h2);
+    letter-spacing: var(--track-h2);
+  }
+
+  .anchor .problem {
+    font-size: var(--t-lead);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.pill:active {
+      transform: none;
+    }
+  }
+</style>

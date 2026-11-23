@@ -1,0 +1,31 @@
+order: 7
+side: ia
+title: { pt: Renovação de Apólices, en: Policy Renewal }
+problem:
+  pt: Cenário fictício do trabalho da disciplina AI Bots & Process Automation. Nele, renovar uma apólice levava horas de trabalho manual e falhava quando o sistema legado recusava a proposta. Agentes com CrewAI montam a proposta e conferem o legado antes da emissão.
+  en: A fictional scenario from coursework for the AI Bots & Process Automation class. In it, renewing an insurance policy took hours of manual work and failed when the legacy system rejected the proposal. CrewAI agents build the proposal and check the legacy rules before issuing.
+aiDid:
+  pt: Claude ajudou a montar e depurar o notebook, incluindo a troca de provedor de LLM e de versões.
+  en: Claude helped build and debug the notebook, including switching LLM providers and versions.
+iDecided:
+  pt: Modelei o AS-IS e o TO-BE, defini os agentes e validei as respostas também no ChatGPT. As regras do legado ficam em Python, numa verificação determinística que escolhe a rota de emissão.
+  en: I modeled the AS-IS and TO-BE, defined the agents and also checked the answers in ChatGPT. The legacy rules live in Python, in a deterministic check that picks the issuing route.
+stack: [Python, CrewAI]
+media:
+  - kind: image
+    src: /media/renovacao-apolices/crewai-comparativo.webp
+    alt:
+      pt: Tabela que compara o processo manual com o automatizado. A renovação automatizada levou 58 s, medido.
+      en: Table comparing the manual and the automated process. The automated renewal took a measured 58 s.
+  - kind: image
+    src: /media/renovacao-apolices/crewai-regras-legado.webp
+    alt:
+      pt: Verificação determinística do legado. Duas coberturas e uma franquia não são aceitas pelo legado Java, e a emissão segue pela API nova.
+      en: Deterministic legacy check. Two coverages and one deductible are not accepted by the Java legacy system, so issuing goes through the newer API.
+evidence:
+  - value: '58 s'
+    label: { pt: tempo medido de uma renovação, en: measured time for one renewal }
+    source: media/renovacao-apolices/crewai-comparativo.webp
+repo: { private: true }
+status: em-evolucao
+updated: '2026-11'

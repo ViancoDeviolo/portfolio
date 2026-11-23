@@ -1,0 +1,38 @@
+---
+const files = import.meta.glob<string>('/src/content/evidencias/*.txt', { query: '?raw', import: 'default', eager: true });
+const { file, title } = Astro.props as { file: string; title: string };
+const body = files[`/src/content/${file}`];
+if (body === undefined) throw new Error(`terminal: arquivo não encontrado: ${file}`);
+---
+<div class="term">
+  <p class="term-title" aria-hidden="true">{title}</p>
+  <pre class="terminal" translate="no" tabindex="0" role="region" aria-label={title}>{body.trimEnd()}</pre>
+</div>
+
+<style>
+  .term {
+    border: 1px solid var(--line);
+    border-radius: var(--s-2);
+    background: rgb(0 0 0 / 0.35);
+    min-width: 0;
+  }
+
+  .term-title {
+    padding: var(--s-2) var(--s-4);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+  }
+
+  .terminal {
+    margin: 0;
+    max-height: 16rem;
+    overflow: auto;
+    padding: var(--s-3) var(--s-4);
+    font-size: var(--t-label);
+    line-height: 1.55;
+    color: var(--text);
+    overscroll-behavior: contain;
+  }
+</style>

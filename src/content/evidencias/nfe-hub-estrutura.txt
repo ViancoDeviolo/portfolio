@@ -1,0 +1,7 @@
+src/
+├── api/            rotas, segurança, dependências
+├── application/    processar_notificacao
+├── core/           models (domínio)
+├── fiscal/         base, nfe_emitter
+├── infra/          certificado, crypto, database, repository
+└── marketplaces/   mercado_livre, oauth, credenciais, tiktok_shop

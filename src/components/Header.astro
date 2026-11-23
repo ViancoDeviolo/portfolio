@@ -1,0 +1,45 @@
+---
+import SkipLink from './SkipLink.astro';
+import LangSwitch from './LangSwitch.astro';
+import { ROUTES, type Lang } from '../lib/i18n';
+const { lang, path, name } = Astro.props as { lang: Lang; path: string; name: string };
+---
+<header class="site-header">
+  <SkipLink lang={lang} />
+  <div class="wrap bar">
+    <a class="name" href={ROUTES.home[lang]}>{name}</a>
+    <LangSwitch lang={lang} path={path} />
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: min(var(--s-4), 5vw);
+    flex-wrap: nowrap;
+    height: var(--header-h);
+  }
+
+  .name {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    font-size: var(--t-lead);
+    font-weight: var(--weight-strong);
+    letter-spacing: var(--track-h2);
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  import '../scripts/focus';
+</script>

@@ -1,0 +1,75 @@
+---
+import { getEntry } from 'astro:content';
+import Section from './Section.astro';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { workflow, workflowFooter, sections } = (await getEntry('site', 'site'))!.data;
+const last = workflow.length - 1;
+---
+<Section id="workflow" lang={lang} accent="ia">
+  <ol class="steps">
+    {
+      workflow.map((s, i) => (
+        <li>
+          <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{s.title[lang]}</h3>
+          <p>{s.body[lang]}</p>
+          {i === last && (
+            <a class="to-fund" href="#fundamentals">
+              {sections.fundamentals.title[lang]}
+              <span aria-hidden="true">↑</span>
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+  <p class="foot">{workflowFooter[lang]}</p>
+</Section>
+
+<style>
+  .steps {
+    display: grid;
+    gap: var(--s-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .num {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .to-fund {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    justify-self: start;
+    min-height: var(--target);
+    color: var(--accent-fund);
+    font-weight: var(--weight-strong);
+  }
+
+  .foot {
+    margin-top: var(--s-7);
+    color: var(--muted);
+  }
+
+  @media (min-width: 52rem) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

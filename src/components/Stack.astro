@@ -1,0 +1,36 @@
+---
+import { getEntry } from 'astro:content';
+import Section from './Section.astro';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { stackGroups } = (await getEntry('site', 'site'))!.data;
+---
+<Section id="stack" lang={lang}>
+  <dl class="rows">
+    {
+      stackGroups.map((g) => (
+        <div class="row">
+          <dt class="eyebrow">{g.label[lang]}</dt>
+          <dd>
+            <ul translate="no">
+              {g.items.map((it) => <li>{it}</li>)}
+            </ul>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</Section>
+
+<style>
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--t-lead);
+  }
+</style>

@@ -1,0 +1,113 @@
+▶ Auth
+  ✔ cadastra usuário sem devolver a senha e guarda apenas o hash (138.1294ms)
+  ✔ recusa e-mail duplicado com 409 (81.5323ms)
+  ✔ valida os campos do cadastro (6.8787ms)
+  ✔ faz login e devolve um JWT com o id do usuário (158.6592ms)
+  ✔ recusa senha errada e e-mail inexistente com a mesma mensagem (228.2715ms)
+  ✔ GET /auth/me exige token válido (162.8047ms)
+  ✔ devolve 400 para JSON malformado (9.087ms)
+✔ Auth (786.8508ms)
+▶ Função serverless optimize-image
+  ✔ redimensiona para 800 px de largura, converte para WebP e reduz o tamanho (293.7679ms)
+  ✔ não aumenta imagens menores que 800 px (30.0067ms)
+  ✔ recusa arquivo que não é imagem (3.6712ms)
+✔ Função serverless optimize-image (328.9472ms)
+▶ Foto do restaurante (upload + processamento assíncrono)
+  ✔ novo restaurante começa sem foto (343.4575ms)
+  ✔ responde 202 PROCESSANDO e a função deixa a imagem PRONTA depois (599.2037ms)
+  ✔ guarda original e otimizada no storage (como na arquitetura da aula) (1034.5744ms)
+  ✔ enquanto processa, GET da imagem responde 404 com mensagem clara (804.5872ms)
+  ✔ exige token e só o dono pode enviar ou remover a foto (310.7942ms)
+  ✔ recusa arquivo que não é imagem, mesmo com Content-Type de imagem (415) (297.075ms)
+  ✔ recusa arquivo acima do limite (413) (611.1718ms)
+  ✔ recusa requisição sem arquivo (400) (316.5758ms)
+  ✔ recusa tipo declarado que não é imagem (415) (300.5704ms)
+[function] falha ao processar originals/617df971-ba26-439e-964e-3b6f5853a983.jpg: Input buffer has corrupt header: VipsJpeg: premature end of JPEG image
+VipsJpeg: JPEG datastream contains no image
+VipsJpeg: premature end of JPEG image
+VipsJpeg: JPEG datastream contains no image
+VipsJpeg: premature end of JPEG image
+  ✔ marca ERRO quando a função não consegue processar o arquivo (309.0866ms)
+  ✔ nova foto substitui a anterior e apaga os arquivos antigos (795.8161ms)
+  ✔ remover a foto volta para NENHUMA e apaga os arquivos (584.3871ms)
+  ✔ remover o restaurante apaga também a foto (569.4427ms)
+✔ Foto do restaurante (upload + processamento assíncrono) (6877.9557ms)
+▶ Storage local
+  ✔ recusa chaves fora do padrão (proteção contra path traversal) (2.1317ms)
+✔ Storage local (2.6923ms)
+▶ Menu (cardápio)
+  ✔ dono adiciona itens e qualquer pessoa consulta o cardápio (350.8338ms)
+  ✔ não deixa outro usuário mexer no cardápio (350.5505ms)
+  ✔ recusa nome repetido no mesmo restaurante (299.573ms)
+  ✔ valida preço positivo (298.3423ms)
+  ✔ atualiza disponibilidade e remove item nunca pedido (301.5878ms)
+  ✔ não remove item que já foi pedido (294.8361ms)
+  ✔ devolve 404 para item de outro restaurante (292.1538ms)
+  ✔ devolve 404 ao consultar cardápio de restaurante inexistente (287.6835ms)
+✔ Menu (cardápio) (2477.1065ms)
+▶ Orders (pedidos)
+  ✔ calcula o total com os preços do banco, ignorando preço enviado pelo cliente (490.0023ms)
+  ✔ junta itens repetidos em uma única linha (439.1158ms)
+  ✔ exige autenticação, itens e endereço (443.1049ms)
+  ✔ recusa item de outro restaurante e item indisponível (445.1202ms)
+  ✔ devolve 404 para restaurante inexistente (443.4516ms)
+  ✔ cliente vê os próprios pedidos e o dono vê os recebidos (450.2455ms)
+  ✔ somente cliente e dono acessam o detalhe do pedido (445.1933ms)
+  ✔ percorre o ciclo de vida completo do pedido (453.2318ms)
+  ✔ cliente só pode cancelar enquanto o pedido está pendente (444.942ms)
+  ✔ filtra pedidos recebidos por status e valida status desconhecido (444.0744ms)
+✔ Orders (pedidos) (4500.1071ms)
+▶ Parte 5 — cadastro de pratos e imagens de perfil e pratos
+  ✔ cadastra prato em POST /restaurants/:restaurantId/dishes sem exigir imagem (201) (339.1125ms)
+  ✔ só o dono do restaurante cadastra pratos nele (403) (293.9495ms)
+  ✔ envia foto para o perfil autenticado e devolve o caminho otimizado (470.6637ms)
+  ✔ a foto vai para o usuário do token, nunca para um id enviado na requisição (338.1783ms)
+  ✔ login também devolve a foto do usuário (528.754ms)
+  ✔ trocar a foto apaga a anterior; remover volta para null (815.2213ms)
+  ✔ envia foto para um prato e o cardápio passa a devolver a imagem (460.5622ms)
+  ✔ só o dono do restaurante troca a foto do prato (403) (366.0263ms)
+  ✔ excluir o prato ou o restaurante apaga as fotos dos pratos (636.1203ms)
+  ✔ enviar imagem sem JWT -> 401 (perfil e prato) (300.6194ms)
+  ✔ enviar arquivo inválido -> 415; arquivo corrompido -> 422; sem arquivo -> 400 (302.3033ms)
+  ✔ enviar imagem acima do limite -> 413 (499.3ms)
+  ✔ enviar imagem para prato inexistente -> 404 (299.0448ms)
+  ✔ caminho de imagem inexistente ou malicioso -> 404 (293.811ms)
+✔ Parte 5 — cadastro de pratos e imagens de perfil e pratos (5945.5737ms)
+▶ Restaurants
+  ✔ GET /restaurants é público e devolve uma lista (326.3893ms)
+  ✔ POST /restaurants exige autenticação (288.8639ms)
+  ✔ cadastra restaurante com o usuário logado como dono (290.2521ms)
+  ✔ valida nome, categoria e faixa da avaliação (291.0988ms)
+  ✔ filtra por busca e categoria e pagina o resultado (302.7408ms)
+  ✔ GET /restaurants/:id devolve 404 para inexistente e 400 para id inválido (285.6228ms)
+  ✔ somente o dono altera ou remove o restaurante (299.4773ms)
+  ✔ GET /restaurants/mine lista apenas os restaurantes do usuário (310.7534ms)
+  ✔ não remove restaurante que já recebeu pedidos (294.3602ms)
+  ✔ remover restaurante sem pedidos remove também o cardápio (432.5923ms)
+✔ Restaurants (3123.9132ms)
+[oracle] banco indisponível: connection refused
+[oracle] banco indisponível: ORA-12514
+[oracle] banco indisponível: ORA-01033: ORACLE initialization or shutdown in progress
+▶ Máquina de estados do pedido
+  ✔ permite apenas as transições previstas para cada papel (1.1731ms)
+✔ Máquina de estados do pedido (2.0514ms)
+▶ Tradução de erros do Oracle
+  ✔ ORA-00001 na constraint de e-mail vira 409 com mensagem amigável (0.5061ms)
+  ✔ ORA-02292 genérico vira 409 e ORA-02290 vira 400 (0.1812ms)
+  ✔ falhas de conexão viram 503 (0.6321ms)
+  ✔ erros desconhecidos passam adiante sem alteração (0.1145ms)
+✔ Tradução de erros do Oracle (1.7099ms)
+▶ Leitor de migrations
+  ✔ separa comandos por '/' e remove comentários de linha (0.2796ms)
+✔ Leitor de migrations (0.4196ms)
+▶ Validação
+  ✔ arredonda casas decimais sem erro de ponto flutuante (0.3823ms)
+✔ Validação (0.7137ms)
+ℹ tests 73
+ℹ suites 12
+ℹ pass 73
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28281.7545

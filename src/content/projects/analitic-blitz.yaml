@@ -1,0 +1,40 @@
+order: 5
+side: ia
+title: { pt: Analitic Blitz, en: Analitic Blitz }
+problem:
+  pt: Um robô que testa estratégias de trading em cripto contra o acaso. No modo ao vivo, ele só acompanha o mercado e não envia ordens.
+  en: A bot that tests crypto trading strategies against chance. In live mode it only watches the market and sends no orders.
+aiDid:
+  pt: Claude escreveu a maior parte do código e dos testes.
+  en: Claude wrote most of the code and the tests.
+iDecided:
+  pt: Traduzi meu material de estudo (Wyckoff, Dow) em regras, escolhi Python e defini o critério de aprovação antes de cada teste. Em 300 operações de 2021 a 2025, a estratégia não ficou acima de 200 sorteios aleatórios e foi reprovada.
+  en: I turned my study material (Wyckoff, Dow) into rules, chose Python and set the pass criterion before each test. Over 300 trades from 2021 to 2025, the strategy did not beat 200 random draws, so it failed.
+stack: [Python, pytest]
+media:
+  - kind: image
+    src: /media/analitic-blitz/analitic-backtest-2021-2025.webp
+    alt:
+      pt: Resultado do backtest de BTCUSDT de 2021 a 2025, com 300 operações, comparação com 200 sorteios aleatórios e o critério pré-registrado. Conclusão, reprovada.
+      en: BTCUSDT backtest result from 2021 to 2025, with 300 trades, a comparison against 200 random draws and the pre-registered criterion. Conclusion, failed.
+  - kind: image
+    src: /media/analitic-blitz/analitic-ao-vivo.webp
+    alt:
+      pt: Modo ao vivo acompanhando BTCUSDT na Binance. O aviso diz que a estratégia foi reprovada contra o acaso e que nenhuma ordem é enviada.
+      en: Live mode watching BTCUSDT on Binance. The notice says the strategy failed against chance and that no order is sent.
+evidence:
+  - value: '98%'
+    label: { pt: cobertura de testes, en: test coverage }
+    source: evidencias/analitic-blitz-pytest-resumo.txt
+  - value: '300'
+    label: { pt: operações no backtest, en: trades in the backtest }
+    source: media/analitic-blitz/analitic-backtest-2021-2025.webp
+  - value: '200'
+    label: { pt: sorteios aleatórios de referência, en: random draws as baseline }
+    source: media/analitic-blitz/analitic-backtest-2021-2025.webp
+  - value: '2021 a 2025'
+    label: { pt: período do backtest, en: backtest period }
+    source: media/analitic-blitz/analitic-backtest-2021-2025.webp
+repo: { url: 'https://github.com/ViancoDeviolo/Analitic-Blitz' }
+status: em-evolucao
+updated: '2026-11'

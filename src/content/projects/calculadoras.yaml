@@ -1,0 +1,38 @@
+order: 2
+side: fund
+title: { pt: Calculadoras em Java e Python, en: Java and Python calculators }
+problem:
+  pt: A mesma divisão dá 0,63 em Java e 0,62 em Python. A diferença está no arredondamento.
+  en: The same division gives 0.63 in Java and 0.62 in Python. The gap comes from rounding.
+proves:
+  pt: Arredondamento muda o resultado de uma conta. Por isso dinheiro pede BigDecimal em Java e Decimal em Python.
+  en: Rounding changes the result of a calculation. That is why money calls for BigDecimal in Java and Decimal in Python.
+stack: [Java, Python]
+media:
+  - kind: video
+    src: /media/calculadoras/calculadoras-java-python.mp4
+    poster: /media/calculadoras/calculadoras-java-python-poster.webp
+    alt:
+      pt: As calculadoras em Java e em Python rodando lado a lado no VS Code.
+      en: The Java and Python calculators running side by side in VS Code.
+    description:
+      pt: Duas janelas do VS Code. Nas duas, a calculadora pede dois números e mostra soma, subtração, multiplicação, divisão, resto e potência. Na divisão, Java mostra 0,63 e Python mostra 0,62.
+      en: Two VS Code windows. In both, the calculator asks for two numbers and prints the sum, difference, product, quotient, remainder and power. In the division, Java prints 0.63 and Python prints 0.62.
+  - kind: image
+    src: /media/calculadoras/calculadoras-lado-a-lado.webp
+    alt:
+      pt: Saída das duas calculadoras lado a lado. Na divisão, Java mostra 0,63 e Python mostra 0,62.
+      en: Output of both calculators side by side. In the division, Java prints 0.63 and Python prints 0.62.
+evidence:
+  - value: '0,63'
+    label: { pt: resultado em Java, en: result in Java }
+    source: media/calculadoras/calculadoras-lado-a-lado.webp
+  - value: '0,62'
+    label: { pt: resultado em Python, en: result in Python }
+    source: media/calculadoras/calculadoras-lado-a-lado.webp
+repo:
+  links:
+    - { label: { pt: Java, en: Java }, url: 'https://github.com/ViancoDeviolo/calculadora-java' }
+    - { label: { pt: Python, en: Python }, url: 'https://github.com/ViancoDeviolo/calculadora-python' }
+status: em-evolucao
+updated: '2026-11'

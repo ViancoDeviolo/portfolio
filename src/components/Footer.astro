@@ -1,0 +1,55 @@
+---
+import { ROUTES, type Lang } from '../lib/i18n';
+import LangSwitch from './LangSwitch.astro';
+const { lang, path } = Astro.props as { lang: Lang; path: string };
+const links = [
+  { href: ROUTES.privacy[lang], label: lang === 'pt' ? 'Privacidade' : 'Privacy' },
+  { href: ROUTES.terms[lang], label: lang === 'pt' ? 'Termos de uso' : 'Terms of use' },
+];
+---
+<footer class="site-footer">
+  <div class="wrap">
+    <ul>
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+    </ul>
+    <LangSwitch lang={lang} path={path} />
+  </div>
+</footer>
+
+<style>
+  .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: var(--s-6);
+    color: var(--muted);
+    font-size: var(--t-small);
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a:hover {
+      color: var(--text);
+    }
+  }
+</style>

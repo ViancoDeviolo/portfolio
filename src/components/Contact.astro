@@ -1,0 +1,53 @@
+---
+import { getEntry } from 'astro:content';
+import Section from './Section.astro';
+import Email from './Email.astro';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { contact } = (await getEntry('site', 'site'))!.data;
+const L = {
+  pt: { email: 'E-mail', cv: 'Currículo', cvLink: 'Baixar PDF', cvHref: '/lucas-cruz-cv.pdf' },
+  en: { email: 'Email', cv: 'Résumé', cvLink: 'Download PDF', cvHref: '/lucas-cruz-cv-en.pdf' },
+}[lang];
+const ext = { rel: 'noopener noreferrer' };
+const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g, '');
+---
+<Section id="contact" lang={lang}>
+  <dl class="rows">
+    <div class="row">
+      <dt class="eyebrow">{L.email}</dt>
+      <dd>
+        <Email lang={lang} />
+      </dd>
+    </div>
+    <div class="row">
+      <dt class="eyebrow">LinkedIn</dt>
+      <dd><a href={contact.linkedin} {...ext}>{handle(contact.linkedin)}</a></dd>
+    </div>
+    <div class="row">
+      <dt class="eyebrow">GitHub</dt>
+      <dd><a href={contact.github} {...ext}>{handle(contact.github)}</a></dd>
+    </div>
+    <div class="row">
+      <dt class="eyebrow">{L.cv}</dt>
+      <dd><a href={L.cvHref} download>{L.cvLink}</a></dd>
+    </div>
+  </dl>
+</Section>
+
+<style>
+  dd {
+    font-size: var(--t-h3);
+    font-weight: var(--weight-strong);
+    overflow-wrap: anywhere;
+  }
+
+  /* Alvo de toque cheio só aqui; no meio de um parágrafo o link segue a linha. */
+  a,
+  dd :global(.email:not([hidden])) {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+  }
+</style>

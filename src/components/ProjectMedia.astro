@@ -1,0 +1,180 @@
+---
+import { Picture } from 'astro:assets';
+import type { Project } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  media: Project['media'][number];
+  lang: Lang;
+  uid: string;
+  small?: boolean; // miniatura na grade .more do card
+}
+
+// Prints moram em src/assets/media para o Astro gerar AVIF/WebP responsivos; a ficha continua com '/media/<projeto>/<arquivo>.webp'.
+const prints = import.meta.glob<ImageMetadata>('/src/assets/media/*/*.webp', { import: 'default' });
+// Pôsteres ficam em public/ (URL estável); o import só lê largura e altura para reservar o espaço do vídeo.
+const posters = import.meta.glob<ImageMetadata>('/public/media/*/*-poster.webp', { import: 'default' });
+
+const { media, lang, uid, small = false } = Astro.props;
+const L = {
+  pt: { pause: 'Pausar vídeo', desc: 'O que o vídeo mostra' },
+  en: { pause: 'Pause video', desc: 'What the video shows' },
+}[lang];
+const sizes = small
+  ? '(min-width: 64rem) 300px, (min-width: 40rem) 45vw, calc(100vw - 4rem)'
+  : '(min-width: 64rem) 640px, calc(100vw - 4rem)';
+const print = media.kind === 'image' ? await prints[`/src/assets${media.src}`]?.() : undefined;
+if (media.kind === 'image' && !print) throw new Error(`mídia: print não encontrado em src/assets${media.src}`);
+const poster = media.kind === 'video' ? await posters[`/public${media.poster}`]?.() : undefined;
+if (media.kind === 'video' && !poster) throw new Error(`mídia: pôster não encontrado em public${media.poster}`);
+---
+<figure class="media">
+  {media.kind === 'image' ? (
+    <Picture src={print!} alt={media.alt[lang]} formats={['avif', 'webp']} fallbackFormat="webp" widths={[400, 800, 1200]} sizes={sizes}
+      loading="lazy" decoding="async" />
+  ) : (
+    <>
+      <div class="frame">
+        {/* Pôster como <img> lazy sob o vídeo: o atributo poster baixaria todos os pôsteres de imediato. Funciona sem JS. */}
+        <img class="poster" src={media.poster} width={poster!.width} height={poster!.height} alt="" loading="lazy" decoding="async" />
+        <video src={media.src} width={poster!.width} height={poster!.height} muted loop playsinline controls
+          preload="none" data-autoplay aria-label={media.alt[lang]} aria-describedby={`${uid}-desc`} />
+      </div>
+      <div class="video-bar">
+        <button type="button" class="video-toggle" aria-label={L.pause} aria-pressed="true" hidden>
+          <span class="glyph" aria-hidden="true"></span>
+        </button>
+        <details>
+          <summary>{L.desc}</summary>
+          <p id={`${uid}-desc`}>{media.description[lang]}</p>
+        </details>
+      </div>
+    </>
+  )}
+</figure>
+
+<script>
+  import '../scripts/videos';
+</script>
+
+<style>
+  .media {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    min-width: 0;
+  }
+
+  .media :global(img),
+  video {
+    width: 100%;
+    border-radius: var(--s-2);
+    border: 1px solid var(--line);
+    background: rgb(0 0 0 / 0.35);
+    accent-color: var(--accent);
+  }
+
+  .frame {
+    display: grid;
+  }
+
+  .frame > * {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+
+  /* O vídeo (opaco quando tem quadro) cobre o pôster; antes disso o pôster aparece por baixo. */
+  .frame video {
+    background: transparent;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .media :global(img.poster) {
+    height: auto;
+    border-color: transparent;
+  }
+
+  .video-bar {
+    display: flex;
+    align-items: start;
+    gap: var(--s-3);
+    font-size: var(--t-small);
+  }
+
+  .video-toggle {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: var(--target);
+    height: var(--target);
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
+  }
+
+  /* Tocando: duas barras de pausa. Pausado (aria-pressed=true): triângulo de play. */
+  .glyph {
+    width: 0.75rem;
+    height: 0.8rem;
+    border-inline: 0.25rem solid currentColor;
+  }
+
+  .video-toggle[aria-pressed='true'] .glyph {
+    width: 0.7rem;
+    border: 0;
+    background: currentColor;
+    clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+  }
+
+  .video-toggle[hidden] {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .video-toggle:hover {
+      border-color: var(--text);
+    }
+  }
+
+  .video-toggle:active {
+    transform: scale(0.97);
+  }
+
+  details {
+    flex: 1 1 0;
+    min-width: 0;
+    color: var(--muted);
+  }
+
+  summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--dur-hover) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    summary:hover {
+      text-decoration-color: var(--accent);
+    }
+  }
+
+  details p {
+    padding-bottom: var(--s-2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-toggle:active {
+      transform: none;
+    }
+  }
+</style>
