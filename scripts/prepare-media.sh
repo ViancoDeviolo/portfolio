@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Gera public/media (vídeos e pôsteres), src/assets/media (prints) e src/assets/dupla a partir de kit/media (git-ignored). Idempotente; rodar da raiz do repo.
 set -euo pipefail
+[ -d kit/media ] || { echo "kit/media não encontrado: rode da raiz do repo, com o kit copiado" >&2; exit 1; }
 FF="ffmpeg -y -hide_banner -loglevel error"
 SKIP="banco-java/banco-java-completo.mp4" # longo demais para loop; não publicado
 

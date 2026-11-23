@@ -1,0 +1,2 @@
+# Scripts de shell com LF mesmo com core.autocrlf=true (um clone novo no Windows quebraria o bash).
+*.sh text eol=lf

@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import sharp from 'sharp'; // transitiva (vem com o Astro); sem dependência nova
 import { describe, expect, it } from 'vitest';
 import { allProjectMedia } from './evidence-check';
@@ -14,7 +14,8 @@ const images = [...ls('public/media', '.webp'), ...ls('src/assets/media', '.webp
 
 describe('mídia publicada', () => {
   it('existem vídeos e imagens (script rodou)', () => {
-    expect(videos.length).toBe(6);
+    expect(videos.length).toBeGreaterThan(0);
+    expect(videos.length).toBe(allProjectMedia().filter((m) => m.kind === 'video').length); // nenhum vídeo sobrando ou faltando
     expect(images.length).toBeGreaterThan(0);
     expect(existsSync('src/assets/dupla/casual.png') && existsSync('src/assets/dupla/terno.png')).toBe(true);
   });
@@ -38,6 +39,8 @@ describe('mídia publicada', () => {
     const m = await sharp(img).metadata();
     expect(m.exif).toBeUndefined();
     expect(m.xmp).toBeUndefined();
+    // o sharp pode não ler XMP guardado em iTXt do PNG; procura o pacote nos bytes, em qualquer formato
+    expect(readFileSync(img).includes('x:xmpmeta')).toBe(false);
   });
   it('toda mídia das fichas existe', () => {
     for (const m of allProjectMedia()) {

@@ -5,8 +5,9 @@ import { chromium } from '@playwright/test';
 const PAGES = { '/': 'dist/lucas-cruz-cv.pdf', '/en/': 'dist/lucas-cruz-cv-en.pdf' };
 
 const server = await preview({ root: '.', logLevel: 'warn', server: { host: '127.0.0.1', port: 4399 } });
-const browser = await chromium.launch();
+let browser;
 try {
+  browser = await chromium.launch(); // dentro do try: se falhar, o preview ainda é encerrado
   const page = await browser.newPage();
   await page.emulateMedia({ media: 'print' });
   for (const [route, path] of Object.entries(PAGES)) {
@@ -17,6 +18,6 @@ try {
     console.log(`PDF: ${path}`);
   }
 } finally {
-  await browser.close();
+  await browser?.close();
   await server.stop();
 }
