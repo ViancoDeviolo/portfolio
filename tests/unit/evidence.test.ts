@@ -33,7 +33,44 @@ describe('nenhum número sem origem', () => {
 
   it('reprova número no rótulo diferente do valor (539 testes vs 537)', () => {
     const errs = checkData(ficha('x', [{ value: '537', label: l('539 testes'), source: TXT }]), root);
-    expect(errs).toContain('número "539" no rótulo sem estar no valor "537"');
+    expect(errs).toContain('número "539" no rótulo sem estar no valor "537" nem na fonte');
+  });
+
+  it('aceita número do rótulo que está na mesma fonte e o conta para a prosa (537 em 158.83s)', () => {
+    const ev = [{ value: '537', label: l('testes em 158.83s'), source: TXT }];
+    expect(checkData(ficha('537 testes em 158.83s', ev), root)).toEqual([]);
+    expect(checkData(ficha('537 testes em 159s', ev), root)).toContain('número "159" na prosa sem evidência');
+  });
+
+  it('aceita rótulo com número da linha da fonte em EVIDENCIAS.md (164 em 24 h), mas não de outra linha', () => {
+    const src = 'media/arapuca/arapuca-ataques-reais.webp';
+    expect(checkData(ficha('164 em 24 horas', [{ value: '164', label: l('em 24 h'), source: src }]), root)).toEqual([]);
+    expect(checkData(ficha('x', [{ value: '164', label: l('em 25 h'), source: src }]), root)).toContain(
+      'número "25" no rótulo sem estar no valor "164" nem na fonte',
+    );
+  });
+
+  it('versão de tecnologia só é liberada inteira (Python 3, não Python 3.13)', () => {
+    expect(checkData(ficha('Python 3 e Java 17', []), root)).toEqual([]);
+    expect(checkData(ficha('Python 3.13', []), root)).toContain('número "3.13" na prosa sem evidência');
+  });
+
+  it('ano de `updated` na prosa também precisa de evidência', () => {
+    expect(checkData({ ...ficha('feito em 2026', []), updated: '2026-11' }, root)).toContain('número "2026" na prosa sem evidência');
+  });
+
+  it("reprova fonte que sai da pasta com '..'", () => {
+    const src = 'evidencias/../../package.json';
+    expect(checkData(ficha('x', [{ value: '1', label: l('x'), source: src }]), root)).toContain(`origem inválida: ${src}`);
+  });
+
+  it('vírgula e ponto decimal são o mesmo número (0.63 na prosa EN, 0,63 na fonte)', () => {
+    const src = 'media/calculadoras/calculadoras-lado-a-lado.webp';
+    const ev = [{ value: '0,63', label: l('Java'), source: src }];
+    expect(checkData({ ...ficha('x', ev), problem: { pt: 'dá 0,63', en: 'prints 0.63' } }, root)).toEqual([]);
+    expect(checkData({ ...ficha('x', ev), problem: { pt: 'dá 0,63', en: 'prints 0.64' } }, root)).toContain(
+      'número "0.64" na prosa sem evidência',
+    );
   });
 
   it('numérico no YAML não quebra e é verificado (valor e team.size)', () => {
