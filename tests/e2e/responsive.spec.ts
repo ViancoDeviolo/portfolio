@@ -28,3 +28,13 @@ for (const base of ['/', '/en/']) {
     expect(b.x + b.width).toBeLessThanOrEqual(320);
   });
 }
+
+test('na impressão o contato mostra o endereço inteiro do LinkedIn e do GitHub', async ({ page }) => {
+  await page.goto('/');
+  await page.emulateMedia({ media: 'print' });
+  const printed = await page.locator('#contact dd a[href^="https://"]').evaluateAll((as) =>
+    as.map((a) => ({ href: (a as HTMLAnchorElement).getAttribute('href'), after: getComputedStyle(a, '::after').content })),
+  );
+  expect(printed.length).toBe(2);
+  for (const p of printed) expect(p.after).toBe(`"${p.href}"`);
+});
