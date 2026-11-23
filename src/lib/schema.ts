@@ -43,6 +43,7 @@ const sections = Object.fromEntries(
 export const siteSchema = z.object({
   name: str,
   tagline: l10n,
+  heroAlt: z.object({ casual: l10n, terno: l10n }),
   livingNote: l10n,
   sections: z.object(sections),
   studyingNow: z.array(l10n).min(1),

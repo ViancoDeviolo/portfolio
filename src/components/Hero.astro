@@ -7,18 +7,7 @@ import { formatMonthYear } from '../lib/date';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { name, tagline, livingNote, sections } = (await getEntry('site', 'site'))!.data;
-
-const ALT = {
-  casual: {
-    pt: 'Lucas de perfil, de braços cruzados, com camiseta preta e calça jeans',
-    en: 'Lucas in profile, arms crossed, wearing a black T-shirt and jeans',
-  },
-  terno: {
-    pt: 'Lucas de perfil, de braços cruzados, com terno bege e camisa branca',
-    en: 'Lucas in profile, arms crossed, wearing a beige suit and a white shirt',
-  },
-};
+const { name, tagline, heroAlt: ALT, livingNote, sections } = (await getEntry('site', 'site'))!.data;
 // Sizes are the uncropped width: at most 560 px tall is about 420 px wide; on phones about 75vw.
 const sizes = '(min-width: 60rem) 420px, min(75vw, 420px)';
 const glow = { class: 'glow' };
@@ -107,6 +96,8 @@ const glow = { class: 'glow' };
     width: 100%;
     aspect-ratio: 0.45;
     object-fit: cover;
+    -webkit-mask-image: linear-gradient(to top, transparent, #000 10%), var(--fade-x);
+    -webkit-mask-composite: source-in; /* Safari < 15.4: só os nomes prefixados */
     mask-image: linear-gradient(to top, transparent, #000 10%), var(--fade-x);
     mask-composite: intersect;
   }

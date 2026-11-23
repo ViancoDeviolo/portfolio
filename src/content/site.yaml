@@ -4,6 +4,13 @@ site:
   tagline:
     pt: Backend em Java e Python. Construo com IA e sei fazer sem ela.
     en: Backend in Java and Python. I build with AI, and I can build without it.
+  heroAlt:
+    casual:
+      pt: Lucas de perfil, de braços cruzados, com camiseta preta e calça jeans
+      en: Lucas in profile, arms crossed, wearing a black T-shirt and jeans
+    terno:
+      pt: Lucas de perfil, de braços cruzados, com terno bege e camisa branca
+      en: Lucas in profile, arms crossed, wearing a beige suit and a white shirt
   livingNote:
     pt: 'Portfólio vivo: os projetos continuam evoluindo. Atualizado em {date}.'
     en: 'Living portfolio: the projects keep evolving. Updated {date}.'

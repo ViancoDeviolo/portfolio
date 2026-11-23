@@ -1,6 +1,10 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { parse } from 'yaml'; // transitiva (vem com o Astro)
 import { load } from './html';
 import { formatMonthYear } from '../../src/lib/date';
+
+const { heroAlt } = parse(readFileSync('src/content/site.yaml', 'utf8')).site;
 
 describe('capa', () => {
   it.each([
@@ -17,7 +21,7 @@ describe('capa', () => {
     expect($('img[fetchpriority=high]').length).toBe(1); // nenhuma outra
     const imgs = $('.hero img').nodes;
     expect(imgs.length).toBe(2);
-    expect(imgs.every((i) => (i.attrs.alt ?? '').length > 10)).toBe(true);
+    expect(imgs.map((i) => i.attrs.alt)).toEqual([heroAlt.casual[lang], heroAlt.terno[lang]]); // alt vem do site.yaml
     expect(imgs[0].attrs.src).toContain('casual');
     expect(imgs[1].attrs.src).toContain('terno');
     expect($('.hero source[type=image/avif]').length).toBe(2);
