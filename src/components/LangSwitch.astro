@@ -38,6 +38,12 @@ const tag = to === 'en' ? 'en' : 'pt-BR';
   .lang-switch:active {
     transform: scale(0.97);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lang-switch:active {
+      transform: none;
+    }
+  }
 </style>
 
 <script>

@@ -76,6 +76,7 @@ const glow = { class: 'glow' };
 
   .half:focus-visible .glow {
     filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
+    transition: none; /* foco por teclado acende na hora; só o hover do mouse anima */
   }
 
   @media (hover: hover) and (pointer: fine) {
