@@ -13,7 +13,7 @@ const { stackGroups } = (await getEntry('site', 'site'))!.data;
         <div class="row">
           <dt class="eyebrow">{g.label[lang]}</dt>
           <dd>
-            <ul>
+            <ul translate="no">
               {g.items.map((it) => <li>{it}</li>)}
             </ul>
           </dd>

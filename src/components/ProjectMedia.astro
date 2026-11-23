@@ -159,6 +159,13 @@ if (media.kind === 'video' && !poster) throw new Error(`mídia: pôster não enc
     text-decoration: underline;
     text-decoration-color: var(--line);
     text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--dur-hover) ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    summary:hover {
+      text-decoration-color: var(--accent);
+    }
   }
 
   details p {

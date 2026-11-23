@@ -75,6 +75,9 @@ describe('cards de projeto', () => {
     expect(prints.every((i) => i.attrs.src.startsWith('/_astro/') && /\b400w\b/.test(i.attrs.srcset ?? ''))).toBe(true);
     expect($('.project-card picture source[type=image/avif]').length).toBe(prints.length);
 
+    // nomes de tecnologia e saída de terminal não passam pelo tradutor automático
+    expect($('ul.stack[translate=no]').length).toBe(projects.length);
+    expect($('pre.terminal[translate=no]').length).toBe($('pre.terminal').length);
     expect($('pre.terminal').length).toBe(projects.filter((p) => p.terminal).length);
     expect($('pre.terminal[tabindex=0][role=region]').length).toBe($('pre.terminal').length);
 

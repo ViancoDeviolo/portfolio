@@ -6,7 +6,7 @@ if (body === undefined) throw new Error(`terminal: arquivo não encontrado: ${fi
 ---
 <div class="term">
   <p class="term-title" aria-hidden="true">{title}</p>
-  <pre class="terminal" tabindex="0" role="region" aria-label={title}>{body.trimEnd()}</pre>
+  <pre class="terminal" translate="no" tabindex="0" role="region" aria-label={title}>{body.trimEnd()}</pre>
 </div>
 
 <style>
