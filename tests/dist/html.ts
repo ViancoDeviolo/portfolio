@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { SITE_URL } from '../../astro.config.mjs';
 
 // shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant and child (>) combinators
 // ("a b c" checks each outer part is some ancestor; order between ancestors is not enforced).
@@ -92,3 +93,31 @@ export function parse(source: string) {
 }
 
 export const ids = (found: { nodes: Node[] }): string[] => found.nodes.map((n) => n.attrs.id).filter(Boolean);
+
+const tags = (html: string, tag: string) =>
+  [...html.replace(/<!--[\s\S]*?-->/g, '').matchAll(new RegExp(`<${tag}\b([^>]*)>`, 'gi'))].map((m) => parseAttrs(m[1]));
+
+// URLs de recursos carregados (src, srcset, poster, link href). `rels` limita os <link> a esses rel e ignora o resto.
+export function resourceUrls(html: string, rels?: string[]): string[] {
+  const out: string[] = [];
+  const split = (s: string) => s.split(',').map((p) => p.trim().split(/\s+/)[0]).filter(Boolean);
+  for (const a of tags(html, 'link')) {
+    const rel = (a.rel ?? '').toLowerCase();
+    if (a.href && (rels ? rels.includes(rel) : !['canonical', 'alternate'].includes(rel))) out.push(a.href);
+  }
+  if (rels) return out;
+  for (const t of ['script', 'img', 'source', 'video', 'audio', 'iframe', 'embed', 'track'])
+    for (const a of tags(html, t)) {
+      if (a.src) out.push(a.src);
+      if (a.srcset) out.push(...split(a.srcset));
+      if (a.poster) out.push(a.poster);
+    }
+  return out;
+}
+
+// <a> com href absoluto http(s) para outra origem que o próprio site.
+export function externalLinks(html: string, site = SITE_URL): { href: string; rel?: string }[] {
+  return tags(html, 'a')
+    .filter((a) => /^https?:\/\//i.test(a.href ?? '') && !a.href.startsWith(site))
+    .map((a) => ({ href: a.href, rel: a.rel }));
+}

@@ -1,0 +1,33 @@
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import { describe, expect, it } from 'vitest';
+import { externalLinks, load, resourceUrls } from './html';
+import { SITE_URL } from '../../astro.config.mjs';
+
+const PAGES = ['index.html', 'en/index.html', 'privacidade/index.html', 'en/privacy/index.html', 'termos/index.html', 'en/terms/index.html'];
+
+const totalJsBytes = (dir: string) =>
+  readdirSync(dir).filter((f) => f.endsWith('.js')).reduce((n, f) => n + statSync(join(dir, f)).size, 0);
+
+describe.each(PAGES)('superfície %s', (file) => {
+  const { html } = load(file);
+  it('sem script inline nem style', () => {
+    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/);
+    expect(html).not.toMatch(/<style[\s>]|\sstyle="/);
+  });
+  it('nenhum recurso de terceiros', () => {
+    const own = (u: string) => !/^(https?:)?\/\//.test(u) || u.startsWith(SITE_URL);
+    expect(resourceUrls(html).filter((u) => !own(u))).toEqual([]);
+  });
+  it('canonical e alternate só apontam para o próprio site', () => {
+    for (const u of resourceUrls(html, ['canonical', 'alternate'])) expect(u.startsWith(SITE_URL)).toBe(true);
+  });
+  it('links externos com noopener noreferrer', () => {
+    for (const a of externalLinks(html)) expect(a.rel, a.href).toBe('noopener noreferrer');
+  });
+});
+
+it('JS total abaixo de 15 KB', () => {
+  expect(totalJsBytes('dist/_astro')).toBeLessThan(15 * 1024);
+  expect(readFileSync('dist/_headers', 'utf8')).toContain('Content-Security-Policy');
+});
