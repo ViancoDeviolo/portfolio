@@ -43,13 +43,17 @@ for (const { base, other, at } of cases) {
       const videos = page.locator('video');
       expect(await videos.count()).toBeGreaterThan(0);
       for (const v of await videos.all()) {
-        await expect(v).toHaveAttribute('poster', /-poster\.webp$/);
+        await expect(v).not.toHaveAttribute('poster');
+        const img = v.locator('xpath=preceding-sibling::img[@class="poster"]');
+        await expect(img).toHaveAttribute('src', /-poster\.webp$/);
+        await v.scrollIntoViewIfNeeded();
+        await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
         await expect(v).toHaveAttribute('controls', '');
         expect(await v.evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
       }
       await expect(page.locator('.video-toggle').first()).toBeHidden();
       // o pôster responde: sem isso o vídeo sem JS seria um retângulo vazio
-      const poster = await videos.first().getAttribute('poster');
+      const poster = await page.locator('img.poster').first().getAttribute('src');
       expect((await page.request.get(poster!)).status()).toBe(200);
     });
   });

@@ -55,7 +55,7 @@ jobs:
         with:
           name: dist
           path: dist
-      - run: npx playwright install --with-deps
+      - run: npx playwright install --with-deps chromium firefox
       - run: npm run e2e
 
   lighthouse:

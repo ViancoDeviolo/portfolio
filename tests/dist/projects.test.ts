@@ -54,13 +54,17 @@ describe('cards de projeto', () => {
     const videos = $('video').nodes;
     expect(videos.length).toBeGreaterThan(0);
     expect(videos.every((v) => 'muted' in v.attrs && 'loop' in v.attrs && 'playsinline' in v.attrs && 'controls' in v.attrs
-      && v.attrs.preload === 'none' && v.attrs.poster && 'data-autoplay' in v.attrs)).toBe(true);
+      && v.attrs.preload === 'none' && !v.attrs.poster && 'data-autoplay' in v.attrs)).toBe(true);
+    // pôster é <img> lazy sob o vídeo (o atributo poster baixaria todos de imediato); funciona sem JS
+    const posters = $('.frame img.poster').nodes;
+    expect(posters.length).toBe(videos.length);
+    expect(posters.every((i) => /-poster\.webp$/.test(i.attrs.src) && i.attrs.loading === 'lazy' && i.attrs.alt === '' && i.attrs.width && i.attrs.height)).toBe(true);
     expect($('video[autoplay]').length).toBe(0); // autoplay só via JS
     expect($('button[aria-pressed]').length).toBe(videos.length);
     expect($('button.video-toggle[aria-label] .glyph[aria-hidden=true]').length).toBe(videos.length);
 
     // prints responsivos: AVIF + WebP gerados pelo Astro, nunca o arquivo original
-    const prints = $('.project-card img').nodes;
+    const prints = $('.project-card img').nodes.filter((i) => i.attrs.class !== 'poster');
     expect(prints.length).toBeGreaterThan(0);
     expect(prints.every((i) => i.attrs.src.startsWith('/_astro/') && /\b400w\b/.test(i.attrs.srcset ?? ''))).toBe(true);
     expect($('.project-card picture source[type=image/avif]').length).toBe(prints.length);

@@ -12,8 +12,9 @@ describe('capa', () => {
     expect(links.nodes.map((n) => n.attrs.href)).toEqual(['#fundamentals', '#ai']); // casual → terno
     expect($('.hero a[href=#fundamentals]').text()).toContain(fund);
     expect($('.hero a[href=#ai]').text()).toContain(ai);
-    expect($('.hero img[fetchpriority=high]').length).toBe(2);
-    expect($('img[fetchpriority=high]').length).toBe(2); // nenhuma outra
+    // só a imagem de LCP (casual) tem prioridade; o plano previa 2, mas 1 é melhor para o LCP
+    expect($('.hero img[fetchpriority=high]').length).toBe(1);
+    expect($('img[fetchpriority=high]').length).toBe(1); // nenhuma outra
     const imgs = $('.hero img').nodes;
     expect(imgs.length).toBe(2);
     expect(imgs.every((i) => (i.attrs.alt ?? '').length > 10)).toBe(true);

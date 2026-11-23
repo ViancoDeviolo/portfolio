@@ -34,8 +34,12 @@ if (media.kind === 'video' && !poster) throw new Error(`mídia: pôster não enc
       loading="lazy" decoding="async" />
   ) : (
     <>
-      <video src={media.src} poster={media.poster} width={poster!.width} height={poster!.height} muted loop playsinline controls
-        preload="none" data-autoplay aria-label={media.alt[lang]} aria-describedby={`${uid}-desc`} />
+      <div class="frame">
+        {/* Pôster como <img> lazy sob o vídeo: o atributo poster baixaria todos os pôsteres de imediato. Funciona sem JS. */}
+        <img class="poster" src={media.poster} width={poster!.width} height={poster!.height} alt="" loading="lazy" decoding="async" />
+        <video src={media.src} width={poster!.width} height={poster!.height} muted loop playsinline controls
+          preload="none" data-autoplay aria-label={media.alt[lang]} aria-describedby={`${uid}-desc`} />
+      </div>
       <div class="video-bar">
         <button type="button" class="video-toggle" aria-label={L.pause} aria-pressed="true" hidden>
           <span class="glyph" aria-hidden="true"></span>
@@ -68,6 +72,27 @@ if (media.kind === 'video' && !poster) throw new Error(`mídia: pôster não enc
     border: 1px solid var(--line);
     background: rgb(0 0 0 / 0.35);
     accent-color: var(--accent);
+  }
+
+  .frame {
+    display: grid;
+  }
+
+  .frame > * {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+
+  /* O vídeo (opaco quando tem quadro) cobre o pôster; antes disso o pôster aparece por baixo. */
+  .frame video {
+    background: transparent;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .media :global(img.poster) {
+    height: auto;
+    border-color: transparent;
   }
 
   .video-bar {

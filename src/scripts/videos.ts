@@ -37,7 +37,7 @@ reduce.addEventListener('change', () => {
 });
 
 for (const v of document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')) {
-  const btn = v.parentElement?.querySelector<HTMLButtonElement>('.video-toggle');
+  const btn = v.closest('figure')?.querySelector<HTMLButtonElement>('.video-toggle');
   v.addEventListener('play', () => {
     delete v.dataset.held;
     btn?.setAttribute('aria-pressed', 'false');
