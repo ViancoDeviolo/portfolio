@@ -43,7 +43,9 @@ const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g,
     overflow-wrap: anywhere;
   }
 
-  a {
+  /* Alvo de toque cheio só aqui; no meio de um parágrafo o link segue a linha. */
+  a,
+  dd :global(.email:not([hidden])) {
     display: inline-flex;
     align-items: center;
     min-height: var(--target);

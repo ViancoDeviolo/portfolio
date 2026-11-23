@@ -3,7 +3,7 @@ import Legal from '../../layouts/Legal.astro';
 import Email from '../../components/Email.astro';
 const ext = { rel: 'noopener noreferrer' };
 ---
-<Legal lang="en" route="privacy" title="Privacy Policy" description="What data this site handles, why, for how long, and how to exercise your rights under Brazil's LGPD.">
+<Legal lang="en" route="privacy" title="Privacy policy" description="What data this site handles, why, for how long, and how to exercise your rights under Brazil's LGPD.">
   <h2>Who is responsible</h2>
   <p>This site belongs to Lucas Cruz, a private individual. I am the data controller under Brazil's General Data Protection Law (LGPD, Law No. 13,709/2018). For any privacy matter, write to <Email lang="en" />.</p>
 
@@ -15,15 +15,18 @@ const ext = { rel: 'noopener noreferrer' };
 
   <h2>If you email me</h2>
   <p>When you click the address, your email app opens a new message. Sending it happens outside this site. I receive your email address, the name attached to it and whatever you write.</p>
-  <p>I use this data only to reply and do not pass it on to anyone. The legal basis is Art. 7 of the LGPD:</p>
+  <p>I use this data only to reply. I do not sell or pass your data on to third parties. The legal basis is Art. 7 of the LGPD:</p>
   <ul>
     <li>item V, when the conversation is about a job, a project or a proposal you started;</li>
     <li>item IX (legitimate interest) in other cases, such as a question or a comment: replying to the person who wrote.</li>
   </ul>
-  <p>Messages are kept in my Gmail inbox, a Google service, which stores them under <a href="https://policies.google.com/privacy?hl=en" {...ext}>Google's privacy policy</a>.</p>
+  <p>Google (Gmail) stores the messages as the processor of my email, under <a href="https://policies.google.com/privacy?hl=en" {...ext}>Google's privacy policy</a>.</p>
+
+  <h2>Data outside Brazil</h2>
+  <p>Cloudflare (hosting) and Google (Gmail) may process this data outside Brazil, under the safeguards each company offers in the policies linked above.</p>
 
   <h2>How long I keep it</h2>
-  <p>I keep the conversation while it is ongoing. I delete the messages within 12 months of the last exchange, or sooner if you ask. If the conversation leads to a contract, I keep only what the law requires, for as long as it requires.</p>
+  <p>I keep the conversation while it is ongoing. I delete the messages from my Gmail inbox and trash within 12 months of the last exchange, or sooner if you ask. If the conversation leads to a contract, I keep only what the law requires, for as long as it requires.</p>
 
   <h2>Your rights</h2>
   <p>Art. 18 of the LGPD lets you ask, at any time, for:</p>
@@ -36,7 +39,7 @@ const ext = { rel: 'noopener noreferrer' };
     <li>withdrawal of consent, where consent is the basis;</li>
     <li>objection to processing based on legitimate interest.</li>
   </ul>
-  <p>To make a request, write to the same address. I reply within 15 days. If you feel your request was not met, you can complain to Brazil's <a href="https://www.gov.br/anpd/" {...ext}>National Data Protection Authority (ANPD)</a>.</p>
+  <p>To make a request, write to the same address, free of charge. I reply within 15 days. If you feel your request was not met, you can complain to Brazil's <a href="https://www.gov.br/anpd/" {...ext}>National Data Protection Authority (ANPD)</a>.</p>
 
   <h2>Changes to this policy</h2>
   <p>If this policy changes, the new version goes up on this page with the date at the top.</p>

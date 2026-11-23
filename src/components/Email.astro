@@ -12,15 +12,3 @@ const { emailUser, emailDomain } = (await getEntry('site', 'site'))!.data.contac
 <script>
   import '../scripts/email';
 </script>
-
-<style>
-  a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--target);
-  }
-
-  a[hidden] {
-    display: none;
-  }
-</style>
