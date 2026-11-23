@@ -37,6 +37,6 @@ const abs = (p: string) => new URL(p, Astro.site).href;
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer lang={lang} />
+    <Footer lang={lang} path={path} />
   </body>
 </html>
