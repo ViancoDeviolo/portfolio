@@ -8,8 +8,9 @@ const halt = (v: HTMLVideoElement) => {
   sys.add(v);
   v.pause();
 };
+// Com o foco nos controles nativos, tocar faz o Chromium escondê-los e o foco cai para o <body>.
 const auto = (v: HTMLVideoElement) => {
-  if (!reduce.matches && !v.dataset.held) v.play().catch(() => {});
+  if (!reduce.matches && !v.dataset.held && !v.matches(':focus')) v.play().catch(() => {});
 };
 
 const io = new IntersectionObserver(
