@@ -13,13 +13,19 @@ const tag = to === 'en' ? 'en' : 'pt-BR';
   .lang-switch {
     display: inline-flex;
     align-items: center;
+    min-width: 0;
     min-height: var(--target);
-    padding-inline: var(--s-4);
+    padding-inline: min(var(--s-4), 5vw); /* 16 px até a fonte crescer demais para 320 px */
     border: 1px solid var(--line);
     border-radius: 999px;
     font-size: var(--t-small);
     font-weight: var(--weight-strong);
+    text-align: center;
+    line-height: var(--lh-heading);
     text-decoration: none;
+    /* Com texto a 200% numa tela de 320 px, "Português" quebra (hifenizado) em vez de vazar do cabeçalho. */
+    hyphens: auto;
+    overflow-wrap: anywhere;
     transition: border-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
   }
 

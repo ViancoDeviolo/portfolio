@@ -24,7 +24,7 @@ const { lang, path, name } = Astro.props as { lang: Lang; path: string; name: st
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--s-4);
+    gap: min(var(--s-4), 5vw);
     flex-wrap: nowrap;
     height: var(--header-h);
   }
