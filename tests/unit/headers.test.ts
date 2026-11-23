@@ -22,6 +22,7 @@ describe('public/_headers', () => {
     expect(h['/*']['Content-Security-Policy']).toBe("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests");
     expect(h['/*']['Strict-Transport-Security']).toBe('max-age=63072000; includeSubDomains; preload');
     expect(h['/*']['X-Content-Type-Options']).toBe('nosniff');
+    expect(h['/*']['X-Frame-Options']).toBe('DENY');
     expect(h['/*']['Referrer-Policy']).toBe('strict-origin-when-cross-origin');
     expect(h['/*']['Permissions-Policy']).toBe('camera=(), microphone=(), geolocation=()');
   });
