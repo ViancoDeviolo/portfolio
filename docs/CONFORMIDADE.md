@@ -15,7 +15,7 @@
 
 ## 1. Páginas legais (PT e EN)
 
-- [ ] **[obrigatório] Política de Privacidade** (`/privacidade`, `/en/privacy`)
+- [x] **[obrigatório] Política de Privacidade** (`/privacidade`, `/en/privacy`) — `tests/dist/legal.test.ts` (itens obrigatórios PT/EN); texto revisado pelo Lucas em 2026-11-23
   - quem é o controlador: Lucas Cruz, contato lucascruzcorp@gmail.com
   - quais dados são tratados (se nenhum: dizer isso explicitamente)
   - finalidade e base legal (art. 7º LGPD) de cada dado
@@ -23,11 +23,13 @@
   - com quem é compartilhado (hospedagem, provedor de formulário, analytics)
   - direitos do titular (art. 18): acesso, correção, eliminação, revogação do consentimento — e como pedir
   - data da última atualização
-- [ ] **Aviso de cookies**: só se algum cookie não essencial for usado. Se não usar, a política diz "este site não usa cookies de rastreamento".
-- [ ] **Termos de uso / aviso legal** (curto): conteúdo do portfólio é do autor; projetos de equipe creditados; links externos sem responsabilidade pelo conteúdo de terceiros.
-- [ ] Links para essas páginas no rodapé de todas as páginas, nos dois idiomas.
+- [x] **Aviso de cookies**: só se algum cookie não essencial for usado. Se não usar, a política diz "este site não usa cookies de rastreamento". — a política diz que o site não usa cookies (`src/pages/privacidade.astro`); sem banner, nada a configurar
+- [x] **Termos de uso / aviso legal** (curto): conteúdo do portfólio é do autor; projetos de equipe creditados; links externos sem responsabilidade pelo conteúdo de terceiros. — `tests/dist/legal.test.ts`; revisado pelo Lucas
+- [x] Links para essas páginas no rodapé de todas as páginas, nos dois idiomas. — `tests/dist/legal.test.ts` ("toda página linka privacidade e termos")
 
 ## 2. Formulário de contato (só se existir)
+
+> Não se aplica: o site não tem formulário (contato por `mailto:` + LinkedIn), então os itens abaixo ficam sem marcar.
 
 - [ ] **[obrigatório]** Coletar o mínimo: nome, e-mail, mensagem. Nada de telefone ou CPF.
 - [ ] **[obrigatório]** Texto curto ao lado do botão dizendo a finalidade ("usarei seu e-mail só para responder a esta mensagem") + link para a política.
@@ -38,46 +40,46 @@
 
 ## 3. Mídia: fotos e vídeos dos projetos
 
-- [ ] **[obrigatório] Remover metadados EXIF das fotos** (podem conter GPS da sua casa e modelo do celular). Verificar com `exiftool` antes de publicar.
-- [ ] **[obrigatório] Revisar cada gravação de tela quadro a quadro** antes de publicar:
+- [x] **[obrigatório] Remover metadados EXIF das fotos** (podem conter GPS da sua casa e modelo do celular). Verificar com `exiftool` antes de publicar. — `tests/unit/media.test.ts` confere ausência de EXIF/XMP com sharp, sem exiftool; vídeos com `-map_metadata -1`
+- [ ] **[obrigatório] Revisar cada gravação de tela quadro a quadro** antes de publicar: (Lucas: confirmação vídeo a vídeo; borrões aplicados em `scripts/prepare-media.sh`)
   - NFE Hub: CPF/CNPJ, nomes e endereços de clientes da loja, chaves de NF-e, certificados → borrar ou usar dados fictícios
   - Analitic Blitz: saldo, número de conta, chaves de API da Binance/XP
   - Arapuca / EasyFood / qualquer um: tokens, `.env`, URLs internas, abas abertas, notificações
-- [ ] Vídeos sem trilha de áudio (evita gravar conversa ou notificação por engano).
-- [ ] Se aparecer colega de equipe (foto/nome), ter o ok da pessoa.
+- [x] Vídeos sem trilha de áudio (evita gravar conversa ou notificação por engano). — `tests/unit/media.test.ts` ("sem áudio")
+- [ ] Se aparecer colega de equipe (foto/nome), ter o ok da pessoa. (Lucas: ok da pessoa, ver handle no print easyfood-adrs)
 
 ## 4. Acessibilidade — meta WCAG 2.2 nível AA
 
-- [ ] **[obrigatório] `alt` em toda imagem**: descritivo nas fotos da dupla e nos prints; `alt=""` em imagens puramente decorativas.
-- [ ] **[obrigatório] Contraste**: texto normal ≥ 4.5:1, texto grande e ícones ≥ 3:1. Conferir laranja `#FF5A1F` e amarelo `#FFC83D` sobre `#0F0F10` e o cinza secundário.
-- [ ] **[obrigatório] Navegação por teclado completa**: Tab passa por tudo em ordem lógica, foco sempre visível (contorno na cor do lado), nada preso, link "Pular para o conteúdo" no topo.
-- [ ] **[obrigatório] `prefers-reduced-motion`**: vídeos não tocam sozinhos e animações ficam desligadas para quem pede.
-- [ ] Vídeos com controle de pausa, nunca piscando mais de 3 vezes por segundo; legenda ou descrição em texto do que o vídeo mostra.
-- [ ] `lang="pt-BR"` / `lang="en"` no `<html>` de cada versão; botão de idioma com nome acessível.
-- [ ] Hierarquia de títulos correta (um `h1` por página, sem pular níveis); landmarks `header`, `nav`, `main`, `footer`.
-- [ ] Alvos de toque ≥ 24×24 px; zoom até 200% sem quebrar layout.
-- [ ] Teste real: leitor de tela (NVDA no Windows) em pelo menos a home e um projeto.
-- [ ] Automático: axe (via Playwright) sem violações + `web-design-guidelines` sem pendências.
+- [x] **[obrigatório] `alt` em toda imagem**: descritivo nas fotos da dupla e nos prints; `alt=""` em imagens puramente decorativas. — axe (`image-alt`) em `tests/e2e/a11y.spec.ts`; alt da capa em `tests/dist/hero.test.ts`
+- [x] **[obrigatório] Contraste**: texto normal ≥ 4.5:1, texto grande e ícones ≥ 3:1. Conferir laranja `#FF5A1F` e amarelo `#FFC83D` sobre `#0F0F10` e o cinza secundário. — axe `color-contrast` (wcag2aa) em `tests/e2e/a11y.spec.ts`, 6 páginas; Lighthouse acessibilidade 100
+- [x] **[obrigatório] Navegação por teclado completa**: Tab passa por tudo em ordem lógica, foco sempre visível (contorno na cor do lado), nada preso, link "Pular para o conteúdo" no topo. — `tests/e2e/keyboard.spec.ts` (skip link, foco visível, sem armadilha, foco fora do cabeçalho)
+- [x] **[obrigatório] `prefers-reduced-motion`**: vídeos não tocam sozinhos e animações ficam desligadas para quem pede. — `tests/e2e/video.spec.ts`
+- [x] Vídeos com controle de pausa, nunca piscando mais de 3 vezes por segundo; legenda ou descrição em texto do que o vídeo mostra. — `tests/e2e/video.spec.ts` (botão de pausa) e resumo "O que o vídeo mostra" em cada vídeo
+- [x] `lang="pt-BR"` / `lang="en"` no `<html>` de cada versão; botão de idioma com nome acessível. — `tests/dist/legal.test.ts` e axe `html-has-lang`
+- [x] Hierarquia de títulos correta (um `h1` por página, sem pular níveis); landmarks `header`, `nav`, `main`, `footer`. — um `h1` por página em `tests/dist/legal.test.ts` e na home; Lighthouse acessibilidade 100
+- [x] Alvos de toque ≥ 24×24 px; zoom até 200% sem quebrar layout. — axe `target-size` (wcag22aa); `tests/e2e/responsive.spec.ts` (44 px e sem rolagem horizontal a 320 px); texto a 200% em `tests/e2e/lang.spec.ts`
+- [ ] Teste real: leitor de tela (NVDA no Windows) em pelo menos a home e um projeto. (Lucas, após o deploy)
+- [x] Automático: axe (via Playwright) sem violações + `web-design-guidelines` sem pendências. — `tests/e2e/a11y.spec.ts` (WCAG 2.2 AA, 6 páginas); `web-design-guidelines` aplicada, ver `.superpowers/sdd/2026-11-22-portfolio-v1/task-16-report.md`
 
 ## 5. Segurança
 
-- [ ] **[obrigatório] Cabeçalhos HTTP** (configurados na hospedagem):
+- [x] **[obrigatório] Cabeçalhos HTTP** (configurados na hospedagem): — `public/_headers` + `tests/unit/headers.test.ts` e `tests/dist/security.test.ts` (inclui `X-Frame-Options: DENY`); conferir a resposta real após o deploy
   - `Content-Security-Policy` restritiva (`default-src 'self'`; sem `unsafe-inline` em script)
   - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
   - `X-Content-Type-Options: nosniff`
   - `Referrer-Policy: strict-origin-when-cross-origin`
   - `Permissions-Policy` desligando câmera, microfone, geolocalização
   - `frame-ancestors 'none'` (anti-clickjacking)
-- [ ] **[obrigatório] HTTPS em tudo**, redirecionamento de HTTP.
-- [ ] **[obrigatório] Nenhum segredo no repositório** (chaves, tokens, `.env`). Ativar secret scanning e push protection no GitHub.
-- [ ] Links externos com `rel="noopener noreferrer"`.
-- [ ] Dependências mínimas; Dependabot ativo; `npm audit` sem vulnerabilidade alta no CI.
-- [ ] Fontes e scripts servidos do próprio domínio (sem CDN de terceiros = sem SRI para gerenciar e sem vazamento de IP de visitante).
-- [ ] E-mail exibido de forma que dificulte robôs de spam (ex.: montado via JS ou imagem + `mailto`).
-- [ ] Varredura final com `strix-pentest` e securityheaders.com nota A ou superior.
+- [ ] **[obrigatório] HTTPS em tudo**, redirecionamento de HTTP. (após o deploy)
+- [ ] **[obrigatório] Nenhum segredo no repositório** (chaves, tokens, `.env`). Ativar secret scanning e push protection no GitHub. (Lucas: secret scanning e push protection ativados em 2026-11-23; falta confirmar o histórico)
+- [x] Links externos com `rel="noopener noreferrer"`. — `tests/dist/security.test.ts`
+- [x] Dependências mínimas; Dependabot ativo; `npm audit` sem vulnerabilidade alta no CI. — `.github/dependabot.yml` e `npm audit --audit-level=high` em `.github/workflows/ci.yml`; Dependabot passa a agir após o merge
+- [x] Fontes e scripts servidos do próprio domínio (sem CDN de terceiros = sem SRI para gerenciar e sem vazamento de IP de visitante). — `tests/dist/security.test.ts` ("nenhum recurso de terceiros") e CSP `default-src 'self'`
+- [x] E-mail exibido de forma que dificulte robôs de spam (ex.: montado via JS ou imagem + `mailto`). — montado via JS a partir de `data-user`/`data-domain`, com `<noscript>`; `tests/dist/sections.test.ts` e `tests/dist/legal.test.ts`
+- [ ] Varredura final com `strix-pentest` e securityheaders.com nota A ou superior. (após o deploy)
 
 ## 6. Verificação antes de publicar
 
-- [ ] Lighthouse ≥ 95 em Performance, Acessibilidade, Boas práticas e SEO — nas duas línguas, mobile e desktop.
-- [ ] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion.
-- [ ] Revisão humana (Lucas) de todos os textos legais e de cada vídeo.
+- [x] Lighthouse ≥ 95 em Performance, Acessibilidade, Boas práticas e SEO — nas duas línguas, mobile e desktop. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, home e política nas duas línguas, todas as categorias 100
+- [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
+- [ ] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. (textos legais revisados em 2026-11-23; falta cada vídeo, Lucas)
