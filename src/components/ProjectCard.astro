@@ -201,7 +201,15 @@ const num = (v: string) => (lang === 'en' ? v.replace(/^(\d+),(\d+)$/, '$1.$2').
   }
 
   dd a {
+    position: relative;
     text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  /* Área de toque de 44 px sem mexer no layout: o número tem 29 px de altura. */
+  dd a::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--target) - 100%) / -2) calc(var(--s-2) * -1);
   }
 
   .links {

@@ -38,3 +38,20 @@ test('na impressão o contato mostra o endereço inteiro do LinkedIn e do GitHub
   expect(printed.length).toBe(2);
   for (const p of printed) expect(p.after).toBe(`"${p.href}"`);
 });
+
+test('320: os números-link das evidências têm área de toque de 44 px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto('/');
+  const links = page.locator('.evidence dd a');
+  expect(await links.count()).toBeGreaterThan(0);
+  for (const a of await links.all()) {
+    const hits = await a.evaluate((el) => {
+      el.scrollIntoView({ block: 'center' }); // longe do cabeçalho fixo, que cobriria o ponto de cima
+      const r = el.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      return [y - 21, y + 21].map((yy) => el.contains(document.elementFromPoint(x, yy)));
+    });
+    expect(hits).toEqual([true, true]);
+  }
+});
