@@ -14,10 +14,24 @@ const toTop = async (page: Page, id: string) => {
   await page.waitForLoadState('networkidle');
   await go();
 };
-// A caixa do título tem de começar abaixo do cabeçalho fixo.
+// A caixa do título tem de começar abaixo do cabeçalho fixo. Com poll: fontes e imagens lazy ainda podem mexer no layout (Firefox).
 const clearsHeader = async (page: Page, sel: string) => {
-  const box = (await page.locator(sel).first().boundingBox())!;
-  expect(box.y).toBeGreaterThanOrEqual(await headerH(page));
+  const h = await headerH(page);
+  await expect.poll(async () => (await page.locator(sel).first().boundingBox())!.y).toBeGreaterThanOrEqual(h);
+};
+// Foco por teclado num link que está meio escondido sob o cabeçalho: Shift+Tab a partir do elemento seguinte.
+// Sem o scripts/focus.ts o Firefox deixa o link onde está (já aparece em parte); o teste falha.
+const shiftTabUnderHeader = async (page: Page, sel: string) => {
+  const target = page.locator(sel).first();
+  await target.evaluate((t) => {
+    const all = [...document.querySelectorAll<HTMLElement>('a[href], button:not([hidden]), video[controls]')];
+    all[all.indexOf(t as HTMLElement) + 1].focus({ preventScroll: true });
+    const h = document.querySelector('header')!.offsetHeight;
+    scrollBy(0, t.getBoundingClientRect().top - h / 2); // topo do link na metade do cabeçalho
+  });
+  await page.keyboard.press('Shift+Tab');
+  await expect(target).toBeFocused();
+  await clearsHeader(page, `${sel}:focus`);
 };
 
 
@@ -40,26 +54,28 @@ test('troca numa seção do meio mantém a seção e o título livre', async ({ 
 
 test('foco por teclado não fica sob o cabeçalho', async ({ page }) => {
   await page.goto('/');
-  await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
-  await page.locator('#ai a').first().focus();
-  await clearsHeader(page, '#ai a:focus');
+  await page.waitForLoadState('networkidle');
+  await shiftTabUnderHeader(page, '#ai a');
 });
 
-test('a 320px com fonte a 200% o cabeçalho segue em uma linha e libera âncoras', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 700 });
-  await page.goto('/');
-  await page.evaluate(() => (document.documentElement.style.fontSize = '200%'));
-  const h = await headerH(page);
-  const name = (await page.locator('header .name').boundingBox())!;
-  const link = (await page.locator('header [data-lang-switch]').boundingBox())!;
-  expect(name.x + name.width).toBeLessThanOrEqual(link.x);
-  expect(link.y + link.height).toBeLessThanOrEqual(h);
-  await page.goto('/#about');
-  await clearsHeader(page, '#about h2');
-  await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
-  await page.locator('#ai a').first().focus();
-  await clearsHeader(page, '#ai a:focus');
-});
+for (const base of ['/', '/en/'])
+  test(`${base}: a 320px com fonte a 200% o cabeçalho segue em uma linha, cabe na tela e libera âncoras`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto(base);
+    await page.evaluate(() => (document.documentElement.style.fontSize = '200%'));
+    const h = await headerH(page);
+    const width = await page.evaluate(() => document.documentElement.clientWidth);
+    const name = (await page.locator('header .name').boundingBox())!;
+    const link = (await page.locator('header [data-lang-switch]').boundingBox())!;
+    expect(name.x + name.width).toBeLessThanOrEqual(link.x);
+    expect(link.y + link.height).toBeLessThanOrEqual(h);
+    expect(link.x + link.width).toBeLessThanOrEqual(width);
+    await page.goto(`${base}#about`);
+    await page.evaluate(() => (document.documentElement.style.fontSize = '200%'));
+    await page.evaluate(() => document.getElementById('about')!.scrollIntoView());
+    await clearsHeader(page, '#about h2');
+    await shiftTabUnderHeader(page, '#ai a');
+  });
 
 test('troca pelo rodapé também mantém a seção', async ({ page }) => {
   await page.goto('/');

@@ -114,6 +114,7 @@ a {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
+  scroll-margin-block: var(--s-2); /* o anel não encosta na borda da tela nem no cabeçalho */
 }
 
 .wrap {
