@@ -53,4 +53,13 @@ describe('capa', () => {
     const note = $('[data-hero] [data-living-note]').text();
     expect(note).toBe(`${heroBadge[lang]} · ${formatMonthYearShort(new Date(), lang)}`);
   });
+
+  it('retícula servida como arquivo gerado no build, compartilhada por cabeçalho e capa', () => {
+    const svg = readFileSync('dist/halftone.svg', 'utf8');
+    expect(svg).toMatch(/^<svg[^>]*viewBox=/);
+    const radii = [...svg.matchAll(/<pattern[^>]*>.*?r="([\d.]+)"/g)].map((m) => +m[1]);
+    expect(radii.length).toBe(22);
+    expect(radii).toEqual([...radii].sort((a, b) => a - b)); // os pontos só crescem: sem virada no meio
+    expect(radii.at(-1)!).toBeGreaterThanOrEqual(14 * 0.625); // a última coluna fecha em laranja sólido
+  });
 });

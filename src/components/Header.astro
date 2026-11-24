@@ -18,13 +18,15 @@ const { nav } = (await getEntry('site', 'site'))!.data;
 </header>
 
 <style>
-  /* Mesmo fundo dividido da capa: no topo o cabeçalho some dentro dela. */
+  /* Mesmo fundo da capa (retícula e cores divididas na borda direita dela): no topo o cabeçalho some dentro dela. */
   .site-header {
     --accent: var(--c-ink);
     position: sticky;
     top: 0;
     z-index: 10;
-    background: linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
+    background:
+      url('/halftone.svg') 50% 0 / var(--band) auto no-repeat,
+      linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
     color: var(--c-ink);
   }
 
@@ -72,10 +74,12 @@ const { nav } = (await getEntry('site', 'site'))!.data;
     text-decoration: none;
   }
 
+  /* Fundo sólido: as pílulas ficam sobre a retícula e a troca de cor; o texto preto segue legível. */
   .pill {
     display: inline-flex;
     align-items: center;
     border: 1.5px solid var(--c-ink);
+    background: var(--c-mao);
     transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
   }
 
