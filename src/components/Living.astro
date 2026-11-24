@@ -1,0 +1,195 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Section from './Section.astro';
+import GlobeStatic from './GlobeStatic.astro';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { sections, statusLabels, ui } = (await getEntry('site', 'site'))!.data;
+// Ordem do esboço S02 (posição de cada etiqueta no globo, de cima para baixo); a cena 3D (Task 8) reposiciona por JS.
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<Section id="living" lang={lang} tone="ia">
+  <p class="intro">{sections.living.intro![lang]}</p>
+  <ul class="legend" aria-hidden="true">
+    <li class="tag" data-side="fund">{ui.legend.mao[lang]}</li>
+    <li class="tag" data-side="ia">{ui.legend.ia[lang]}</li>
+  </ul>
+  <div class="globe">
+    <GlobeStatic />
+    <ul class="tags">
+      {projects.map((p) => (
+        <li>
+          <a class="tag" href={`#p-${p.id}`} data-living-tag data-project-id={p.id} data-side={p.data.side} data-status={p.data.status}>
+            <span class="name">{p.data.title[lang]}</span>
+            <span class="status">{statusLabels[p.data.status][lang]}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Section>
+
+<style>
+  :global(#living) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-5);
+  }
+
+  .intro {
+    max-width: 30rem;
+    font-size: var(--t-lead);
+    line-height: 1.5;
+  }
+
+  .legend,
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 2.25rem;
+    padding-inline: var(--s-4);
+    border: 1.5px solid var(--c-ink);
+    border-radius: 999px;
+    background: var(--c-ink);
+    color: var(--c-paper);
+    font-size: var(--t-small);
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  /* Amarela para "à mão", preta para "IA" (spec 4, tela 02). */
+  .tag[data-side='fund'] {
+    background: var(--c-mao);
+    color: var(--c-ink);
+  }
+
+  .tag::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* Verde só no selo "concluído". */
+  .tag[data-status='concluido']::before {
+    background: var(--c-ok);
+  }
+
+  .legend .tag {
+    font-size: var(--t-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .status {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .tag:focus-visible {
+    outline-color: var(--c-ink);
+    outline-offset: 3px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.tag {
+      transition: translate var(--dur-hover) var(--ease-out);
+    }
+
+    a.tag:hover {
+      translate: 0 -2px;
+    }
+  }
+
+  .globe {
+    position: relative;
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .globe :global([data-globe-static]) {
+    width: min(100%, 28rem);
+    justify-self: center;
+    color: var(--c-ink);
+  }
+
+  .globe :global([data-globe-static] svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Desktop: título e texto à esquerda, globo à direita com as etiquetas espalhadas por cima. */
+  @media (min-width: 64rem) {
+    :global(#living) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr auto;
+      column-gap: var(--s-6);
+    }
+
+    :global(#living) > :global(*) {
+      grid-column: 1;
+    }
+
+    .intro {
+      align-self: end;
+      margin-top: var(--s-6);
+    }
+
+    .legend {
+      align-self: end;
+    }
+
+    :global(#living) > .globe {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: center;
+      aspect-ratio: 1;
+      width: min(100%, calc(100svh - var(--header-h) - var(--s-8)));
+      justify-self: end;
+    }
+
+    .globe :global([data-globe-static]) {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+    }
+
+    .tags {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+
+    .tags li {
+      position: absolute;
+      translate: -50% -50%;
+    }
+
+    /* Posições do esboço S02, em % do globo (ordem das fichas). */
+    .tags li:nth-child(1) { left: 72%; top: 50%; } /* Banco em Java */
+    .tags li:nth-child(2) { left: 64%; top: 14%; } /* Calculadoras */
+    .tags li:nth-child(3) { left: 38%; top: 24%; } /* Arapuca */
+    .tags li:nth-child(4) { left: 82%; top: 37%; } /* EasyFood */
+    .tags li:nth-child(5) { left: 80%; top: 63%; } /* Analitic Blitz */
+    .tags li:nth-child(6) { left: 52%; top: 84%; } /* NFE Hub */
+    .tags li:nth-child(7) { left: 33%; top: 58%; } /* Renovação */
+  }
+</style>

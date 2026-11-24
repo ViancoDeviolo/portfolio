@@ -27,11 +27,6 @@ describe('conteúdo do site', () => {
     ]);
   });
 
-  it('cada item da seção Stack aparece em ao menos uma ficha', () => {
-    const allProjectStacks = projects.flatMap((p) => p.stack);
-    for (const item of site.stackGroups.flatMap((g: { items: string[] }) => g.items)) expect(allProjectStacks).toContain(item);
-  });
-
   it('site.yaml e fichas passam nos esquemas', () => {
     expect(siteSchema.safeParse(site).error?.issues).toBeUndefined();
     expect(site.livingNote.pt).toContain('{date}');

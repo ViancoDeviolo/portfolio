@@ -32,7 +32,7 @@ for (const base of ['/', '/en/']) {
 test('na impressão o contato mostra o endereço inteiro do LinkedIn e do GitHub', async ({ page }) => {
   await page.goto('/');
   await page.emulateMedia({ media: 'print' });
-  const printed = await page.locator('#contact dd a[href^="https://"]').evaluateAll((as) =>
+  const printed = await page.locator('#contact a[href^="https://"]').evaluateAll((as) =>
     as.map((a) => ({ href: (a as HTMLAnchorElement).getAttribute('href'), after: getComputedStyle(a, '::after').content })),
   );
   expect(printed.length).toBe(2);

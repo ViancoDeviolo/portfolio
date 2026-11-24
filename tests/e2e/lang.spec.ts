@@ -24,7 +24,7 @@ const clearsHeader = async (page: Page, sel: string) => {
 const shiftTabUnderHeader = async (page: Page, sel: string) => {
   const target = page.locator(sel).first();
   await target.evaluate((t) => {
-    const all = [...document.querySelectorAll<HTMLElement>('a[href], button:not([hidden]), video[controls]')];
+    const all = [...document.querySelectorAll<HTMLElement>('a[href], button:not([hidden]), summary, video[controls]')];
     all[all.indexOf(t as HTMLElement) + 1].focus({ preventScroll: true });
     const h = document.querySelector('header')!.offsetHeight;
     scrollBy(0, t.getBoundingClientRect().top - h / 2); // topo do link na metade do cabeçalho
@@ -80,6 +80,7 @@ for (const base of ['/', '/en/'])
 test('troca pelo rodapé também mantém a seção', async ({ page }) => {
   await page.goto('/');
   await toTop(page, 'contact');
+  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight)); // a tela 06 ocupa a janela: o rodapé fica logo abaixo
   await press(page, page.locator('footer').getByRole('link', { name: 'English version' }));
   await expect(page).toHaveURL(/\/en\/#contact$/);
 });

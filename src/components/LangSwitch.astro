@@ -17,7 +17,7 @@ const tag = to === 'en' ? 'en' : 'pt-BR';
     min-width: 0;
     min-height: var(--target);
     padding-inline: min(var(--s-4), 5vw); /* 16 px até a fonte crescer demais para 320 px */
-    border: 1px solid var(--line);
+    border: 1.5px solid currentColor;
     border-radius: 999px;
     font-size: var(--t-small);
     font-weight: var(--weight-strong);
@@ -27,13 +27,7 @@ const tag = to === 'en' ? 'en' : 'pt-BR';
     /* Com texto a 200% numa tela de 320 px, "Português" quebra (hifenizado) em vez de vazar do cabeçalho. */
     hyphens: auto;
     overflow-wrap: anywhere;
-    transition: border-color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .lang-switch:hover {
-      border-color: var(--text);
-    }
+    transition: transform var(--dur-press) var(--ease-out);
   }
 
   .lang-switch:active {

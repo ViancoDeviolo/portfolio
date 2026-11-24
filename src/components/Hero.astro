@@ -13,7 +13,7 @@ const { heroAlt: ALT, heroBadge, heroLabels } = (await getEntry('site', 'site'))
 // Cada foto mede 0,45 × a altura da capa (cerca de 370 px a 1440×900); no celular, cerca de 45vw.
 const sizes = '(min-width: 48rem) 380px, 45vw';
 ---
-<section id="top" class="hero" data-hero aria-labelledby="hero-name">
+<section id="top" class="hero" data-hero data-tone="hero" aria-labelledby="hero-name">
   <Halftone />
   <GlobeStatic />
   <div id="globe-stage"></div>

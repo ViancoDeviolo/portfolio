@@ -1,0 +1,63 @@
+---
+import type { Project } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+
+const { evidence, lang } = Astro.props as { evidence: Project['evidence']; lang: Lang };
+const L = { pt: 'Evidência', en: 'Evidence' }[lang];
+const ext = { rel: 'noopener noreferrer' };
+// A ficha guarda o valor como na fonte ("0,63", "2021 a 2025"); em inglês vira "0.63", "2021 to 2025".
+const num = (v: string) => (lang === 'en' ? v.replace(/^(\d+),(\d+)$/, '$1.$2').replace(/^(\d+) a (\d+)$/, '$1 to $2') : v);
+---
+{evidence.length > 0 && (
+  <dl class="evidence" aria-label={L}>
+    {evidence.map((e) => (
+      <div>
+        <dt>{e.label[lang]}</dt>
+        <dd>{/^https?:/.test(e.source) ? <a href={e.source} {...ext}>{num(e.value)}</a> : num(e.value)}</dd>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style>
+  .evidence {
+    display: grid;
+    gap: var(--s-4); /* centros a 44 px ou mais: as áreas de toque dos números não se cobrem */
+    margin: 0;
+  }
+
+  .evidence div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+  }
+
+  dt {
+    order: 2;
+    font-size: var(--t-small);
+    line-height: 1.35;
+  }
+
+  dd {
+    order: 1;
+    flex: none;
+    margin: 0;
+    font-family: var(--font-block);
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  dd a {
+    position: relative;
+    text-decoration-thickness: 1.5px;
+  }
+
+  /* Área de toque de 44 px sem mexer no layout. */
+  dd a::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--target) - 100%) / -2) calc(var(--s-2) * -1);
+  }
+</style>

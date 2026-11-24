@@ -17,20 +17,28 @@ site:
   heroBadge: { pt: 'portfólio vivo · projetos em evolução', en: 'living portfolio · projects in progress' }
   sections:
     living:
+      kicker: { pt: 02 · Portfólio vivo, en: 02 · Living portfolio }
       title: { pt: Sempre / em obra., en: Always / under construction. }
+      intro:
+        pt: Cada ponto é um projeto. Os concluídos continuam recebendo melhorias.
+        en: Each dot is a project. The finished ones keep getting improvements.
     ai:
+      kicker: { pt: '03', en: '03' }
       title: { pt: Engenharia de IA, en: AI engineering }
       intro:
         pt: Em cada projeto, o que a IA fez e o que eu decidi.
         en: For each project, what the AI did and what I decided.
     fundamentals:
+      kicker: { pt: 04 · Fundamentos, en: 04 · Fundamentals }
       title: { pt: à mão., en: by hand. }
       intro:
         pt: Projetos feitos à mão, para mostrar a base por baixo do resto.
         en: Projects built by hand, to show the groundwork under everything else.
     workflow:
+      kicker: { pt: 05 · Como eu uso IA, en: 05 · How I use AI }
       title: { pt: Quatro / respostas., en: Four / answers. }
     contact:
+      kicker: { pt: 06 · Contato, en: 06 · Contact }
       title: { pt: Vamos / conversar., en: "Let's / talk." }
   studyingNow:
     - pt: Fundamentos de Java e Python do zero.
@@ -39,33 +47,6 @@ site:
       en: Computational intelligence and algorithm optimization.
     - pt: Oracle Agentic AI Foundations.
       en: Oracle Agentic AI Foundations.
-  workflow:
-    - title: { pt: Construo, en: I build }
-      body:
-        pt: Uso Claude e Claude Code com prompts estruturados para arquitetura e código. Reviso tudo o que entra.
-        en: I use Claude and Claude Code with structured prompts for architecture and code. I review everything that goes in.
-    - title: { pt: Valido, en: I check }
-      body:
-        pt: Faço a mesma pergunta ao GPT, ao Gemini e ao Copilot. Quando as respostas divergem, investigo.
-        en: I ask GPT, Gemini and Copilot the same question. When the answers disagree, I dig in.
-    - title: { pt: Decido, en: I decide }
-      body:
-        pt: A decisão é minha, com testes, leitura do código e os fundamentos que mostro na seção Fundamentos.
-        en: The call is mine, based on tests, reading the code and the fundamentals shown in the Fundamentals section.
-  workflowFooter:
-    pt: 'Também monto agentes com CrewAI e Groq. Curso: Oracle Agentic AI Foundations.'
-    en: 'I also build agents with CrewAI and Groq. Course: Oracle Agentic AI Foundations.'
-  stackGroups:
-    - label: { pt: Linguagens, en: Languages }
-      items: [Java, Python, JavaScript]
-    - label: { pt: Backend e dados, en: Backend and data }
-      items: [Node.js, Express, Oracle]
-    - label: { pt: Infraestrutura, en: Infrastructure }
-      items: [Docker, AWS]
-    - label: { pt: Testes, en: Testing }
-      items: [pytest]
-    - label: { pt: Agentes de IA, en: AI agents }
-      items: [CrewAI]
   about:
     pt: Sou analista júnior na MAPFRE e estudo Engenharia de Computação na UniFECAF, com formatura prevista para 2027. Quero trabalhar com backend em bancos e seguradoras.
     en: I'm a junior analyst at MAPFRE and I study Computer Engineering at UniFECAF, expecting to graduate in 2027. I want to work on backend systems at banks and insurers.
@@ -77,7 +58,7 @@ site:
       title: { pt: Engenharia de IA, en: AI engineering }
       sub: { pt: 'prompt, orquestração e revisão', en: 'prompt, orchestration and review' }
   nav:
-    - { id: ai, label: { pt: Projetos, en: Projects } }
+    - { id: living, label: { pt: Projetos, en: Projects } }
     - { id: workflow, label: { pt: Como eu uso IA, en: How I use AI } }
     - { id: fundamentals, label: { pt: Fundamentos, en: Fundamentals } }
     - { id: contact, label: { pt: Contato, en: Contact } }
@@ -120,6 +101,26 @@ site:
     emailDomain: gmail.com
     linkedin: https://www.linkedin.com/in/lucas-alves-cruz/
     github: https://github.com/ViancoDeviolo
+  ui:
+    legend:
+      mao: { pt: feito à mão, en: built by hand }
+      ia: { pt: com IA, en: with AI }
+    next: { pt: próximo, en: next }
+    result: { pt: Resultado, en: Result }
+    codeBy: { pt: escrito por mim, en: written by me }
+    nextCard:
+      kicker: { pt: Em construção, en: In progress }
+      title: { pt: Próximos, en: Next up }
+      body: { pt: Os fundamentos que estou estudando agora viram projetos aqui., en: "The fundamentals I'm studying now become projects here." }
+    request: { pt: Pedido, en: Request }
+    answerOf: { pt: 'resposta {n} de {total}', en: 'answer {n} of {total}' }
+    evolution:
+      title: { pt: Como a Renovação de Apólices evoluiu, en: How Policy Renewal evolved }
+      before: { pt: v1, en: v1 }
+      after: { pt: hoje, en: now }
+    studying: { pt: Estudando agora, en: Studying now }
+    cv: { pt: Currículo em PDF, en: Résumé (PDF) }
+    footerNote: { pt: portfólio vivo, en: living portfolio }
   statusLabels:
     concluido: { pt: Concluído, en: Completed }
     em-evolucao: { pt: Em evolução, en: Evolving }

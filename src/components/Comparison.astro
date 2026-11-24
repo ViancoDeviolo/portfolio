@@ -1,0 +1,101 @@
+---
+import { getEntry } from 'astro:content';
+import Ticks from './Ticks.astro';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { comparison, ui } = (await getEntry('site', 'site'))!.data;
+const { prompt, answers, conclusion } = comparison;
+// Sem três respostas reais, o bloco não aparece (spec 4, tela 05: nada inventado).
+const show = answers.length >= 3;
+---
+<div class="request">
+  <span class="label">{ui.request[lang]}</span>
+  <p>{prompt[lang]}</p>
+</div>
+
+{show && (
+  <ol class="answers">
+    {answers.map((a, i) => (
+      <li class="answer" data-answer={a.ai}>
+        <p class="head">
+          <span class="ai t-ia" translate="no">{a.ai}</span>
+          <span class="of">{ui.answerOf[lang].replace('{n}', String(i + 1)).replace('{total}', String(answers.length))}</span>
+        </p>
+        <blockquote><p><Ticks text={a.excerpt[lang]} /></p></blockquote>
+      </li>
+    ))}
+  </ol>
+)}
+
+{conclusion && <p class="conclusion">{conclusion[lang]}</p>}
+
+<style>
+  .request {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-4);
+    padding: var(--s-4) var(--s-5);
+    border-radius: 1.25rem;
+    background: var(--c-ink);
+    color: var(--c-paper);
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+  }
+
+  .request p {
+    flex: 1 1 20rem;
+    max-width: none;
+  }
+
+  .label {
+    font-size: var(--t-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .answer {
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border: 1.5px solid var(--c-ink);
+    border-radius: 1.25rem;
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-3);
+  }
+
+  .ai {
+    font-size: 1.5rem;
+  }
+
+  .of {
+    font-size: var(--t-label);
+  }
+
+  blockquote {
+    margin: 0;
+    font-size: var(--t-small);
+    line-height: 1.55;
+  }
+
+  .conclusion {
+    font-size: var(--t-lead);
+  }
+</style>

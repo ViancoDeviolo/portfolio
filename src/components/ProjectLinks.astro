@@ -1,0 +1,60 @@
+---
+import type { Project } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+
+const { p, lang } = Astro.props as { p: Project; lang: Lang };
+const L = {
+  pt: { private: 'repositório privado', repo: 'Ver repositório', demo: 'Ver demo' },
+  en: { private: 'private repository', repo: 'View repository', demo: 'View demo' },
+}[lang];
+const ext = { rel: 'noopener noreferrer' };
+---
+<div class="links">
+  {'url' in p.repo && <a class="pill" href={p.repo.url} {...ext}>{L.repo} <span aria-hidden="true">↗</span></a>}
+  {'links' in p.repo && p.repo.links.map((r) => <a class="pill" href={r.url} {...ext}>{L.repo} {r.label[lang]} <span aria-hidden="true">↗</span></a>)}
+  {'private' in p.repo && <span class="pill private">{L.private}</span>}
+  {p.demo && <a class="pill" href={p.demo} {...ext}>{L.demo} <span aria-hidden="true">↗</span></a>}
+</div>
+
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: var(--target);
+    padding-inline: var(--s-4);
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+    font-size: var(--t-small);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
+  }
+
+  a.pill:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.pill:hover {
+      background: var(--c-ink);
+      color: var(--c-paper);
+    }
+  }
+
+  .private {
+    border-style: dashed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.pill:active {
+      transform: none;
+    }
+  }
+</style>

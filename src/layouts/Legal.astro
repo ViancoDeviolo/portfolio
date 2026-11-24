@@ -14,7 +14,7 @@ const { lang, title, description, route } = Astro.props;
 const updated = lang === 'pt' ? 'Última atualização: 23 de novembro de 2026' : 'Last updated: November 23, 2026';
 ---
 <Base lang={lang} title={`${title} · Lucas Cruz`} description={description} route={route}>
-  <article class="wrap legal">
+  <article class="wrap legal" data-tone="paper">
     <div class="head">
       <h1>{title}</h1>
       <p class="updated"><time datetime="2026-11-23">{updated}</time></p>
@@ -37,7 +37,7 @@ const updated = lang === 'pt' ? 'Última atualização: 23 de novembro de 2026' 
   }
 
   .updated {
-    color: var(--muted);
+    color: color-mix(in srgb, var(--c-ink) 75%, var(--c-paper));
     font-size: var(--t-small);
   }
 

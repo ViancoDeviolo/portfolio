@@ -5,49 +5,136 @@ import Email from './Email.astro';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { contact } = (await getEntry('site', 'site'))!.data;
-const L = {
-  pt: { email: 'E-mail', cv: 'Currículo', cvLink: 'Baixar PDF', cvHref: '/lucas-cruz-cv.pdf' },
-  en: { email: 'Email', cv: 'Résumé', cvLink: 'Download PDF', cvHref: '/lucas-cruz-cv-en.pdf' },
-}[lang];
+const { contact, studyingNow, about, ui } = (await getEntry('site', 'site'))!.data;
+const cv = { pt: '/lucas-cruz-cv.pdf', en: '/lucas-cruz-cv-en.pdf' }[lang];
 const ext = { rel: 'noopener noreferrer' };
-const handle = (url: string) => new URL(url).pathname.replace(/^\/(in\/)?|\/$/g, '');
 ---
-<Section id="contact" lang={lang}>
-  <dl class="rows">
-    <div class="row">
-      <dt class="eyebrow">{L.email}</dt>
-      <dd>
-        <Email lang={lang} />
-      </dd>
-    </div>
-    <div class="row">
-      <dt class="eyebrow">LinkedIn</dt>
-      <dd><a href={contact.linkedin} {...ext}>{handle(contact.linkedin)}</a></dd>
-    </div>
-    <div class="row">
-      <dt class="eyebrow">GitHub</dt>
-      <dd><a href={contact.github} {...ext}>{handle(contact.github)}</a></dd>
-    </div>
-    <div class="row">
-      <dt class="eyebrow">{L.cv}</dt>
-      <dd><a href={L.cvHref} download>{L.cvLink}</a></dd>
-    </div>
-  </dl>
+<Section id="contact" lang={lang} tone="ink">
+  <p class="about">{about[lang]}</p>
+
+  <div class="actions">
+    <a class="btn mao" href={contact.linkedin} {...ext}>LinkedIn <span aria-hidden="true">↗</span></a>
+    <a class="btn ia" href={contact.github} {...ext}>GitHub <span aria-hidden="true">↗</span></a>
+    <span class="mail" data-email><Email lang={lang} /></span>
+  </div>
+  <a class="cv" href={cv} download>{ui.cv[lang]}</a>
+
+  <div class="studying">
+    <p class="eyebrow">{ui.studying[lang]}</p>
+    <ul>
+      {studyingNow.map((s) => <li>{s[lang]}</li>)}
+    </ul>
+  </div>
 </Section>
 
 <style>
-  dd {
-    font-size: var(--t-h3);
-    font-weight: var(--weight-strong);
+  :global(#contact) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-5);
+  }
+
+  .about {
+    max-width: 36rem;
+    font-size: var(--t-lead);
+    line-height: 1.5;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+  }
+
+  .btn,
+  .mail :global(a.email:not([hidden])) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: 3.25rem;
+    padding-inline: var(--s-5);
+    border-radius: 999px;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform var(--dur-press) var(--ease-out), translate var(--dur-hover) var(--ease-out);
+  }
+
+  /* Texto sobre amarelo e laranja é sempre preto. */
+  .btn.mao {
+    background: var(--c-mao);
+    color: var(--c-ink);
+  }
+
+  .btn.ia {
+    background: var(--c-ia);
+    color: var(--c-ink);
+  }
+
+  .mail :global(a.email:not([hidden])) {
+    border: 1.5px solid var(--c-paper);
     overflow-wrap: anywhere;
   }
 
-  /* Alvo de toque cheio só aqui; no meio de um parágrafo o link segue a linha. */
-  a,
-  dd :global(.email:not([hidden])) {
+  .btn:active,
+  .mail :global(a.email:active) {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover,
+    .mail :global(a.email:hover) {
+      translate: 0 -2px;
+    }
+  }
+
+  .cv {
+    justify-self: start;
     display: inline-flex;
     align-items: center;
     min-height: var(--target);
+    font-size: var(--t-small);
+  }
+
+  .studying ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .studying li {
+    padding-block: var(--s-3);
+    border-top: 1px solid color-mix(in srgb, var(--c-paper) 25%, transparent);
+    font-size: 1.125rem;
+  }
+
+  .studying .eyebrow {
+    margin-bottom: var(--s-3);
+  }
+
+  @media (min-width: 64rem) {
+    :global(#contact) {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      column-gap: var(--s-8);
+    }
+
+    :global(#contact) > :global(*) {
+      grid-column: 1;
+    }
+
+    :global(#contact) > .studying {
+      grid-column: 2;
+      grid-row: 2 / span 3;
+      align-self: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn:active,
+    .mail :global(a.email:active) {
+      transform: none;
+    }
   }
 </style>

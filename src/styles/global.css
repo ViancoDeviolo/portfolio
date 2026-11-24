@@ -69,7 +69,7 @@
 
 html {
   scroll-padding-top: var(--header-h);
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -83,8 +83,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--c-paper);
+  color: var(--c-ink);
   font-family: var(--font-sans);
   font-size: var(--t-body);
   font-weight: var(--weight-text);
@@ -181,58 +181,72 @@ a {
   padding-inline: var(--gut);
 }
 
-.lead {
-  font-size: var(--t-lead);
-  color: var(--muted);
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--s-5);
-}
-
-@media (min-width: 64rem) {
-  .cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-6);
-  }
-}
-
 .eyebrow {
-  color: var(--muted);
   font-size: var(--t-label);
-  font-weight: var(--weight-strong);
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-/* Lista rótulo → valor com filetes (Stack, Contato). */
-.rows {
-  margin: 0;
+/* Telas 02 a 06: cada uma ocupa ao menos a tela, de borda a borda como a capa. */
+.screen {
+  min-height: calc(100svh - var(--header-h));
+  padding: var(--s-5) var(--edge) var(--s-8);
+  overflow-x: clip;
 }
 
-.rows .row {
-  display: grid;
-  gap: var(--s-2);
-  padding-block: var(--s-4);
-  border-top: 1px solid var(--line);
+[data-tone='mao'] {
+  background: var(--c-mao);
+  color: var(--c-ink);
 }
 
-.rows .row:last-child {
-  border-bottom: 1px solid var(--line);
+[data-tone='ia'] {
+  background: var(--c-ia);
+  color: var(--c-ink);
 }
 
-.rows dd {
-  margin: 0;
+[data-tone='split'] {
+  background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 0);
+  color: var(--c-ink);
 }
 
-@media (min-width: 48rem) {
-  .rows .row {
-    grid-template-columns: 16rem minmax(0, 1fr);
-    gap: var(--s-5);
-    align-items: baseline;
-  }
+[data-tone='ink'] {
+  --accent: var(--c-mao);
+  background: var(--c-ink);
+  color: var(--c-paper);
+}
+
+/* Título em dupla tipográfica (Title.astro): serifado em cima, Archivo embaixo. */
+.title {
+  font-size: clamp(2.25rem, 0.5rem + 8.6vw, 9.25rem);
+  line-height: 0.92;
+  letter-spacing: normal;
+  text-wrap: wrap;
+}
+
+.title.long {
+  font-size: clamp(2rem, 0.5rem + 6.4vw, 6.5rem);
+}
+
+.title > span {
+  display: block;
+}
+
+.title .t-mao {
+  font-size: 1.04em;
+  line-height: 1;
+}
+
+[data-tone='ink'] .title .t-mao {
+  color: var(--c-mao);
+}
+
+[data-tone='ink'] .title .t-ia {
+  color: var(--c-ia);
+}
+
+.kicker {
+  margin-bottom: var(--s-3);
 }
 
 .skip-link {
@@ -244,8 +258,8 @@ a {
   align-items: center;
   min-height: var(--target);
   padding-inline: var(--s-4);
-  background: var(--text);
-  color: var(--bg);
+  background: var(--c-ink);
+  color: var(--c-paper);
   font-weight: var(--weight-strong);
   border-radius: var(--s-2);
   text-decoration: none;

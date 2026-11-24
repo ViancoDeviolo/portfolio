@@ -7,16 +7,7 @@
 
   /* !important: os estilos de componente do Astro têm mais especificidade que estes seletores. */
   :root {
-    --bg: #fff;
-    --text: #000;
-    --muted: #333;
-    --line: #bbb;
-    --accent-fund: #000;
-    --accent-ia: #000;
-    --accent: #000;
     --header-h: 0;
-    --t-h1: 22pt;
-    --t-h2: 12pt;
     --t-h3: 10.5pt;
     --t-lead: 9pt;
     --t-body: 9pt;
@@ -25,173 +16,180 @@
     --lh-body: 1.3;
   }
 
+  * {
+    color: #000 !important;
+    background: none !important;
+    border-color: #000 !important;
+  }
+
   body {
     display: block;
     min-height: 0;
     font-size: 9pt;
   }
 
-  /* Fora: navegação, capa, mídia, terminal, links de ação, detalhes longos e seções que não entram no currículo. */
+  /* Fora: navegação, efeitos da capa, telas que não entram no currículo, mídia, código, detalhes e ações. */
   .site-header,
   .site-footer,
   .skip-link,
   .duo,
-  .living-note,
-  .visuals,
-  .term,
-  .links,
-  .foot,
-  .split,
-  .note,
-  .building-card,
-  .section-head .lead,
+  [data-halftone],
+  [data-globe-static],
+  #globe-stage,
+  .hero .label,
+  #living,
   #workflow,
-  #stack,
-  #contact .row:last-child,
+  .kicker,
+  #fundamentals .intro,
+  .code,
+  .card.soon,
+  .card > p + p,
+  figure.media,
+  details,
+  .links,
+  .counter,
+  [data-next],
+  .next-steps,
+  [data-media-frame],
+  .ai-screen [data-block='iDecided'],
+  .ai-screen [data-block='aiDid'],
+  .ai-screen [data-block='evidence'] .eyebrow,
+  .ai-screen [data-block='problem'] .eyebrow,
+  .studying,
+  .cv,
   .evidence div:not(:first-child) {
     display: none !important;
   }
 
-  .wrap {
-    max-width: none !important;
-    padding-inline: 0 !important;
-  }
-
-  .hero {
-    display: block !important;
-    padding: 0 0 4pt !important;
-  }
-
+  .hero,
+  .screen,
+  .ai-screen,
+  #fundamentals,
+  #contact,
+  .cards,
+  .card,
+  .blocks,
+  .block,
   .intro {
-    gap: 2pt !important;
-  }
-
-  h1 {
-    line-height: 1.05 !important;
-  }
-
-  .section {
-    padding-block: 5pt 0 !important;
-  }
-
-  .section-head {
-    margin-bottom: 3pt !important;
-  }
-
-  h2 {
-    border-bottom: 0.5pt solid #000;
-    text-transform: uppercase;
-    letter-spacing: 0.04em !important;
-  }
-
-  .cards {
     display: block !important;
-  }
-
-  .project-card {
-    display: block !important;
+    min-height: 0 !important;
     padding: 0 !important;
-    margin-bottom: 4pt;
+    margin: 0 !important;
     border: 0 !important;
-    background: none !important;
+  }
+
+  .hero .name {
+    display: block !important;
+    margin: 0 0 4pt !important;
+    font-size: 22pt !important;
+    text-align: left !important;
+  }
+
+  .hero .note {
+    display: none !important;
+  }
+
+  .screen {
+    margin-top: 6pt !important;
+  }
+
+  .title,
+  #ai-title {
+    display: block !important;
+    margin-bottom: 3pt !important;
+    border-bottom: 0.5pt solid #000;
+    font-family: var(--font-sans) !important;
+    font-size: 12pt !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase;
+  }
+
+  .title > span {
+    display: inline !important;
+    font: inherit !important;
+  }
+
+  .ai-screen,
+  .card {
+    margin-bottom: 4pt !important;
     break-inside: avoid;
   }
 
-  .head,
-  .body {
-    display: block !important;
-  }
-
-  .problem {
-    color: #000 !important;
-    font-size: 9pt !important;
-  }
-
-  .anchor h3 {
+  .ai-screen h3,
+  .card h3 {
+    display: inline;
+    margin-right: 4pt;
+    font-family: var(--font-sans) !important;
     font-size: var(--t-h3) !important;
-  }
-
-  .anchor .problem {
-    font-size: 9pt !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    letter-spacing: 0 !important;
   }
 
   .stack {
-    margin-top: 1pt !important;
-    gap: 2pt !important;
-  }
-
-  .stack li {
+    display: inline-flex !important;
     font-size: 7.5pt !important;
-    padding: 0 3pt !important;
   }
 
-  .evidence {
-    display: block !important;
+  .card > p,
+  .block > p {
+    font-size: 9pt !important;
+  }
+
+  .status {
+    font-size: 7pt !important;
+  }
+
+  .badge {
     padding: 0 !important;
-    border: 0 !important;
   }
 
   .evidence div {
     display: flex !important;
-    flex-direction: row !important;
-    justify-content: flex-start !important;
     gap: 3pt !important;
   }
 
   dt,
   dd {
-    display: inline !important;
     font-size: 8.5pt !important;
+    font-family: var(--font-sans) !important;
     letter-spacing: 0 !important;
   }
 
-  dd {
-    font-weight: var(--weight-strong);
+  #contact .title {
+    display: none !important;
   }
 
-  dd::before {
-    content: '';
-  }
-
-  .about {
-    gap: 3pt !important;
+  #contact .about {
     font-size: 9pt !important;
   }
 
-  #contact dd,
-  #contact a {
-    min-height: 0 !important;
-    font-size: 10pt !important;
-  }
-
-  #contact .row {
-    display: block !important;
-    padding: 0 !important;
-    border: 0 !important;
-  }
-
-  #contact dt {
-    margin-right: 4pt;
-  }
-
-  /* No papel o link não clica: imprime o endereço inteiro no lugar do nome de usuário. */
-  #contact dd a[href^='https://'] {
-    font-size: 0 !important;
-  }
-
-  #contact dd a[href^='https://']::after {
-    content: attr(href);
-    font-size: 10pt;
-  }
-
-  #contact .rows {
+  #contact .actions {
     display: flex !important;
     flex-wrap: wrap;
     gap: 2pt 14pt !important;
   }
 
+  #contact .actions a {
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-size: 10pt !important;
+  }
+
+  /* No papel o link não clica: imprime o endereço inteiro no lugar do nome do botão. */
+  #contact a[href^='https://'] {
+    font-size: 0 !important;
+  }
+
+  #contact a[href^='https://']::after {
+    content: attr(href);
+    font-size: 10pt;
+  }
+
   a {
-    color: #000 !important;
     text-decoration: none !important;
   }
 }

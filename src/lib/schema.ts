@@ -38,8 +38,8 @@ export const projectSchema = z.discriminatedUnion('side', [
 ]);
 
 const sections = Object.fromEntries(
-  SECTION_IDS.map((id) => [id, z.object({ title: l10n, intro: l10n.optional() })]),
-) as Record<SectionId, z.ZodObject<{ title: typeof l10n; intro: z.ZodOptional<typeof l10n> }>>;
+  SECTION_IDS.map((id) => [id, z.object({ kicker: l10n, title: l10n, intro: l10n.optional() })]),
+) as Record<SectionId, z.ZodObject<{ kicker: typeof l10n; title: typeof l10n; intro: z.ZodOptional<typeof l10n> }>>;
 
 export const siteSchema = z.object({
   name: str,
@@ -49,9 +49,6 @@ export const siteSchema = z.object({
   heroBadge: l10n,
   sections: z.object(sections),
   studyingNow: z.array(l10n).min(1),
-  workflow: z.array(z.object({ title: l10n, body: l10n })).length(3),
-  workflowFooter: l10n,
-  stackGroups: z.array(z.object({ label: l10n, items: z.array(str) })),
   about: l10n,
   heroLabels: z.object({ mao: z.object({ title: l10n, sub: l10n }), ia: z.object({ title: l10n, sub: l10n }) }),
   nav: z.array(z.object({ id: z.enum(SECTION_IDS), label: l10n })).min(1),
@@ -66,6 +63,20 @@ export const siteSchema = z.object({
   }),
   evolution: z.array(z.object({ label: l10n, before: l10n, after: l10n })).min(1),
   contact: z.object({ emailUser: str, emailDomain: str, linkedin: z.url(), github: z.url() }),
+  // Rótulos da interface das telas 02 a 06.
+  ui: z.object({
+    legend: z.object({ mao: l10n, ia: l10n }),
+    next: l10n,
+    result: l10n,
+    codeBy: l10n,
+    nextCard: z.object({ kicker: l10n, title: l10n, body: l10n }),
+    request: l10n,
+    answerOf: l10n,
+    evolution: z.object({ title: l10n, before: l10n, after: l10n }),
+    studying: l10n,
+    cv: l10n,
+    footerNote: l10n,
+  }),
   statusLabels: z.object(Object.fromEntries(STATUS.map((s) => [s, l10n])) as Record<(typeof STATUS)[number], typeof l10n>),
 });
 

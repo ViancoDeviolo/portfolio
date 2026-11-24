@@ -1,0 +1,199 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Section from './Section.astro';
+import ProjectMedia from './ProjectMedia.astro';
+import StatusBadge from './StatusBadge.astro';
+import Evidence from './Evidence.astro';
+import ProjectLinks from './ProjectLinks.astro';
+import snippet from '../content/snippets/calculadora-ideiaV1.py?raw';
+import type { Lang } from '../lib/i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const { sections, ui } = (await getEntry('site', 'site'))!.data;
+const projects = (await getCollection('projects'))
+  .filter((p) => p.data.side === 'fund')
+  .sort((a, b) => a.data.order - b.data.order);
+const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang];
+---
+<Section id="fundamentals" lang={lang} tone="mao">
+  <p class="intro">{sections.fundamentals.intro![lang]}</p>
+
+  <figure class="code">
+    <figcaption><span translate="no">ideiaV1.py</span> · {ui.codeBy[lang]}</figcaption>
+    {/* Código real do Lucas, sem edição (spec 4, tela 04). A digitação entra na Task 9, sobre este mesmo texto. */}
+    <pre data-snippet translate="no" tabindex="0" role="region" aria-label="ideiaV1.py">{snippet.trimEnd()}</pre>
+  </figure>
+
+  <div class="cards">
+    {projects.map((p) => {
+      const d = p.data;
+      if (d.side !== 'fund') return null;
+      return (
+        <article id={`p-${p.id}`} class="card" data-tone={p.id === 'banco-java' ? 'ink' : 'mao'} aria-labelledby={`p-${p.id}-title`}>
+          <ul class="stack eyebrow" aria-label="Stack" translate="no">{d.stack.map((s) => <li>{s}</li>)}</ul>
+          <h3 id={`p-${p.id}-title`} class="t-mao">{d.title[lang]}</h3>
+          <p>{d.problem[lang]}</p>
+          <p>{d.proves[lang]}</p>
+          <Evidence evidence={d.evidence} lang={lang} />
+          <ProjectMedia media={d.media[0]} lang={lang} uid={`${p.id}-m0`} />
+          <StatusBadge status={d.status} updated={d.updated} lang={lang} />
+          {d.nextSteps && (
+            <div class="next-steps">
+              <p class="eyebrow">{L.next}</p>
+              <ul>{d.nextSteps.map((s) => <li>{s[lang]}</li>)}</ul>
+            </div>
+          )}
+          <ProjectLinks p={d} lang={lang} />
+        </article>
+      );
+    })}
+    <div class="card soon">
+      <p class="eyebrow">{ui.nextCard.kicker[lang]}</p>
+      <h3 class="t-mao">{ui.nextCard.title[lang]}</h3>
+      <p>{ui.nextCard.body[lang]}</p>
+    </div>
+  </div>
+</Section>
+
+<style>
+  :global(#fundamentals) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-6);
+  }
+
+  .intro {
+    max-width: 30rem;
+    font-size: var(--t-lead);
+    line-height: 1.5;
+  }
+
+  .code {
+    margin: 0;
+    min-width: 0;
+    border-radius: 1.25rem;
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  figcaption {
+    padding: var(--s-4) var(--s-5) 0;
+    font-size: var(--t-label);
+    opacity: 0.7;
+  }
+
+  pre {
+    margin: 0;
+    max-height: 22rem;
+    overflow: auto;
+    padding: var(--s-3) var(--s-5) var(--s-5);
+    font-size: var(--t-small);
+    line-height: 1.7;
+    overscroll-behavior: contain;
+  }
+
+  pre:focus-visible {
+    outline-color: var(--c-mao);
+    outline-offset: -4px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--s-4);
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    min-width: 0;
+    padding: var(--s-5);
+    border: 1.5px solid var(--c-ink);
+    border-radius: 1.25rem;
+  }
+
+  .card > p:not(.eyebrow) {
+    font-size: var(--t-small);
+  }
+
+  /* Banco em Java: preto com texto amarelo (laranja é a cor da IA). */
+  .card[data-tone='ink'] {
+    --accent: var(--c-mao);
+    background: var(--c-ink);
+    color: var(--c-mao);
+  }
+
+  .card[data-tone='ink'] :global(a.pill:hover) {
+    background: var(--c-mao);
+    color: var(--c-ink);
+  }
+
+  .card.soon {
+    border-style: dashed;
+  }
+
+  .card :global(.links) {
+    margin-top: auto;
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li + li::before {
+    content: '·';
+    margin-right: var(--s-2);
+  }
+
+  h3 {
+    font-size: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
+    line-height: 1;
+  }
+
+  .next-steps {
+    display: grid;
+    gap: var(--s-1);
+    font-size: var(--t-small);
+  }
+
+  .next-steps ul {
+    margin: 0;
+    padding-left: 1.1em;
+    list-style: disc;
+  }
+
+  @media (min-width: 64rem) {
+    :global(#fundamentals) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      grid-template-rows: auto auto 1fr auto;
+      column-gap: var(--s-7);
+    }
+
+    :global(#fundamentals) > :global(*) {
+      grid-column: 1;
+    }
+
+    :global(#fundamentals) > .code {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      align-self: start;
+    }
+
+    .intro {
+      align-self: start;
+    }
+
+    :global(#fundamentals) > .cards {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: var(--s-5);
+    }
+  }
+</style>

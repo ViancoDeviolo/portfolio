@@ -1,32 +1,34 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from './Hero.astro';
+import Living from './Living.astro';
 import Section from './Section.astro';
-import ProjectCard from './ProjectCard.astro';
-import BuildingCard from './BuildingCard.astro';
+import ProjectScreen from './ProjectScreen.astro';
+import Fundamentals from './Fundamentals.astro';
 import Workflow from './Workflow.astro';
 import Contact from './Contact.astro';
 import { getCollection, getEntry } from 'astro:content';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { name, tagline } = (await getEntry('site', 'site'))!.data;
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const side = (s: 'fund' | 'ia') => projects.filter((p) => p.data.side === s);
+const { name, tagline, sections, heroLabels } = (await getEntry('site', 'site'))!.data;
+const ia = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .flatMap((p) => (p.data.side === 'ia' ? [{ id: p.id, data: p.data }] : []));
+// "próximo" do último projeto leva à tela seguinte.
+const nextOf = (i: number) =>
+  i < ia.length - 1
+    ? { href: `#p-${ia[i + 1].id}`, label: ia[i + 1].data.title[lang] }
+    : { href: '#fundamentals', label: heroLabels.mao.title[lang] };
 ---
 <Base lang={lang} title={name} description={tagline[lang]} route="home">
   <Hero lang={lang} />
-  <Section id="fundamentals" lang={lang}>
-    <div class="cards">
-      {side('fund').map((p) => <ProjectCard id={p.id} p={p.data} lang={lang} />)}
-      <BuildingCard lang={lang} />
-    </div>
+  <Living lang={lang} />
+  <Section id="ai" lang={lang} tone="ia" heading={false}>
+    <h2 id="ai-title" class="eyebrow kicker"><span aria-hidden="true">{sections.ai.kicker[lang]} · </span>{sections.ai.title[lang]}</h2>
+    {ia.map((p, i) => <ProjectScreen id={p.id} p={p.data} lang={lang} index={i} total={ia.length} next={nextOf(i)} />)}
   </Section>
-  <Section id="ai" lang={lang} accent="ia">
-    <div class="cards">
-      {side('ia').map((p) => <ProjectCard id={p.id} p={p.data} lang={lang} />)}
-    </div>
-  </Section>
+  <Fundamentals lang={lang} />
   <Workflow lang={lang} />
   <Contact lang={lang} />
 </Base>

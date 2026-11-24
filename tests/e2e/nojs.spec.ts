@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { SECTION_IDS } from '../../src/lib/i18n';
 
 test.use({ javaScriptEnabled: false });
 
-const SECTIONS = ['fundamentals', 'ai', 'workflow', 'contact'];
 const cases = [
   { base: '/', other: '/en/', at: 'arroba' },
   { base: '/en/', other: '/', at: 'at' },
@@ -10,13 +10,29 @@ const cases = [
 
 for (const { base, other, at } of cases) {
   test.describe(`${base} sem JS`, () => {
-    test('as quatro seções aparecem com título e conteúdo', async ({ page }) => {
+    test('as cinco telas aparecem com título e conteúdo', async ({ page }) => {
       await page.goto(base);
-      for (const id of SECTIONS) {
+      for (const id of SECTION_IDS) {
         const s = page.locator(`#${id}`);
         await s.scrollIntoViewIfNeeded();
         await expect(s.locator('h2')).toBeVisible();
         expect((await s.innerText()).trim().length).toBeGreaterThan(40);
+      }
+    });
+
+    test('cada etiqueta da tela 02 é um link visível que leva ao seu projeto', async ({ page }) => {
+      await page.goto(base);
+      const tags = page.locator('[data-living-tag]');
+      expect(await tags.count()).toBe(7);
+      for (const tag of await tags.all()) {
+        await page.goto(base);
+        await tag.scrollIntoViewIfNeeded();
+        await expect(tag).toBeVisible();
+        const href = (await tag.getAttribute('href'))!;
+        expect(href).toMatch(/^#p-[a-z-]+$/);
+        await tag.click();
+        await expect(page).toHaveURL(new RegExp(`${href}$`));
+        await expect(page.locator(href)).toBeInViewport();
       }
     });
 
@@ -30,7 +46,7 @@ for (const { base, other, at } of cases) {
 
     test('e-mail legível pelo <noscript>', async ({ page }) => {
       await page.goto(base);
-      const dd = page.locator('#contact dd').first();
+      const dd = page.locator('#contact [data-email]');
       await dd.scrollIntoViewIfNeeded();
       // toContainText ignora <noscript>; innerText só traz o que foi renderizado.
       expect(await dd.evaluate((d: HTMLElement) => d.innerText.trim())).toMatch(new RegExp(`^\\S+ \\[${at}\\] \\S+\\.\\S+$`));

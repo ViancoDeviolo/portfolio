@@ -1,0 +1,10 @@
+---
+// "Sempre / em obra." vira o par tipográfico da spec 3.2: antes da barra, serifado itálico; depois, Archivo.
+const { id, text } = Astro.props as { id: string; text: string };
+const [mao, ia] = text.split(' / ');
+// Palavra longa (ex.: "construction.") em tipo gigante vazaria da coluna: corpo menor.
+const long = Math.max(...text.split(/[\s/]+/).map((w) => w.length)) > 9;
+---
+<h2 id={id} class:list={['title', { long }]}>
+  <span class="t-mao">{mao}</span>{ia && <> <span class="t-ia">{ia}</span></>}
+</h2>

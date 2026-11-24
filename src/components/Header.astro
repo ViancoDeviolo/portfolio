@@ -30,6 +30,34 @@ const { nav } = (await getEntry('site', 'site'))!.data;
     color: var(--c-ink);
   }
 
+  /* Fora da capa, o cabeçalho assume o fundo da tela que está embaixo dele (scripts/header-tone.ts). Sem JS, fica o da capa. */
+  .site-header[data-tone='ia'] {
+    background: var(--c-ia);
+  }
+
+  .site-header[data-tone='mao'] {
+    background: var(--c-mao);
+  }
+
+  .site-header[data-tone='split'] {
+    background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 0);
+  }
+
+  .site-header[data-tone='paper'] {
+    background: var(--c-paper);
+  }
+
+  .site-header[data-tone='ink'] {
+    --accent: var(--c-mao);
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .site-header[data-tone='ink'] .bar :global(.lang-switch) {
+    background: var(--c-paper);
+    color: var(--c-ink);
+  }
+
   .bar {
     position: relative;
     display: flex;
@@ -80,6 +108,7 @@ const { nav } = (await getEntry('site', 'site'))!.data;
     align-items: center;
     border: 1.5px solid var(--c-ink);
     background: var(--c-mao);
+    color: var(--c-ink); /* texto sobre amarelo é sempre preto, também no cabeçalho da tela 06 */
     transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
   }
 
@@ -99,4 +128,5 @@ const { nav } = (await getEntry('site', 'site'))!.data;
 
 <script>
   import '../scripts/focus';
+  import '../scripts/header-tone';
 </script>

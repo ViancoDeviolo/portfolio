@@ -83,3 +83,26 @@ for (const base of ['/', '/en/'])
     expect(o.style).not.toBe('none');
     expect(o.width).toBeGreaterThan(0);
   });
+
+for (const base of ['/', '/en/'])
+  test(`${base}: etiquetas da tela 02 alcançáveis por Tab, com contorno de 2 px ou mais`, async ({ page }) => {
+    await page.goto(base);
+    const tags = page.locator('[data-living-tag]');
+    const n = await tags.count();
+    expect(n).toBe(7);
+    // Começa no elemento focável que vem antes da primeira etiqueta.
+    await tags.first().evaluate((t) => {
+      const all = [...document.querySelectorAll<HTMLElement>('a[href], button:not([hidden]), summary, video[controls]')];
+      all[all.indexOf(t as HTMLElement) - 1].focus();
+    });
+    for (let i = 0; i < n; i++) {
+      await page.keyboard.press('Tab');
+      await expect(tags.nth(i)).toBeFocused();
+      const o = await tags.nth(i).evaluate((t) => {
+        const s = getComputedStyle(t);
+        return { style: s.outlineStyle, width: parseFloat(s.outlineWidth) };
+      });
+      expect(o.style).not.toBe('none');
+      expect(o.width).toBeGreaterThanOrEqual(2);
+    }
+  });
