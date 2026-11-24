@@ -123,7 +123,7 @@ test('movimento reduzido: snippet inteiro, respostas e textos visíveis sem espe
   expect(await opacityNow(page, '#workflow [data-answer]')).toEqual(['1', '1', '1']);
   await page.locator('#ai').scrollIntoViewIfNeeded();
   for (const o of await opacityNow(page, '#ai [data-reveal]')) expect(o).toBe('1');
-  expect(await page.locator('[data-hero] .name span, [data-hero] picture').evaluateAll((els) => els.flatMap((e) => e.getAnimations()).length)).toBe(0);
+  expect(await page.locator('[data-hero] .name span, .duo .figure').evaluateAll((els) => els.flatMap((e) => e.getAnimations()).length)).toBe(0);
 });
 
 test('o código é digitado e termina igual ao snippet', async ({ page, browser }, info) => {
@@ -132,6 +132,7 @@ test('o código é digitado e termina igual ao snippet', async ({ page, browser 
   await page.goto('/');
   await page.waitForLoadState('load');
   const pre = page.locator('#fundamentals pre[data-snippet]');
+  await expect(pre).toHaveAttribute('data-typing', 'armed'); // a digitação só se arma depois do load, com a CPU livre
   // mede dentro da página, poucos quadros depois de rolar: sem a latência do protocolo, que sob carga já veria o fim
   const early = await pre.evaluate(
     (e) =>
@@ -200,14 +201,22 @@ test('cards da tela 04 inclinam com o mouse, nunca com movimento reduzido', asyn
   expect(await tilt()).toBe('none');
 });
 
-test('a página escurece até o preto antes da tela 06', async ({ page }, info) => {
+test('a página escurece até o preto antes da tela 06, sem cobrir texto da 05', async ({ page }, info) => {
   test.skip(noWebgl(info.project.name));
   await page.goto('/');
-  await page.waitForLoadState('load');
   const dusk = page.locator('#workflow [data-dusk]');
-  await expect(dusk).toHaveCSS('opacity', '0');
-  await page.locator('#contact').evaluate((e) => scrollTo(0, scrollY + e.getBoundingClientRect().top - innerHeight / 2));
-  await expect.poll(async () => Number(await dusk.evaluate((e) => getComputedStyle(e).opacity))).toBeGreaterThan(0.2);
-  await page.locator('#contact').evaluate((e) => scrollTo(0, scrollY + e.getBoundingClientRect().top));
-  await expect.poll(async () => Number(await dusk.evaluate((e) => getComputedStyle(e).opacity))).toBeGreaterThan(0.99);
+  const box = async (sel: string) => (await page.locator(sel).boundingBox())!;
+  // a faixa vem depois de todo o texto da 05 e encosta na 06
+  const [last, d, c] = [await box('#workflow .evolution'), await box('#workflow [data-dusk]'), await box('#contact')];
+  expect(d.y).toBeGreaterThanOrEqual(last.y + last.height);
+  expect(Math.abs(d.y + d.height - c.y)).toBeLessThan(1);
+  expect(await dusk.evaluate((e) => getComputedStyle(e).backgroundImage)).toMatch(/linear-gradient\(.*rgb\(15, 15, 16\)\)$/);
+  // com a tabela à vista e a faixa entrando, o centro da tabela continua sendo a tabela
+  await dusk.evaluate((e) => scrollTo({ top: scrollY + e.getBoundingClientRect().top - innerHeight / 2, behavior: 'instant' }));
+  const hit = await page.locator('#workflow .evolution').evaluate((t) => {
+    const r = t.getBoundingClientRect();
+    const y = Math.max(r.top, Math.min(r.bottom, innerHeight / 2) - 10);
+    return t.contains(document.elementFromPoint(r.left + r.width / 2, y));
+  });
+  expect(hit).toBe(true);
 });

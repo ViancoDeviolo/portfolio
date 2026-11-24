@@ -1,11 +1,12 @@
-import { reduce } from './reveal';
+import { reduce, whenIdle } from './reveal';
 
 // Tela 04: o snippet é digitado sobre o próprio texto do <pre>. O texto inteiro fica sempre no DOM:
 // o que falta digitar só fica invisível (visibility), então o layout não pula e nada é inventado.
-const pre = document.querySelector<HTMLElement>('pre[data-snippet]');
 const CPS = 300; // caracteres por segundo: termina em cerca de 2 s
 
-if (pre && !reduce && pre.getBoundingClientRect().top > innerHeight) {
+whenIdle(() => {
+  const pre = document.querySelector<HTMLElement>('pre[data-snippet]');
+  if (!pre || reduce || pre.getBoundingClientRect().top <= innerHeight) return;
   const full = pre.textContent ?? '';
   const typed = document.createElement('span');
   const rest = document.createElement('span');
@@ -31,7 +32,7 @@ if (pre && !reduce && pre.getBoundingClientRect().top > innerHeight) {
     prep.disconnect();
     show(0);
     pre.replaceChildren(typed, rest);
-    pre.setAttribute('data-typing', '');
+    pre.setAttribute('data-typing', 'on');
     pre.setAttribute('aria-busy', 'true');
   }, { rootMargin: '0px 0px 30% 0px' });
 
@@ -49,8 +50,9 @@ if (pre && !reduce && pre.getBoundingClientRect().top > innerHeight) {
     raf = requestAnimationFrame(tick);
   }, { threshold: 0.3 });
 
+  pre.setAttribute('data-typing', 'armed');
   prep.observe(pre);
   go.observe(pre);
   // Mexer no bloco (rolar, clicar, focar) entrega o código inteiro na hora.
   for (const t of ['pointerdown', 'wheel', 'focus', 'touchstart'] as const) pre.addEventListener(t, finish, { once: true, passive: true });
-}
+});

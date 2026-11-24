@@ -58,6 +58,7 @@
   .ai-screen [data-block='evidence'] .eyebrow,
   .ai-screen [data-block='problem'] .eyebrow,
   .studying,
+  .dusk,
   .cv,
   .evidence div:not(:first-child) {
     display: none !important;

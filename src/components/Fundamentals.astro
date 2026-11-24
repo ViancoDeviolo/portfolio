@@ -104,7 +104,7 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
   }
 
   /* Cursor da digitação (scripts/type-code.ts): some quando o snippet termina. */
-  pre[data-typing] > :global(span:first-child)::after {
+  pre[data-typing='on'] > :global(span:first-child)::after {
     content: '';
     display: inline-block;
     width: 0.55ch;

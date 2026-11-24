@@ -35,8 +35,8 @@ const nextOf = (i: number) =>
 </Base>
 
 <script>
-  import { reveal } from '../scripts/reveal';
-  reveal(document.querySelectorAll<HTMLElement>('#ai [data-reveal]'));
+  import { reveal, whenIdle } from '../scripts/reveal';
+  whenIdle(() => reveal(document.querySelectorAll<HTMLElement>('#ai [data-reveal]')));
 </script>
 
 <style>
