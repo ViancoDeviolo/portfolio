@@ -5,7 +5,6 @@ import casual from '../assets/dupla/casual.png';
 import terno from '../assets/dupla/terno.png';
 import Halftone from './Halftone.astro';
 import GlobeStatic from './GlobeStatic.astro';
-import GlobeScene from './islands/GlobeScene';
 import { formatMonthYearShort } from '../lib/date';
 import type { Lang } from '../lib/i18n';
 
@@ -17,7 +16,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
 <section id="top" class="hero" data-hero data-tone="hero" aria-labelledby="hero-name">
   <Halftone />
   <GlobeStatic />
-  <div id="globe-stage"><GlobeScene client:only="react" /></div>
+  <div id="globe-stage"></div>
 
   <p class="note" data-living-note>{heroBadge[lang]} · {formatMonthYearShort(new Date(), lang)}</p>
   <h1 id="hero-name" class="name" data-hero-name><span class="t-mao">Lucas</span> <span class="t-ia">Cruz</span></h1>
@@ -38,6 +37,10 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
     <span class="label-sub">{heroLabels.ia.sub[lang]}</span>
   </a>
 </section>
+
+<script>
+  import '../scripts/globe';
+</script>
 
 <style>
   /* Camadas, de trás para frente: fundo dividido, retícula, globo, nome, fotos, textos. */
@@ -65,7 +68,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
     pointer-events: none;
   }
 
-  /* Cena 3D (islands/GlobeScene): um canvas fixo atrás do conteúdo, compartilhado pela capa e pelas telas 02 e 03.
+  /* Cena 3D (islands/GlobeScene, montada por scripts/globe.ts): um canvas fixo atrás do conteúdo, compartilhado pela capa e pelas telas 02 e 03.
      Ele fica sob o texto e sobre os fundos; por isso, com a cena viva, a capa sai do isolamento e o fundo dela
      desce para uma camada abaixo do canvas (Home.astro faz o mesmo com as telas 02 e 03). */
   #globe-stage {

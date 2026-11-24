@@ -46,6 +46,8 @@ it('three fora do caminho crítico', () => {
     const files = [...html.matchAll(/<link[^>]*rel="modulepreload"[^>]*href="([^"]+)"/g), ...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1]);
     expect(files.length, page).toBeGreaterThan(0);
     for (const f of files) expect(readFileSync(join('dist', new URL(f, SITE_URL).pathname), 'utf8'), `${page} -> ${f}`).not.toContain('WebGLRenderer');
+    // React também fica fora: só scripts/globe.ts o pede, por import(), depois do load e da primeira interação.
+    for (const f of files) expect(readFileSync(join('dist', new URL(f, SITE_URL).pathname), 'utf8'), `${page} -> ${f}`).not.toMatch(/createRoot|hydrateRoot/);
   }
 });
 

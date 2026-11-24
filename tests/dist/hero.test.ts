@@ -26,10 +26,7 @@ describe('capa', () => {
     expect($('[data-hero] [data-globe-static] svg').length).toBe(1);
     expect($('[data-hero] [data-halftone]').length).toBe(1);
     expect($('[data-hero] #globe-stage').length).toBe(1);
-    // só a ilha da cena (client:only) e o runtime embutido das ilhas, sem conteúdo renderizado no servidor
-    expect($.html).toMatch(
-      /<div[^>]*id="globe-stage"[^>]*>(?:<style>[^<]*<\/style>|<script>[\s\S]*?<\/script>)*<astro-island[^>]*client="only"[^>]*><\/astro-island><\/div>/,
-    );
+    expect($.html).toMatch(/<div[^>]*id="globe-stage"[^>]*><\/div>/); // vazio no HTML: scripts/globe.ts monta a cena
 
     // fotos: casual antes do terno, alt do site.yaml, só a do LCP com prioridade
     const imgs = $('[data-hero] img').nodes;
