@@ -35,6 +35,20 @@ const nextOf = (i: number) =>
 </Base>
 
 <style>
+  /* Com a cena 3D viva, o fundo laranja das telas 02 e 03 desce para baixo do canvas fixo (ver Hero.astro). */
+  :global(html[data-globe-live]) :global(:is(#living, #ai)) {
+    position: relative;
+    background: none;
+  }
+
+  :global(html[data-globe-live]) :global(:is(#living, #ai))::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: var(--c-ia);
+  }
+
   .ai-intro {
     max-width: 30rem;
     font-size: var(--t-lead);

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { externalLinks, load, resourceUrls, tags } from './html';
-import { inlineScriptHashes } from '../../src/lib/csp';
+import { inlineScriptHashes, inlineStyleHashes } from '../../src/lib/csp';
 import { SITE_URL } from '../../astro.config.mjs';
 
 const SITE_ORIGIN = new URL(SITE_URL).origin;
@@ -12,9 +12,13 @@ const distHtml = () => readdirSync('dist', { recursive: true }).map(String).filt
 
 describe.each(PAGES)('superfície %s', (file) => {
   const { html } = load(file);
-  it('sem script inline nem style', () => {
-    expect(html).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/);
-    expect(html).not.toMatch(/<style[\s>]|\sstyle="/);
+  // Script e style embutidos só entram com o hash na CSP (scripts/csp-hashes.mjs); nunca 'unsafe-inline'.
+  it('script e style embutidos só com hash no dist/_headers, sem atributo style', () => {
+    const headers = readFileSync('dist/_headers', 'utf8');
+    expect(headers).not.toContain('unsafe-');
+    for (const h of inlineScriptHashes(html)) expect(headers.match(/script-src[^;]*/)![0]).toContain(h);
+    for (const h of inlineStyleHashes(html)) expect(headers.match(/style-src[^;]*/)![0]).toContain(h);
+    expect(html).not.toMatch(/\sstyle="/);
   });
   it('nenhum recurso de terceiros', () => {
     const own = (u: string) => new URL(u, SITE_URL).origin === SITE_ORIGIN;
@@ -45,10 +49,13 @@ it('three fora do caminho crítico', () => {
   }
 });
 
-it('todo <script> embutido tem hash no dist/_headers', () => {
+it('todo <script> e <style> embutido tem hash no dist/_headers', () => {
   const headers = readFileSync('dist/_headers', 'utf8');
-  for (const f of distHtml())
-    for (const h of inlineScriptHashes(readFileSync(join('dist', f), 'utf8'))) expect(headers, f).toContain(h);
+  for (const f of distHtml()) {
+    const html = readFileSync(join('dist', f), 'utf8');
+    for (const h of inlineScriptHashes(html)) expect(headers.match(/script-src[^;]*/)![0], f).toContain(h);
+    for (const h of inlineStyleHashes(html)) expect(headers.match(/style-src[^;]*/)![0], f).toContain(h);
+  }
 });
 
 it('nenhum atributo style no HTML', () => {

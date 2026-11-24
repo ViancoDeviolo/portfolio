@@ -141,6 +141,15 @@ const nn = (n: number) => String(n).padStart(2, '0');
     min-width: 0;
   }
 
+  /* As partículas da cena 3D formaram a moldura desta tela: o pontilhado do CSS sai. */
+  .frame-wrap[data-globe-frame] {
+    border-color: transparent;
+  }
+
+  .frame-wrap {
+    transition: border-color 200ms ease;
+  }
+
   .more-media {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));

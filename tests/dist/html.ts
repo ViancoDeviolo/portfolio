@@ -53,7 +53,9 @@ const ENT: Record<string, string> = { '#39': "'", '#x27': "'", quot: '"', lt: '<
 export const load = (file: string) => parse(readFileSync(join('dist', file), 'utf8'));
 
 export function parse(source: string) {
-  const html = source.replace(/<!--[\s\S]*?-->/g, '');
+  const raw = source.replace(/<!--[\s\S]*?-->/g, '');
+  // Corpo de <script>/<style> embutido vira espaços do mesmo tamanho: o JS do runtime das ilhas tem "<" que não é tag.
+  const html = raw.replace(/(<(script|style)\b[^>]*>)([\s\S]*?)(<\/\2>)/gi, (_, a, _t, body, b) => a + ' '.repeat(body.length) + b);
   const nodes: Node[] = [...html.matchAll(/<([a-z][\w-]*)\b([^>]*)>/gi)].map((m) => ({
     tag: m[1].toLowerCase(),
     attrs: parseAttrs(m[2]),
@@ -91,7 +93,7 @@ export function parse(source: string) {
       nodes: found,
     };
   };
-  $.html = html;
+  $.html = raw;
   return $;
 }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fibonacciSphere, frameTargets, globeSvg, particleCount } from '../../src/lib/globe';
+import { fibonacciSphere, frameTargets, globeSvg, particleCount, spin, stagePosition, unproject } from '../../src/lib/globe';
 
 describe('fibonacciSphere', () => {
   it('gera n pontos de norma 1', () => {
@@ -41,5 +41,27 @@ describe('globeSvg', () => {
     const n = (svg.match(/<circle/g) ?? []).length;
     expect(n).toBeGreaterThan(0);
     expect(n).toBeLessThan(300);
+  });
+});
+
+describe('stagePosition', () => {
+  it('capa enquanto nada começou; depois a parada anterior mais o progresso da última que começou', () => {
+    expect(stagePosition([0, 0, 0])).toBe(0);
+    expect(stagePosition([0, 0.25, 0])).toBe(0.25);
+    expect(stagePosition([0, 1, 0])).toBe(1);
+    expect(stagePosition([0, 1, 0.5])).toBe(1.5);
+  });
+});
+
+describe('spin e unproject', () => {
+  it('unproject devolve o ponto que spin leva de volta a (sx, sy), na frente', () => {
+    for (const [sx, sy] of [[0.4, -0.3], [-0.6, 0.5], [0, 0]]) {
+      const [x, y, z] = unproject(sx, sy, 0.4);
+      expect(Math.hypot(x, y, z)).toBeCloseTo(1, 6);
+      const [px, py, pz] = spin(x, y, z, 0, 0.4);
+      expect(px).toBeCloseTo(sx, 6);
+      expect(py).toBeCloseTo(sy, 6);
+      expect(pz).toBeGreaterThan(0);
+    }
   });
 });

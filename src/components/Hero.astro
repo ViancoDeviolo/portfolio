@@ -5,6 +5,7 @@ import casual from '../assets/dupla/casual.png';
 import terno from '../assets/dupla/terno.png';
 import Halftone from './Halftone.astro';
 import GlobeStatic from './GlobeStatic.astro';
+import GlobeScene from './islands/GlobeScene';
 import { formatMonthYearShort } from '../lib/date';
 import type { Lang } from '../lib/i18n';
 
@@ -16,7 +17,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
 <section id="top" class="hero" data-hero data-tone="hero" aria-labelledby="hero-name">
   <Halftone />
   <GlobeStatic />
-  <div id="globe-stage"></div>
+  <div id="globe-stage"><GlobeScene client:only="react" /></div>
 
   <p class="note" data-living-note>{heroBadge[lang]} · {formatMonthYearShort(new Date(), lang)}</p>
   <h1 id="hero-name" class="name" data-hero-name><span class="t-mao">Lucas</span> <span class="t-ia">Cruz</span></h1>
@@ -52,16 +53,45 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
     min-height: max(36rem, calc(100svh - var(--header-h)));
     padding: var(--s-3) var(--edge) var(--s-7);
     /* O amarelo vai até a borda direita da retícula, onde os pontos laranja já se fundiram. */
-    background: linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
+    --hero-bg: linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
+    background: var(--hero-bg);
     color: var(--c-ink);
   }
 
   .hero :global([data-halftone]),
-  .hero :global([data-globe-static]),
-  #globe-stage {
+  .hero :global([data-globe-static]) {
     position: absolute;
     z-index: -1;
     pointer-events: none;
+  }
+
+  /* Cena 3D (islands/GlobeScene): um canvas fixo atrás do conteúdo, compartilhado pela capa e pelas telas 02 e 03.
+     Ele fica sob o texto e sobre os fundos; por isso, com a cena viva, a capa sai do isolamento e o fundo dela
+     desce para uma camada abaixo do canvas (Home.astro faz o mesmo com as telas 02 e 03). */
+  #globe-stage {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+
+  :global(html[data-globe-live]) #globe-stage {
+    opacity: 1;
+  }
+
+  :global(html[data-globe-live]) .hero {
+    isolation: auto;
+    background: none;
+  }
+
+  :global(html[data-globe-live]) .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: var(--hero-bg);
   }
 
   .hero :global([data-halftone]) {
@@ -72,8 +102,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
     translate: -50% 0;
   }
 
-  .hero :global([data-globe-static]),
-  #globe-stage {
+  .hero :global([data-globe-static]) {
     top: 12%;
     left: 50%;
     height: 80%;

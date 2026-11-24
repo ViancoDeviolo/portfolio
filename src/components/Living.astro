@@ -23,6 +23,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
           <a class="tag" href={`#p-${p.id}`} data-living-tag data-project-id={p.id} data-side={p.data.side} data-status={p.data.status}>
             <span class="name">{p.data.title[lang]}</span>
             <span class="status">{statusLabels[p.data.status][lang]}</span>
+            {p.data.lastChange && <span class="change">{p.data.lastChange[lang]}</span>}
           </a>
         </li>
       ))}
@@ -102,6 +103,48 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
     letter-spacing: 0.08em;
     text-transform: uppercase;
     opacity: 0.8;
+  }
+
+  /* "O que mudou na última versão": aparece no hover e no foco (funciona sem JS). */
+  .change {
+    position: absolute;
+    top: calc(100% + var(--s-2));
+    left: 50%;
+    z-index: 1;
+    width: max-content;
+    max-width: 16rem;
+    padding: var(--s-2) var(--s-3);
+    border-radius: 0.75rem;
+    background: var(--c-ink);
+    color: var(--c-paper);
+    font-weight: 500;
+    white-space: normal;
+    translate: -50% -4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms var(--ease-out), translate 150ms var(--ease-out);
+  }
+
+  a.tag {
+    position: relative;
+  }
+
+  a.tag:focus-visible .change {
+    opacity: 1;
+    translate: -50% 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.tag:hover .change {
+      opacity: 1;
+      translate: -50% 0;
+    }
+  }
+
+  /* Com a cena 3D, a etiqueta com foco aparece mesmo quando o globo a levou para trás. */
+  .tags li:focus-within {
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   .tag:focus-visible {

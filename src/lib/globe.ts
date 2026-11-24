@@ -59,3 +59,28 @@ export const globeSvg = (n: number, r: number, tilt: number): string => {
   const s = r + pad;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-s} ${-s} ${2 * s} ${2 * s}" fill="currentColor" aria-hidden="true">${body}</svg>`;
 };
+
+/**
+ * Posição contínua da cena entre as paradas (capa = 0, tela 02 = 1, molduras = 2, 3, ...),
+ * a partir do progresso de chegada em cada parada (0 a 1; a parada 0 não tem gatilho).
+ */
+export const stagePosition = (p: number[]): number => {
+  for (let k = p.length - 1; k > 0; k--) if (p[k] > 0) return k - 1 + p[k];
+  return 0;
+};
+
+/** Ponto da esfera girado em y (giro) e inclinado em x, como no globo estático: [x, y para cima, profundidade]. */
+export const spin = (x: number, y: number, z: number, angle: number, tilt: number): [number, number, number] => {
+  const x1 = x * Math.cos(angle) + z * Math.sin(angle);
+  const z1 = -x * Math.sin(angle) + z * Math.cos(angle);
+  return [x1, y * Math.cos(tilt) - z1 * Math.sin(tilt), y * Math.sin(tilt) + z1 * Math.cos(tilt)];
+};
+
+/** Inverso de `spin` com giro 0: o ponto da frente da esfera que aparece em (sx, sy) na tela. */
+export const unproject = (sx: number, sy: number, tilt: number): [number, number, number] => {
+  const k = Math.min(1, 0.95 / Math.hypot(sx, sy)); // mantém o ponto dentro do disco
+  const x = sx * k;
+  const y = sy * k;
+  const sz = Math.sqrt(1 - x * x - y * y);
+  return [x, y * Math.cos(tilt) + sz * Math.sin(tilt), -y * Math.sin(tilt) + sz * Math.cos(tilt)];
+};

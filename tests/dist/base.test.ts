@@ -24,13 +24,9 @@ describe('layout base', () => {
     expect($('a[data-lang-switch]').attr('href')).toBe(alt);
   });
 
-  it('não tem script, style nem atributo style inline', () => {
-    for (const file of ['index.html', 'en/index.html']) {
-      const { html } = load(file);
-      expect(html).not.toMatch(/<style\b/i);
-      expect(html).not.toMatch(/\sstyle\s*=/i);
-      expect(html).not.toMatch(/<script\b(?![^>]*\bsrc=)/i);
-    }
+  // Script e style embutidos (runtime das ilhas do Astro) são permitidos só com hash na CSP: ver security.test.ts.
+  it('não tem atributo style inline', () => {
+    for (const file of ['index.html', 'en/index.html']) expect(load(file).html).not.toMatch(/\sstyle\s*=/i);
   });
 });
 
