@@ -39,7 +39,8 @@ it('o matcher enxerga elementos (não passa vazio)', () => {
 it('three fora do caminho crítico', () => {
   for (const page of ['index.html', 'en/index.html']) {
     const { html } = load(page);
-    const files = [...html.matchAll(/<link[^>]*rel="modulepreload"[^>]*href="([^"]+)"/g), ...html.matchAll(/<script[^>]*ssrc="([^"]+)"/g)].map((m) => m[1]);
+    const files = [...html.matchAll(/<link[^>]*rel="modulepreload"[^>]*href="([^"]+)"/g), ...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1]);
+    expect(files.length, page).toBeGreaterThan(0);
     for (const f of files) expect(readFileSync(join('dist', new URL(f, SITE_URL).pathname), 'utf8'), `${page} -> ${f}`).not.toContain('WebGLRenderer');
   }
 });
@@ -51,7 +52,7 @@ it('todo <script> embutido tem hash no dist/_headers', () => {
 });
 
 it('nenhum atributo style no HTML', () => {
-  for (const f of distHtml()) expect(readFileSync(join('dist', f), 'utf8'), f).not.toMatch(/sstyle=/);
+  for (const f of distHtml()) expect(readFileSync(join('dist', f), 'utf8'), f).not.toMatch(/\sstyle=/);
 });
 
 it('o build publica o _headers com a CSP', () => {
