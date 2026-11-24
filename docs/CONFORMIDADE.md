@@ -61,6 +61,8 @@
 - [ ] Teste real: leitor de tela (NVDA no Windows) em pelo menos a home e um projeto. (Lucas, após o deploy)
 - [x] Automático: axe (via Playwright) sem violações + `web-design-guidelines` sem pendências. — `tests/e2e/a11y.spec.ts` (WCAG 2.2 AA, 6 páginas); `web-design-guidelines` aplicada, ver `.superpowers/sdd/2026-11-22-portfolio-v1/task-16-report.md`
 
+> **Adiado em 24/11/2026 (decisão do Lucas, redesign):** a acessibilidade avançada (auditoria axe completa, leitores de tela, contraste AA em todos os estados) fica para depois do redesign. Segue mantido o mínimo: `prefers-reduced-motion` respeitado, texto alternativo em fotos, prints e vídeos, e links e botões alcançáveis por teclado com foco visível.
+
 ## 5. Segurança
 
 - [x] **[obrigatório] Cabeçalhos HTTP** (configurados na hospedagem): — `public/_headers` + `tests/unit/headers.test.ts` e `tests/dist/security.test.ts` (inclui `X-Frame-Options: DENY`); conferir a resposta real após o deploy

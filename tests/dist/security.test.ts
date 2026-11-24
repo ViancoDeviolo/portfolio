@@ -1,14 +1,14 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { externalLinks, load, resourceUrls, tags } from './html';
+import { inlineScriptHashes } from '../../src/lib/csp';
 import { SITE_URL } from '../../astro.config.mjs';
 
 const SITE_ORIGIN = new URL(SITE_URL).origin;
 const PAGES = ['index.html', 'en/index.html', 'privacidade/index.html', 'en/privacy/index.html', 'termos/index.html', 'en/terms/index.html'];
 
-const totalJsBytes = (dir: string) =>
-  readdirSync(dir).filter((f) => f.endsWith('.js')).reduce((n, f) => n + statSync(join(dir, f)).size, 0);
+const distHtml = () => readdirSync('dist', { recursive: true }).map(String).filter((f) => f.endsWith('.html'));
 
 describe.each(PAGES)('superfície %s', (file) => {
   const { html } = load(file);
@@ -36,8 +36,22 @@ it('o matcher enxerga elementos (não passa vazio)', () => {
   expect(externalLinks(html).length).toBeGreaterThan(0);
 });
 
-it('JS total abaixo de 15 KB', () => {
-  expect(totalJsBytes('dist/_astro')).toBeLessThan(15 * 1024);
+it('three fora do caminho crítico', () => {
+  for (const page of ['index.html', 'en/index.html']) {
+    const { html } = load(page);
+    const files = [...html.matchAll(/<link[^>]*rel="modulepreload"[^>]*href="([^"]+)"/g), ...html.matchAll(/<script[^>]*ssrc="([^"]+)"/g)].map((m) => m[1]);
+    for (const f of files) expect(readFileSync(join('dist', new URL(f, SITE_URL).pathname), 'utf8'), `${page} -> ${f}`).not.toContain('WebGLRenderer');
+  }
+});
+
+it('todo <script> embutido tem hash no dist/_headers', () => {
+  const headers = readFileSync('dist/_headers', 'utf8');
+  for (const f of distHtml())
+    for (const h of inlineScriptHashes(readFileSync(join('dist', f), 'utf8'))) expect(headers, f).toContain(h);
+});
+
+it('nenhum atributo style no HTML', () => {
+  for (const f of distHtml()) expect(readFileSync(join('dist', f), 'utf8'), f).not.toMatch(/sstyle=/);
 });
 
 it('o build publica o _headers com a CSP', () => {

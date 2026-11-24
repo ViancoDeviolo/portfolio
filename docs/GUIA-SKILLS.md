@@ -19,6 +19,17 @@
 | Chrome DevTools | MCP | Ver o site rodando: console, rede, Lighthouse, Core Web Vitals |
 | Figma | MCP | Ler/gerar telas no Figma, se formos desenhar antes de codar |
 
+## 1.1 Papéis no redesign (spec de 24/11/2026, seção 8)
+
+| Papel | Ferramenta |
+|---|---|
+| Direção | **Taste** (`design-taste-frontend`): referências reais e verificador no navegador para barrar cara de template |
+| Movimento | **Emil** (`emil-design-eng`, `animate`, `review-animations`) |
+| Polimento | **Impeccable** |
+| Peças | **Magic MCP** e **shadcn MCP**, sempre reestilizados com os tokens |
+| Conferência final | **Web Design Guidelines**, sem barrar por acessibilidade avançada |
+| Verificação no navegador | **Playwright MCP** / **Chrome DevTools MCP**: comparar cada tela com o esboço correspondente |
+
 ## 2. Hierarquia quando as skills discordarem
 
 1. **Decisões do Lucas** (design aprovado em `docs/`) — sempre vencem.
