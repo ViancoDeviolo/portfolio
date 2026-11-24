@@ -1,0 +1,6 @@
+---
+import { globeSvg } from '../lib/globe';
+// Globo da capa sem JS. Poucos pontos para o HTML ficar leve; a cena 3D (Tasks 8-9) monta em #globe-stage.
+const svg = globeSvg(900, 160, 0.4);
+---
+<div class="globe-static" data-globe-static set:html={svg} />

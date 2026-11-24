@@ -68,6 +68,7 @@ describe('siteSchema: telas novas', () => {
     contact: { emailUser: 'a', emailDomain: 'b.c', linkedin: 'https://a.b', github: 'https://a.b' },
     statusLabels: { concluido: L, 'em-evolucao': L, 'em-desenvolvimento': L },
     heroLabels: { mao: { title: L, sub: L }, ia: { title: L, sub: L } },
+    nav: [{ id: 'ai', label: L }],
     method: [L, L, L],
     comparison: { prompt: L, answers: [{ ai: 'Gemini', excerpt: L }, { ai: 'Copilot', excerpt: L }, { ai: 'GPT', excerpt: L }] },
     evolution: [{ label: L, before: L, after: L }],

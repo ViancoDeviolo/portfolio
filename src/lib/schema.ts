@@ -53,6 +53,7 @@ export const siteSchema = z.object({
   stackGroups: z.array(z.object({ label: l10n, items: z.array(str) })),
   about: l10n,
   heroLabels: z.object({ mao: z.object({ title: l10n, sub: l10n }), ia: z.object({ title: l10n, sub: l10n }) }),
+  nav: z.array(z.object({ id: z.enum(SECTION_IDS), label: l10n })).min(1),
   method: z.array(l10n).length(3),
   comparison: z.object({
     prompt: l10n,

@@ -75,6 +75,11 @@ site:
     ia:
       title: { pt: Engenharia de IA, en: AI engineering }
       sub: { pt: 'prompt, orquestração e revisão', en: 'prompt, orchestration and review' }
+  nav:
+    - { id: ai, label: { pt: Projetos, en: Projects } }
+    - { id: workflow, label: { pt: Como eu uso IA, en: How I use AI } }
+    - { id: fundamentals, label: { pt: Fundamentos, en: Fundamentals } }
+    - { id: contact, label: { pt: Contato, en: Contact } }
   method:
     - pt: Escrevo o pedido com contexto, regras e formato.
       en: I write the request with context, rules and format.

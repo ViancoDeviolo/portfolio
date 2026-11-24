@@ -4,7 +4,7 @@ import { SITE_URL } from '../../astro.config.mjs';
 
 // shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant and child (>) combinators.
 // Selectors split on whitespace, so an attribute value with a space ([alt="a b"]) is unsupported; move to a real parser if a test needs one.
-type Node = { tag: string; attrs: Record<string, string>; start: number; end: number };
+type Node = { tag: string; attrs: Record<string, string>; start: number; end: number; selfClosing?: boolean };
 
 const ATTR = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g;
 
@@ -59,8 +59,10 @@ export function parse(source: string) {
     attrs: parseAttrs(m[2]),
     start: m.index! + m[0].length,
     end: -1,
+    selfClosing: m[2].trimEnd().endsWith('/'), // SVG: <circle ... />
   }));
-  const end = (n: Node) => (n.end < 0 ? (n.end = VOID.has(n.tag) ? n.start : closeOf(html, n.tag, n.start)) : n.end);
+  const end = (n: Node) =>
+    n.end < 0 ? (n.end = VOID.has(n.tag) || n.selfClosing ? n.start : closeOf(html, n.tag, n.start)) : n.end;
   const inside = (a: Node, c: Node) => a.start < c.start && c.start < end(a);
   const parentOf = (c: Node) => nodes.findLast((a) => a.start < c.start && inside(a, c));
   const $ = (sel: string) => {

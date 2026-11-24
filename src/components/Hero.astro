@@ -3,130 +3,194 @@ import { Picture } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import casual from '../assets/dupla/casual.png';
 import terno from '../assets/dupla/terno.png';
+import Halftone from './Halftone.astro';
+import GlobeStatic from './GlobeStatic.astro';
 import { formatMonthYear } from '../lib/date';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { name, tagline, heroAlt: ALT, livingNote, heroLabels } = (await getEntry('site', 'site'))!.data;
-// Sizes are the uncropped width: at most 560 px tall is about 420 px wide; on phones about 75vw.
-const sizes = '(min-width: 60rem) 420px, min(75vw, 420px)';
-const glow = { class: 'glow' };
+const { heroAlt: ALT, livingNote, heroLabels } = (await getEntry('site', 'site'))!.data;
+// Cada foto mede 0,45 × a altura da capa (cerca de 370 px a 1440×900); no celular, cerca de 45vw.
+const sizes = '(min-width: 48rem) 380px, 45vw';
 ---
-<div class="hero wrap">
-  <div class="intro">
-    <h1>{name}</h1>
-    <p class="lead">{tagline[lang]}</p>
-    <p class="living-note">{livingNote[lang].replace('{date}', formatMonthYear(new Date(), lang))}</p>
-  </div>
+<section id="top" class="hero" data-hero aria-labelledby="hero-name">
+  <Halftone />
+  <GlobeStatic />
+  <div id="globe-stage"></div>
+
+  <p class="note" data-living-note>{livingNote[lang].replace('{date}', formatMonthYear(new Date(), lang))}</p>
+  <h1 id="hero-name" class="name" data-hero-name><span class="t-mao">Lucas</span> <span class="t-ia">Cruz</span></h1>
+
   <div class="duo">
-    <a class="half" href="#fundamentals">
-      <Picture class="figure casual" src={casual} alt={ALT.casual[lang]} formats={['avif', 'webp']}
-        widths={[320, 480, 640, 774]} sizes={sizes} pictureAttributes={glow} loading="eager" fetchpriority="high" />
-      <span class="label">{heroLabels.mao.title[lang]}</span>
-    </a>
-    <a class="half" href="#ai" data-side="ia">
-      <Picture class="figure terno" src={terno} alt={ALT.terno[lang]} formats={['avif', 'webp']}
-        widths={[320, 480, 640, 774, 1086]} sizes={sizes} pictureAttributes={glow} loading="eager" />
-      <span class="label">{heroLabels.ia.title[lang]}</span>
-    </a>
+    <Picture class="figure casual" src={casual} alt={ALT.casual[lang]} formats={['avif', 'webp']}
+      widths={[320, 480, 640, 774]} sizes={sizes} loading="eager" fetchpriority="high" />
+    <Picture class="figure terno" src={terno} alt={ALT.terno[lang]} formats={['avif', 'webp']}
+      widths={[320, 480, 640, 774, 1086]} sizes={sizes} loading="eager" />
   </div>
-</div>
+
+  <a class="label mao" href="#fundamentals">
+    <span class="label-title t-mao">{heroLabels.mao.title[lang]}</span>
+    <span class="label-sub">{heroLabels.mao.sub[lang]}</span>
+  </a>
+  <a class="label ia" href="#ai">
+    <span class="label-title t-ia">{heroLabels.ia.title[lang]}</span>
+    <span class="label-sub">{heroLabels.ia.sub[lang]}</span>
+  </a>
+</section>
 
 <style>
+  /* Camadas, de trás para frente: fundo dividido, retícula, globo, nome, fotos, textos. */
   .hero {
+    --accent: var(--c-ink); /* anel de foco preto sobre amarelo e laranja */
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
     display: grid;
-    gap: var(--s-6);
-    padding-block: var(--s-6) var(--s-8);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    column-gap: var(--s-5);
+    min-height: max(36rem, calc(100svh - var(--header-h)));
+    padding: var(--s-3) var(--edge) var(--s-7);
+    background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 50%);
+    color: var(--c-ink);
   }
 
-  .intro {
-    display: grid;
-    gap: var(--s-4);
-    align-content: center;
+  .hero :global([data-halftone]),
+  .hero :global([data-globe-static]),
+  #globe-stage {
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
   }
 
-  @media (min-width: 60rem) {
-    .hero {
-      grid-template-columns: 1fr auto;
-      align-items: center;
-    }
+  .hero :global([data-halftone]) {
+    inset-block: 0;
+    left: 50%;
+    width: clamp(10rem, 22vw, 24rem);
+    height: 100%;
+    translate: -50% 0;
+  }
+
+  .hero :global([data-globe-static]),
+  #globe-stage {
+    top: 12%;
+    left: 50%;
+    height: 80%;
+    aspect-ratio: 1;
+    max-width: 92vw;
+    translate: -50% 0;
+  }
+
+  .hero :global([data-globe-static] svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .note {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--t-label);
+    letter-spacing: 0.01em;
+    max-width: none;
+  }
+
+  .note::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* O nome fica atrás das fotos: "Lucas" no amarelo, "Cruz" no laranja. */
+  .name {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: var(--s-3);
+    font-size: min(17.5vw, 30svh);
+    line-height: 0.9;
+    letter-spacing: normal;
+    text-wrap: nowrap;
   }
 
   .duo {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 15.75rem)); /* 252 px wide at 0.45 = 560 px tall at most */
-    justify-content: center;
+    position: absolute;
+    z-index: 1;
+    bottom: -22%; /* a capa corta as pernas, como no esboço */
+    left: 50%;
+    /* Da altura da capa; numa tela estreita, o que couber na largura (cada foto tem 0,45 × a altura). */
+    height: min(100%, (100vw - 2 * var(--edge)) / 0.9);
+    width: max-content;
+    display: flex;
+    translate: -50% 0;
+    pointer-events: none;
   }
 
-  .half {
-    display: grid;
-    justify-items: center;
-    gap: var(--s-3);
-    text-decoration: none;
-    border-radius: var(--radius);
+  /* Os recortes têm margens transparentes largas: corta para as costas se encontrarem no centro.
+     A máscara apaga as bordas, onde o ruído do alfa do recorte desenharia uma linha. */
+  .duo :global(picture) {
+    height: 100%;
   }
 
-  /* The glow sits on the wrapper, so the shadow follows the masked silhouette below. */
-  .glow {
-    display: block;
-    width: 100%;
-    filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--accent) 35%, transparent));
-    transition: filter var(--dur-hover) ease;
-  }
-
-  .half:focus-visible .glow {
-    filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
-    transition: none; /* foco por teclado acende na hora; só o hover do mouse anima */
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .half:hover .glow {
-      filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--accent) 70%, transparent));
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .glow {
-      transition: none;
-    }
-  }
-
-  /* The cutouts carry wide transparent margins; crop them so the two backs meet at the centre.
-     The mask fades the cut feet and the box edges, where the cutout's faint alpha noise would draw a line. */
   .figure {
-    width: 100%;
+    height: 100%;
+    width: auto;
+    max-width: none; /* o max-width global das imagens esmagaria a foto quando a capa é estreita */
     aspect-ratio: 0.45;
     object-fit: cover;
-    -webkit-mask-image: linear-gradient(to top, transparent, #000 10%), var(--fade-x);
-    -webkit-mask-composite: source-in; /* Safari < 15.4: só os nomes prefixados */
-    mask-image: linear-gradient(to top, transparent, #000 10%), var(--fade-x);
-    mask-composite: intersect;
+    -webkit-mask-image: var(--fade-x);
+    mask-image: var(--fade-x);
   }
 
   .casual {
-    --fade-x: linear-gradient(to right, transparent, #000 15%, #000 96%, transparent);
-    object-position: 10% 0;
+    --fade-x: linear-gradient(to right, transparent, #000 15%, #000 99%, transparent);
+    object-position: 3% 0;
   }
 
   .terno {
-    --fade-x: linear-gradient(to left, transparent, #000 15%, #000 96%, transparent);
-    object-position: 77% 0;
+    --fade-x: linear-gradient(to left, transparent, #000 15%, #000 99%, transparent);
+    object-position: 84% 0;
   }
 
   .label {
-    display: inline-flex;
-    align-items: start;
-    text-wrap: balance;
-    min-height: var(--target);
-    color: var(--accent);
-    font-size: var(--t-lead);
-    font-weight: var(--weight-strong);
-    text-align: center;
-    line-height: var(--lh-heading);
+    position: relative;
+    z-index: 2;
+    grid-row: 4;
+    align-self: end;
+    display: grid;
+    gap: var(--s-1);
+    text-decoration: none;
+    border-radius: 0.25rem;
   }
 
-  .living-note {
-    color: var(--muted);
+  .label.ia {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .label-title {
+    font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
+    line-height: 1;
+  }
+
+  .label.mao .label-title {
+    font-size: clamp(1.75rem, 1.25rem + 1.5vw, 2.75rem); /* o serifado é menor no olho: compensa */
+  }
+
+  .label-sub {
     font-size: var(--t-small);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .label:hover .label-title {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.12em;
+    }
   }
 </style>

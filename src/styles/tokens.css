@@ -47,6 +47,7 @@
   /* Layout */
   --wrap: 80rem;
   --gut: clamp(1rem, 5.5vw, 5rem);
+  --edge: clamp(1rem, 3.4vw, 3rem); /* margem lateral da capa e do cabeçalho, de ponta a ponta */
   --target: 2.75rem;
   --radius: 0.75rem;
 

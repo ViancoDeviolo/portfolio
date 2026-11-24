@@ -8,7 +8,7 @@ describe.each([
   const $ = load(file);
 
   it('seções na ordem do §5.4', () => {
-    expect(ids($('main > section'))).toEqual(['fundamentals', 'ai', 'workflow', 'contact']);
+    expect(ids($('main > section'))).toEqual(['top', 'fundamentals', 'ai', 'workflow', 'contact']); // a capa virou section#top (Task 6)
   });
 
   it('fluxo em 3 passos, sem logos, passo 3 aponta para Fundamentos', () => {
