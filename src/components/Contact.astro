@@ -78,9 +78,12 @@ const ext = { rel: 'noopener noreferrer' };
     overflow-wrap: anywhere;
   }
 
-  .btn:active,
-  .mail :global(a.email:active) {
-    transform: scale(0.97);
+  /* Movimento reduzido: sem escala no clique nem deslocamento no hover. */
+  @media (prefers-reduced-motion: no-preference) {
+    .btn:active,
+    .mail :global(a.email:active) {
+      transform: scale(0.97);
+    }
   }
 
   /* Movimento reduzido: sem deslocamento no hover. */
@@ -129,13 +132,6 @@ const ext = { rel: 'noopener noreferrer' };
       grid-column: 2;
       grid-row: 2 / span 3;
       align-self: start;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .btn:active,
-    .mail :global(a.email:active) {
-      transform: none;
     }
   }
 </style>

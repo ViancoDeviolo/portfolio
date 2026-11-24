@@ -217,24 +217,31 @@ a {
 }
 
 /* Título em dupla tipográfica (Title.astro): serifado em cima, Archivo embaixo. */
+/* O corpo segue a largura da coluna do título (cqi), para cada palavra caber inteira numa linha:
+   o Archivo 900 mede cerca de 0,53em por letra; 18cqi cabe palavras de até 10 letras ("respostas.", "conversar."),
+   e .long (14cqi) cabe até 13 ("construction."). */
 .title {
-  font-size: clamp(2.25rem, 0.5rem + 8.6vw, 9.25rem);
+  container-type: inline-size;
   line-height: 0.92;
   letter-spacing: normal;
-  text-wrap: wrap;
-}
-
-.title.long {
-  font-size: clamp(2rem, 0.5rem + 6.4vw, 6.5rem);
 }
 
 .title > span {
   display: block;
+  font-size: min(9.25rem, 18cqi);
 }
 
-.title .t-mao {
-  font-size: 1.04em;
+.title.long > span {
+  font-size: min(6.5rem, 14cqi);
+}
+
+.title > .t-mao {
+  font-size: min(9.6rem, 20cqi);
   line-height: 1;
+}
+
+.title.long > .t-mao {
+  font-size: min(6.75rem, 15cqi);
 }
 
 [data-tone='ink'] .title .t-mao {

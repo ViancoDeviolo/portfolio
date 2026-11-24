@@ -55,3 +55,22 @@ test('320: os números-link das evidências têm área de toque de 44 px', async
     expect(hits).toEqual([true, true]);
   }
 });
+
+// Títulos em tipo gigante: cada palavra cabe inteira na coluna, sem quebra no meio e sem rolagem.
+for (const vp of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { width: 360, height: 800 }])
+  for (const base of ['/', '/en/'])
+    test(`${vp.width} ${base}: nenhuma palavra dos títulos quebra no meio`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await page.goto(base);
+      await page.evaluate(() => document.fonts.ready);
+      await noHScroll(page);
+      // Sem quebra forçada, uma palavra larga demais transborda a linha: é isso que se mede.
+      const over = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>('.title > span')].flatMap((s) => {
+          s.style.overflowWrap = 'normal';
+          s.style.wordBreak = 'normal';
+          return s.scrollWidth > s.clientWidth + 1 ? [`${s.textContent} ${s.scrollWidth}>${s.clientWidth}`] : [];
+        }),
+      );
+      expect(over).toEqual([]);
+    });
