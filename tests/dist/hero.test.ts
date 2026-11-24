@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml'; // transitiva (vem com o Astro)
 import { load } from './html';
-import { formatMonthYear } from '../../src/lib/date';
+import { formatMonthYearShort } from '../../src/lib/date';
 
-const { heroAlt, heroLabels } = parse(readFileSync('src/content/site.yaml', 'utf8')).site;
+const { heroAlt, heroLabels, heroBadge } = parse(readFileSync('src/content/site.yaml', 'utf8')).site;
 
 describe('capa', () => {
   it.each([
@@ -49,9 +49,8 @@ describe('capa', () => {
     expect($('[data-hero] a[href=#ai]').text()).toContain(heroLabels.ia.title[lang]);
     for (const ai of ['Claude', 'GPT', 'Gemini', 'Copilot']) expect(hero).not.toContain(ai);
 
-    // selo "portfólio vivo" com a data
+    // selo "portfólio vivo · projetos em evolução · nov 2026" (spec §4)
     const note = $('[data-hero] [data-living-note]').text();
-    expect(note).toContain(formatMonthYear(new Date(), lang));
-    expect(note).not.toContain('{date}');
+    expect(note).toBe(`${heroBadge[lang]} · ${formatMonthYearShort(new Date(), lang)}`);
   });
 });

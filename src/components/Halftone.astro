@@ -1,35 +1,32 @@
 ---
-// Retícula da capa, gerada no build. Grade de colunas desencontradas: à esquerda do centro, pontos laranja
-// crescem sobre o amarelo; à direita, pontos amarelos encolhem sobre o laranja. A cobertura de laranja
-// sobe sem salto de 0 a 100% (no centro os dois lados cobrem 50%).
+// Retícula da capa, gerada no build: pontos laranja crescem sobre o amarelo, da esquerda para a direita,
+// até se fundirem no laranja que começa na borda direita (o fundo da capa troca de cor ali).
+// Grade de colunas desencontradas (meio passo); com R_FULL o ponto cobre a célula inteira.
 const S = 14; // passo da grade, em unidades do viewBox
-const N = 22; // colunas (par: o centro cai entre duas)
+const N = 22; // colunas
 const H = 2800; // alto o bastante para nunca faltar ponto; o resto é cortado (slice)
-const R50 = S * Math.sqrt(0.5 / Math.PI); // raio que cobre 50% de uma célula S×S
+const R_FULL = S * 0.63; // 0,625·S fecha a grade desencontrada
 const cols = Array.from({ length: N }, (_, i) => {
-  const t = (i + 0.5) / N; // 0 → 1, da esquerda para a direita
-  const left = t < 0.5;
-  const cover = left ? t : 1 - t; // fração da célula coberta pelo ponto, 0 → 0,5 → 0
-  return { i, left, r: +(R50 * Math.sqrt(cover * 2)).toFixed(2), y: (i % 2) * (S / 2) };
+  const t = (i + 0.5) / N; // 0 → 1
+  return { i, r: +(R_FULL * Math.sqrt(t)).toFixed(2), y: (i % 2) * (S / 2) };
 });
+// Cada coluna tem 3·S de largura e 3 pontos por ladrilho: o ponto maior que a célula invade as vizinhas sem ser cortado.
 ---
 <svg class="halftone" data-halftone viewBox={`0 0 ${N * S} ${H}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
   <defs>
     {cols.map((c) => (
-      <pattern id={`ht-${c.i}`} patternUnits="userSpaceOnUse" x={c.i * S} y={c.y} width={S} height={S}>
-        <circle class={c.left ? 'ia' : 'mao'} cx={S / 2} cy={S / 2} r={c.r} />
+      <pattern id={`ht-${c.i}`} patternUnits="userSpaceOnUse" x={(c.i - 1) * S} y={c.y} width={3 * S} height={S}>
+        <circle cx={1.5 * S} cy={-S / 2} r={c.r} />
+        <circle cx={1.5 * S} cy={S / 2} r={c.r} />
+        <circle cx={1.5 * S} cy={1.5 * S} r={c.r} />
       </pattern>
     ))}
   </defs>
-  {cols.map((c) => <rect x={c.i * S} y="0" width={S} height={H} fill={`url(#ht-${c.i})`} />)}
+  {cols.map((c) => <rect x={(c.i - 1) * S} y={-S} width={3 * S} height={H + 2 * S} fill={`url(#ht-${c.i})`} />)}
 </svg>
 
 <style>
-  .ia {
+  circle {
     fill: var(--c-ia);
-  }
-
-  .mao {
-    fill: var(--c-mao);
   }
 </style>

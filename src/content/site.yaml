@@ -14,6 +14,7 @@ site:
   livingNote:
     pt: 'Portfólio vivo: os projetos continuam evoluindo. Atualizado em {date}.'
     en: 'Living portfolio: the projects keep evolving. Updated {date}.'
+  heroBadge: { pt: 'portfólio vivo · projetos em evolução', en: 'living portfolio · projects in progress' }
   sections:
     living:
       title: { pt: Sempre / em obra., en: Always / under construction. }

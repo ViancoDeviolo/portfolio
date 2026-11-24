@@ -4,8 +4,8 @@ const { lang, path } = Astro.props as { lang: Lang; path: string };
 const to: Lang = lang === 'pt' ? 'en' : 'pt';
 const label = to === 'en' ? 'English version' : 'Versão em português';
 const tag = to === 'en' ? 'en' : 'pt-BR';
+// O nome acessível inclui o texto visível (PT / EN), para quem navega por voz.
 ---
-<!-- O nome acessível inclui o texto visível (PT / EN), para quem navega por voz. -->
 <a class="lang-switch" href={switchHref(path, null, to)} hreflang={tag} lang={tag} aria-label={`${label} (PT / EN)`} data-lang-switch>
   PT / EN
 </a>

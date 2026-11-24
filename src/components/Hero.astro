@@ -5,11 +5,11 @@ import casual from '../assets/dupla/casual.png';
 import terno from '../assets/dupla/terno.png';
 import Halftone from './Halftone.astro';
 import GlobeStatic from './GlobeStatic.astro';
-import { formatMonthYear } from '../lib/date';
+import { formatMonthYearShort } from '../lib/date';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { heroAlt: ALT, livingNote, heroLabels } = (await getEntry('site', 'site'))!.data;
+const { heroAlt: ALT, heroBadge, heroLabels } = (await getEntry('site', 'site'))!.data;
 // Cada foto mede 0,45 × a altura da capa (cerca de 370 px a 1440×900); no celular, cerca de 45vw.
 const sizes = '(min-width: 48rem) 380px, 45vw';
 ---
@@ -18,7 +18,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
   <GlobeStatic />
   <div id="globe-stage"></div>
 
-  <p class="note" data-living-note>{livingNote[lang].replace('{date}', formatMonthYear(new Date(), lang))}</p>
+  <p class="note" data-living-note>{heroBadge[lang]} · {formatMonthYearShort(new Date(), lang)}</p>
   <h1 id="hero-name" class="name" data-hero-name><span class="t-mao">Lucas</span> <span class="t-ia">Cruz</span></h1>
 
   <div class="duo">
@@ -51,7 +51,8 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
     column-gap: var(--s-5);
     min-height: max(36rem, calc(100svh - var(--header-h)));
     padding: var(--s-3) var(--edge) var(--s-7);
-    background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 50%);
+    /* O amarelo vai até a borda direita da retícula, onde os pontos laranja já se fundiram. */
+    background: linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
     color: var(--c-ink);
   }
 
@@ -66,7 +67,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
   .hero :global([data-halftone]) {
     inset-block: 0;
     left: 50%;
-    width: clamp(10rem, 22vw, 24rem);
+    width: var(--band);
     height: 100%;
     translate: -50% 0;
   }
@@ -109,10 +110,11 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
   .name {
     grid-column: 1 / -1;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: baseline;
+    gap: 0.22em; /* as costas se encontram no centro: a cabeça casual cobre o "s", a do terno o "C" */
     margin-top: var(--s-3);
-    font-size: min(17.5vw, 30svh);
+    font-size: min(16.5vw, 30svh);
     line-height: 0.9;
     letter-spacing: normal;
     text-wrap: nowrap;
@@ -121,7 +123,7 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
   .duo {
     position: absolute;
     z-index: 1;
-    bottom: -22%; /* a capa corta as pernas, como no esboço */
+    bottom: -16%; /* a capa corta as pernas, como no esboço */
     left: 50%;
     /* Da altura da capa; numa tela estreita, o que couber na largura (cada foto tem 0,45 × a altura). */
     height: min(100%, (100vw - 2 * var(--edge)) / 0.9);

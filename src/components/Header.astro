@@ -24,7 +24,7 @@ const { nav } = (await getEntry('site', 'site'))!.data;
     position: sticky;
     top: 0;
     z-index: 10;
-    background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 50%);
+    background: linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
     color: var(--c-ink);
   }
 

@@ -61,7 +61,7 @@ describe('lastChange', () => {
 
 describe('siteSchema: telas novas', () => {
   const site = () => ({
-    name: 'x', tagline: L, heroAlt: { casual: L, terno: L }, livingNote: L,
+    name: 'x', tagline: L, heroAlt: { casual: L, terno: L }, livingNote: L, heroBadge: L,
     sections: Object.fromEntries(['living', 'ai', 'fundamentals', 'workflow', 'contact'].map((k) => [k, { title: L }])),
     studyingNow: [L], workflow: [{ title: L, body: L }, { title: L, body: L }, { title: L, body: L }], workflowFooter: L,
     stackGroups: [], about: L,

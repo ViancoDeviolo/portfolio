@@ -46,6 +46,7 @@ export const siteSchema = z.object({
   tagline: l10n,
   heroAlt: z.object({ casual: l10n, terno: l10n }),
   livingNote: l10n,
+  heroBadge: l10n,
   sections: z.object(sections),
   studyingNow: z.array(l10n).min(1),
   workflow: z.array(z.object({ title: l10n, body: l10n })).length(3),
