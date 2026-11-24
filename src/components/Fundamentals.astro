@@ -20,7 +20,7 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
 
   <figure class="code">
     <figcaption><span translate="no">ideiaV1.py</span> · {ui.codeBy[lang]}</figcaption>
-    {/* Código real do Lucas, sem edição (spec 4, tela 04). A digitação entra na Task 9, sobre este mesmo texto. */}
+    {/* Código real do Lucas, sem edição (spec 4, tela 04). scripts/type-code.ts digita sobre este mesmo texto. */}
     <pre data-snippet translate="no" tabindex="0" role="region" aria-label="ideiaV1.py">{snippet.trimEnd()}</pre>
   </figure>
 
@@ -29,7 +29,7 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
       const d = p.data;
       if (d.side !== 'fund') return null;
       return (
-        <article id={`p-${p.id}`} class="card" data-tone={p.id === 'banco-java' ? 'ink' : 'mao'} aria-labelledby={`p-${p.id}-title`}>
+        <article id={`p-${p.id}`} class="card" data-tilt data-tone={p.id === 'banco-java' ? 'ink' : 'mao'} aria-labelledby={`p-${p.id}-title`}>
           <ul class="stack eyebrow" aria-label="Stack" translate="no">{d.stack.map((s) => <li>{s}</li>)}</ul>
           <h3 id={`p-${p.id}-title`} class="t-mao">{d.title[lang]}</h3>
           <p>{d.problem[lang]}</p>
@@ -52,13 +52,18 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
         </article>
       );
     })}
-    <div class="card soon">
+    <div class="card soon" data-tilt>
       <p class="eyebrow">{ui.nextCard.kicker[lang]}</p>
       <h3 class="t-mao">{ui.nextCard.title[lang]}</h3>
       <p>{ui.nextCard.body[lang]}</p>
     </div>
   </div>
 </Section>
+
+<script>
+  import '../scripts/type-code';
+  import '../scripts/tilt';
+</script>
 
 <style>
   :global(#fundamentals) {
@@ -96,6 +101,17 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
     font-size: var(--t-small);
     line-height: 1.7;
     overscroll-behavior: contain;
+  }
+
+  /* Cursor da digitação (scripts/type-code.ts): some quando o snippet termina. */
+  pre[data-typing] > :global(span:first-child)::after {
+    content: '';
+    display: inline-block;
+    width: 0.55ch;
+    height: 1.15em;
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    background: var(--c-mao);
   }
 
   pre:focus-visible {
@@ -140,6 +156,13 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
     gap: var(--s-2);
     align-items: start;
+  }
+
+  /* Inclinação com o mouse (scripts/tilt.ts): a transição suaviza cada passo do ponteiro. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .card {
+      transition: transform 300ms var(--ease-out);
+    }
   }
 
   .card.soon {

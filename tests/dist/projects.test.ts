@@ -95,7 +95,7 @@ describe('projetos', () => {
     expect(posters.length).toBe(videos.length);
     expect(posters.every((i) => /-poster\.webp$/.test(i.attrs.src) && i.attrs.loading === 'lazy' && i.attrs.alt === '' && i.attrs.width && i.attrs.height)).toBe(true);
     expect($('video[autoplay]').length).toBe(0); // autoplay só via JS
-    expect($('button[aria-pressed]').length).toBe(videos.length);
+    expect($('button.video-toggle[aria-pressed]').length).toBe(videos.length);
     expect($('button.video-toggle[aria-label] .glyph[aria-hidden=true]').length).toBe(videos.length);
 
     // prints responsivos: AVIF + WebP gerados pelo Astro, nunca o arquivo original

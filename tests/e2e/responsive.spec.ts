@@ -20,6 +20,8 @@ for (const base of ['/', '/en/']) {
   test(`320 ${base}: a dupla fica lado a lado`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 });
     await page.goto(base);
+    // mede a posição final: a entrada da capa (Hero.astro) aproxima as fotos até encostarem
+    await page.locator('.duo .figure').evaluateAll((els) => Promise.all(els.flatMap((e) => e.getAnimations().map((a) => a.finished))));
     const [a, b] = await Promise.all(
       [0, 1].map(async (i) => (await page.locator('.duo .figure').nth(i).boundingBox())!),
     );

@@ -66,7 +66,7 @@ describe('siteSchema: telas novas', () => {
     studyingNow: [L], about: L,
     ui: {
       legend: { mao: L, ia: L }, next: L, result: L, codeBy: L, nextCard: { kicker: L, title: L, body: L },
-      request: L, answerOf: L, evolution: { title: L, before: L, after: L }, studying: L, cv: L, footerNote: L,
+      request: L, answerOf: L, highlight: L, evolution: { title: L, before: L, after: L }, studying: L, cv: L, footerNote: L,
     },
     contact: { emailUser: 'a', emailDomain: 'b.c', linkedin: 'https://a.b', github: 'https://a.b' },
     statusLabels: { concluido: L, 'em-evolucao': L, 'em-desenvolvimento': L },

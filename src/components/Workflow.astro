@@ -9,6 +9,7 @@ const { lang } = Astro.props as { lang: Lang };
 const { method, evolution, ui } = (await getEntry('site', 'site'))!.data;
 ---
 <Section id="workflow" lang={lang} tone="split">
+  <div class="dusk" data-dusk aria-hidden="true"></div>
   <ol class="method">
     {method.map((m) => <li>{m[lang]}</li>)}
   </ol>
@@ -36,6 +37,10 @@ const { method, evolution, ui } = (await getEntry('site', 'site'))!.data;
   </table>
 </Section>
 
+<script>
+  import '../scripts/dusk';
+</script>
+
 <style>
   /* Metade amarela, metade laranja (spec 4, tela 05). */
   :global(#workflow) {
@@ -43,6 +48,17 @@ const { method, evolution, ui } = (await getEntry('site', 'site'))!.data;
     grid-template-columns: minmax(0, 1fr);
     align-content: start;
     gap: var(--s-6);
+    position: relative;
+  }
+
+  /* Camada preta que escurece a tela até o preto da 06 (scripts/dusk.ts); sem JS fica transparente. */
+  .dusk {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--c-ink);
+    opacity: 0;
+    pointer-events: none;
   }
 
   .method {

@@ -191,6 +191,42 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
     object-position: 84% 0;
   }
 
+  /* Entrada da capa (spec 5, tela 01): "Lucas" vem de um lado e "Cruz" do outro, e as fotos se aproximam até encostar.
+     Só translate, a partir de um estado visível: nada começa transparente, então o LCP (a foto casual) não espera.
+     Animação CSS e não JS: roda no compositor desde a primeira pintura, enquanto a página ainda carrega. */
+  @media (prefers-reduced-motion: no-preference) {
+    .name > span,
+    .figure {
+      animation: hero-in 900ms var(--ease-out) both;
+    }
+
+    .name > .t-mao {
+      --from: -0.4em 0;
+    }
+
+    .name > .t-ia {
+      --from: 0.4em 0;
+    }
+
+    .figure {
+      animation-delay: 60ms; /* o nome chega primeiro; as fotos vêm logo atrás */
+    }
+
+    .casual {
+      --from: -14% 0;
+    }
+
+    .terno {
+      --from: 14% 0;
+    }
+  }
+
+  @keyframes hero-in {
+    from {
+      translate: var(--from);
+    }
+  }
+
   .label {
     position: relative;
     z-index: 2;

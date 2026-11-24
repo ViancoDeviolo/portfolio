@@ -56,19 +56,19 @@ const nn = (n: number) => String(n).padStart(2, '0');
   )}
 
   <div class="blocks">
-    <div class="block" data-block="problem">
+    <div class="block" data-reveal data-block="problem">
       <p class="eyebrow">{L.problem}</p>
       <p>{p.problem[lang]}</p>
     </div>
-    <div class="block" data-block="iDecided">
+    <div class="block" data-reveal data-block="iDecided">
       <p class="eyebrow">{p.iDecidedLabel?.[lang] ?? L.iDecided}</p>
       <p>{p.iDecided[lang]}</p>
     </div>
-    <div class="block" data-block="aiDid">
+    <div class="block" data-reveal data-block="aiDid">
       <p class="eyebrow">{L.aiDid}</p>
       <p>{p.aiDid[lang]}</p>
     </div>
-    <div class="block" data-block="evidence">
+    <div class="block" data-reveal data-block="evidence">
       <p class="eyebrow">{ui.result[lang]}</p>
       <Evidence evidence={p.evidence} lang={lang} />
       {p.terminal && (

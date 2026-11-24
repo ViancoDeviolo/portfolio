@@ -95,3 +95,119 @@ test('o LCP da capa não é o canvas', async ({ page, browserName }, info) => {
   expect(tags.length).toBeGreaterThan(0);
   expect(tags).not.toContain('CANVAS');
 });
+
+// ── Momentos e microinterações (Task 9): só animam o que já está no HTML estático.
+const mobile = (name: string) => name === 'mobile';
+// O snippet como o HTML estático o entrega: lido num contexto sem JS.
+const staticSnippet = async (browser: import('@playwright/test').Browser) => {
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const p = await ctx.newPage();
+  await p.goto('/');
+  const text = await p.locator('#fundamentals pre[data-snippet]').innerText();
+  await ctx.close();
+  return text;
+};
+const opacityNow = (page: Page, sel: string) =>
+  page.locator(sel).evaluateAll((els) => els.map((e) => getComputedStyle(e).opacity));
+
+test('movimento reduzido: snippet inteiro, respostas e textos visíveis sem esperar', async ({ page, browser }, info) => {
+  test.skip(noWebgl(info.project.name));
+  const snippet = await staticSnippet(browser);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page.waitForLoadState('load');
+  await page.locator('#fundamentals').scrollIntoViewIfNeeded();
+  expect(await page.locator('#fundamentals pre[data-snippet]').innerText()).toBe(snippet);
+  await page.locator('#workflow .answers').scrollIntoViewIfNeeded();
+  expect(await page.locator('#workflow [data-answer]').count()).toBe(3);
+  expect(await opacityNow(page, '#workflow [data-answer]')).toEqual(['1', '1', '1']);
+  await page.locator('#ai').scrollIntoViewIfNeeded();
+  for (const o of await opacityNow(page, '#ai [data-reveal]')) expect(o).toBe('1');
+  expect(await page.locator('[data-hero] .name span, [data-hero] picture').evaluateAll((els) => els.flatMap((e) => e.getAnimations()).length)).toBe(0);
+});
+
+test('o código é digitado e termina igual ao snippet', async ({ page, browser }, info) => {
+  test.skip(noWebgl(info.project.name));
+  const snippet = await staticSnippet(browser);
+  await page.goto('/');
+  await page.waitForLoadState('load');
+  const pre = page.locator('#fundamentals pre[data-snippet]');
+  // mede dentro da página, poucos quadros depois de rolar: sem a latência do protocolo, que sob carga já veria o fim
+  const early = await pre.evaluate(
+    (e) =>
+      new Promise<number>((done) => {
+        e.scrollIntoView({ block: 'center', behavior: 'instant' });
+        // o menor comprimento visto quadro a quadro, por meio segundo (o Firefox entrega o IntersectionObserver uns quadros depois)
+        let min = Infinity;
+        const t0 = performance.now();
+        const look = () => {
+          min = Math.min(min, e.innerText.length);
+          if (performance.now() - t0 < 500) requestAnimationFrame(look);
+          else done(min);
+        };
+        look();
+      }),
+  );
+  expect(early, 'a digitação começa vazia').toBeLessThan(snippet.length);
+  await page.waitForTimeout(3000);
+  expect(await pre.innerText()).toBe(snippet);
+});
+
+test('tela 05: botões com aria-pressed alternam a resposta em destaque', async ({ page }, info) => {
+  test.skip(noWebgl(info.project.name));
+  await page.goto('/');
+  const buttons = page.locator('#workflow [data-answer-pick] button');
+  const answers = page.locator('#workflow [data-answer]');
+  await buttons.first().scrollIntoViewIfNeeded();
+  expect(await buttons.count()).toBe(3);
+  const check = async (i: number) => {
+    for (let j = 0; j < 3; j++) await expect(buttons.nth(j)).toHaveAttribute('aria-pressed', String(i === j));
+    await expect(page.locator('#workflow [data-answer][data-active]')).toHaveCount(1);
+    await expect(answers.nth(i)).toHaveAttribute('data-active', '');
+  };
+  await check(0);
+  await buttons.nth(1).click();
+  await check(1);
+  await buttons.nth(2).focus();
+  await page.keyboard.press('Enter');
+  await check(2);
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Space');
+  await check(1);
+});
+
+test('cards da tela 04 inclinam com o mouse, nunca com movimento reduzido', async ({ page }, info) => {
+  test.skip(noWebgl(info.project.name) || mobile(info.project.name), 'só ponteiro fino');
+  const card = page.locator('#fundamentals .card').first();
+  const tilt = async () => {
+    // o card é mais alto que a janela: o topo dele fica logo abaixo do cabeçalho fixo
+    await card.evaluate((e) => scrollTo({ top: scrollY + e.getBoundingClientRect().top - 150, behavior: 'instant' }));
+    const b = (await card.boundingBox())!;
+    // perto da quina de propósito: o lado sob o ponteiro sobe, então ele não escapa do card e a inclinação não pisca
+    await page.mouse.move(b.x + b.width * 0.9, b.y + 40);
+    await page.mouse.move(b.x + b.width * 0.95, b.y + 20, { steps: 3 });
+    await page.waitForTimeout(400);
+    return card.evaluate((e) => getComputedStyle(e).transform);
+  };
+  await page.goto('/');
+  const t = await tilt();
+  expect(t).not.toBe('none');
+  // rotação máxima de 4°: m11 de rotateY(4°) é cos(4°) ≈ 0,9976
+  const m = t.match(/matrix3d\(([^)]+)\)/)![1].split(',').map(Number);
+  expect(m[0]).toBeGreaterThanOrEqual(Math.cos((4 * Math.PI) / 180) - 1e-3);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  expect(await tilt()).toBe('none');
+});
+
+test('a página escurece até o preto antes da tela 06', async ({ page }, info) => {
+  test.skip(noWebgl(info.project.name));
+  await page.goto('/');
+  await page.waitForLoadState('load');
+  const dusk = page.locator('#workflow [data-dusk]');
+  await expect(dusk).toHaveCSS('opacity', '0');
+  await page.locator('#contact').evaluate((e) => scrollTo(0, scrollY + e.getBoundingClientRect().top - innerHeight / 2));
+  await expect.poll(async () => Number(await dusk.evaluate((e) => getComputedStyle(e).opacity))).toBeGreaterThan(0.2);
+  await page.locator('#contact').evaluate((e) => scrollTo(0, scrollY + e.getBoundingClientRect().top));
+  await expect.poll(async () => Number(await dusk.evaluate((e) => getComputedStyle(e).opacity))).toBeGreaterThan(0.99);
+});

@@ -114,6 +114,7 @@ site:
       body: { pt: Os fundamentos que estou estudando agora viram projetos aqui., en: "The fundamentals I'm studying now become projects here." }
     request: { pt: Pedido, en: Request }
     answerOf: { pt: 'resposta {n} de {total}', en: 'answer {n} of {total}' }
+    highlight: { pt: Destacar a resposta, en: Highlight the answer }
     evolution:
       title: { pt: Como a Renovação de Apólices evoluiu, en: How Policy Renewal evolved }
       before: { pt: v1, en: v1 }

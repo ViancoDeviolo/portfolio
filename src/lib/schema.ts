@@ -72,6 +72,7 @@ export const siteSchema = z.object({
     nextCard: z.object({ kicker: l10n, title: l10n, body: l10n }),
     request: l10n,
     answerOf: l10n,
+    highlight: l10n,
     evolution: z.object({ title: l10n, before: l10n, after: l10n }),
     studying: l10n,
     cv: l10n,

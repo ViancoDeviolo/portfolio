@@ -63,6 +63,15 @@
     display: none !important;
   }
 
+  /* Entradas com a rolagem (scripts/reveal.ts) e inclinação dos cards não valem no papel. */
+  [data-reveal],
+  [data-answer],
+  [data-tilt] {
+    opacity: 1 !important;
+    translate: none !important;
+    transform: none !important;
+  }
+
   .hero,
   .screen,
   .ai-screen,

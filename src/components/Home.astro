@@ -26,13 +26,18 @@ const nextOf = (i: number) =>
   <Living lang={lang} />
   <Section id="ai" lang={lang} tone="ia" heading={false}>
     <h2 id="ai-title" class="eyebrow kicker"><span aria-hidden="true">{sections.ai.kicker[lang]} · </span>{sections.ai.title[lang]}</h2>
-    <p class="ai-intro">{sections.ai.intro![lang]}</p>
+    <p class="ai-intro" data-reveal>{sections.ai.intro![lang]}</p>
     {ia.map((p, i) => <ProjectScreen id={p.id} p={p.data} lang={lang} index={i} total={ia.length} next={nextOf(i)} />)}
   </Section>
   <Fundamentals lang={lang} />
   <Workflow lang={lang} />
   <Contact lang={lang} />
 </Base>
+
+<script>
+  import { reveal } from '../scripts/reveal';
+  reveal(document.querySelectorAll<HTMLElement>('#ai [data-reveal]'));
+</script>
 
 <style>
   /* Com a cena 3D viva, o fundo laranja das telas 02 e 03 desce para baixo do canvas fixo (ver Hero.astro). */
