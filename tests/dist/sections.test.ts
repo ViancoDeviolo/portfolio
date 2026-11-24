@@ -8,7 +8,7 @@ describe.each([
   const $ = load(file);
 
   it('seções na ordem do §5.4', () => {
-    expect(ids($('main > section'))).toEqual(['fundamentals', 'ai', 'workflow', 'stack', 'about', 'contact']);
+    expect(ids($('main > section'))).toEqual(['fundamentals', 'ai', 'workflow', 'contact']);
   });
 
   it('fluxo em 3 passos, sem logos, passo 3 aponta para Fundamentos', () => {
@@ -17,11 +17,6 @@ describe.each([
     // dentro da lista e depois do início do 3º (e último) item: o link está no passo 3, não no rodapé da seção
     const third = $('#workflow ol > li').nodes[2];
     expect($('#workflow ol > li a[href=#fundamentals]').nodes.some((a) => a.start > third.start)).toBe(true);
-  });
-
-  it('stack sem barras de nível nem logos', () => {
-    expect($('#stack img').length + $('#stack progress').length + $('#stack meter').length).toBe(0);
-    expect($('#stack').text()).toContain('Java');
   });
 
   it('e-mail sem literal no HTML', () => {

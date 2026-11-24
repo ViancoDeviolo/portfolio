@@ -8,7 +8,7 @@ const { heroAlt } = parse(readFileSync('src/content/site.yaml', 'utf8')).site;
 
 describe('capa', () => {
   it.each([
-    ['index.html', 'pt', 'Fundamentos', 'Engenharia com IA'],
+    ['index.html', 'pt', 'Fundamentos', 'Engenharia de IA'],
     ['en/index.html', 'en', 'Fundamentals', 'AI engineering'],
   ] as const)('%s', (file, lang, fund, ai) => {
     const $ = load(file);

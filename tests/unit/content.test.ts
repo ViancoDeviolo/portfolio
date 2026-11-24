@@ -39,4 +39,19 @@ describe('conteúdo do site', () => {
     expect(projects).toHaveLength(7);
     for (const { id, ...p } of projects) expect(projectSchema.safeParse(p).error?.issues, id).toBeUndefined();
   });
+
+  it('texto novo tem PT e EN; trechos da comparação cabem em 220 caracteres', () => {
+    const texts = [
+      site.about, site.comparison.prompt,
+      ...site.method,
+      ...Object.values<{ title: object; sub: object }>(site.heroLabels).flatMap((h) => [h.title, h.sub]),
+      ...site.comparison.answers.map((a: { excerpt: object }) => a.excerpt),
+      ...site.evolution.flatMap((e: { label: object; before: object; after: object }) => [e.label, e.before, e.after]),
+    ] as { pt: string; en: string }[];
+    for (const t of texts) {
+      expect(t.pt?.trim().length).toBeGreaterThan(0);
+      expect(t.en?.trim().length).toBeGreaterThan(0);
+    }
+    for (const a of site.comparison.answers) expect(a.excerpt.pt.length).toBeLessThanOrEqual(220);
+  });
 });

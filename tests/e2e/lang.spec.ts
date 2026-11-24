@@ -37,11 +37,11 @@ const shiftTabUnderHeader = async (page: Page, sel: string) => {
 
 test('troca de idioma mantém a seção visível', async ({ page }) => {
   await page.goto('/');
-  await toTop(page, 'about');
+  await toTop(page, 'contact');
   await press(page, page.locator('header').getByRole('link', { name: 'English version' }));
-  await expect(page).toHaveURL(/\/en\/#about$/);
-  await expect(page.locator('#about')).toBeInViewport();
-  await clearsHeader(page, '#about h2');
+  await expect(page).toHaveURL(/\/en\/#contact$/);
+  await expect(page.locator('#contact')).toBeInViewport();
+  await clearsHeader(page, '#contact h2');
 });
 
 test('troca numa seção do meio mantém a seção e o título livre', async ({ page }) => {
@@ -70,10 +70,10 @@ for (const base of ['/', '/en/'])
     expect(name.x + name.width).toBeLessThanOrEqual(link.x);
     expect(link.y + link.height).toBeLessThanOrEqual(h);
     expect(link.x + link.width).toBeLessThanOrEqual(width);
-    await page.goto(`${base}#about`);
+    await page.goto(`${base}#contact`);
     await page.evaluate(() => (document.documentElement.style.fontSize = '200%'));
-    await page.evaluate(() => document.getElementById('about')!.scrollIntoView());
-    await clearsHeader(page, '#about h2');
+    await page.evaluate(() => document.getElementById('contact')!.scrollIntoView());
+    await clearsHeader(page, '#contact h2');
     await shiftTabUnderHeader(page, '#ai a');
   });
 

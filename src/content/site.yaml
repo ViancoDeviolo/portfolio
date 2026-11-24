@@ -15,27 +15,22 @@ site:
     pt: 'Portfólio vivo: os projetos continuam evoluindo. Atualizado em {date}.'
     en: 'Living portfolio: the projects keep evolving. Updated {date}.'
   sections:
-    fundamentals:
-      title: { pt: Fundamentos, en: Fundamentals }
-      intro:
-        pt: Projetos feitos à mão, para mostrar a base por baixo do resto.
-        en: Projects built by hand, to show the groundwork under everything else.
+    living:
+      title: { pt: Sempre / em obra., en: Always / under construction. }
     ai:
-      title: { pt: Engenharia com IA, en: AI engineering }
+      title: { pt: Engenharia de IA, en: AI engineering }
       intro:
         pt: Em cada projeto, o que a IA fez e o que eu decidi.
         en: For each project, what the AI did and what I decided.
-    workflow:
-      title: { pt: Como eu trabalho com IA, en: How I work with AI }
-    stack:
-      title: { pt: Stack, en: Stack }
+    fundamentals:
+      title: { pt: à mão., en: by hand. }
       intro:
-        pt: Tecnologias que aparecem nos projetos acima.
-        en: Technologies used in the projects above.
-    about:
-      title: { pt: Sobre, en: About }
+        pt: Projetos feitos à mão, para mostrar a base por baixo do resto.
+        en: Projects built by hand, to show the groundwork under everything else.
+    workflow:
+      title: { pt: Quatro / respostas., en: Four / answers. }
     contact:
-      title: { pt: Contato, en: Contact }
+      title: { pt: Vamos / conversar., en: "Let's / talk." }
   studyingNow:
     - pt: Fundamentos de Java e Python do zero.
       en: Java and Python fundamentals from scratch.
@@ -71,12 +66,49 @@ site:
     - label: { pt: Agentes de IA, en: AI agents }
       items: [CrewAI]
   about:
-    - pt: Sou analista júnior na MAPFRE. Comecei no atendimento, passei pelo Backoffice Cliente e hoje estou no CNO Broker.
-      en: I'm a junior analyst at MAPFRE. I started in customer service, moved to the Backoffice Cliente team and now work at CNO Broker.
-    - pt: Estudo Engenharia de Computação na UniFECAF, com formatura prevista para 2027.
-      en: I study Computer Engineering at UniFECAF and expect to graduate in 2027.
-    - pt: Quero trabalhar com backend em bancos e seguradoras, usando Java, Spring, PostgreSQL e Python.
-      en: I want to work on backend systems at banks and insurers, with Java, Spring, PostgreSQL and Python.
+    pt: Sou analista júnior na MAPFRE e estudo Engenharia de Computação na UniFECAF, com formatura prevista para 2027. Quero trabalhar com backend em bancos e seguradoras.
+    en: I'm a junior analyst at MAPFRE and I study Computer Engineering at UniFECAF, expecting to graduate in 2027. I want to work on backend systems at banks and insurers.
+  heroLabels:
+    mao:
+      title: { pt: Fundamentos, en: Fundamentals }
+      sub: { pt: construídos sem atalho, en: built without shortcuts }
+    ia:
+      title: { pt: Engenharia de IA, en: AI engineering }
+      sub: { pt: 'prompt, orquestração e revisão', en: 'prompt, orchestration and review' }
+  method:
+    - pt: Escrevo o pedido com contexto, regras e formato.
+      en: I write the request with context, rules and format.
+    - pt: Mando o mesmo pedido para quatro IAs.
+      en: I send the same request to four AIs.
+    - pt: Comparo, testo e fico com o que se sustenta.
+      en: I compare, test and keep what holds up.
+  comparison:
+    prompt:
+      pt: Revisar, como engenheiro sênior, uma função que decide sem LLM se uma alteração é compatível com um sistema legado. Apontar bugs e casos de borda, dizer se faz sentido manter a decisão fora do LLM e sugerir no máximo 3 melhorias. Em português, em até 200 palavras, em tópicos.
+      en: Review, as a senior engineer, a function that decides without an LLM whether a change is compatible with a legacy system. Point out bugs and edge cases, say whether it makes sense to keep the decision outside the LLM, and suggest at most 3 improvements. In Portuguese, in up to 200 words, as bullet points.
+    answers:
+      - ai: Gemini
+        excerpt:
+          pt: Sim. Regras de negócio, limites financeiros e roteamento de sistemas exigem determinismo, auditoria, baixa latência e zero risco de alucinação. O LLM deve apenas explicar e redigir em cima do resultado já calculado.
+          en: Yes. Business rules, financial limits and system routing require determinism, auditability, low latency and zero risk of hallucination. The LLM should only explain and draft on top of the result already computed.
+      - ai: Copilot
+        excerpt:
+          pt: A regra é determinística, auditável, reproduzível e regulatória. O LLM deve explicar o resultado, não decidir compatibilidade.
+          en: The rule is deterministic, auditable, reproducible and regulatory. The LLM should explain the result, not decide compatibility.
+      - ai: GPT
+        excerpt:
+          pt: 'Atenção arquitetural: a tarefa `task_conflict` pede status final ao LLM. Mesmo com a regra no código, o agente pode contradizê-la.'
+          en: 'Architectural warning: the `task_conflict` task asks the LLM for the final status. Even with the rule in code, the agent can contradict it.'
+  evolution:
+    - label: { pt: Agentes, en: Agents }
+      before: { pt: 1 pesquisador genérico, en: 1 generic researcher }
+      after: { pt: '4 especializados (risco, preço, compatibilidade, proposta)', en: '4 specialized (risk, pricing, compatibility, proposal)' }
+    - label: { pt: Modelo, en: Model }
+      before: { pt: Gemini 2.5 Flash (a chave da OpenAI falhou), en: Gemini 2.5 Flash (the OpenAI key failed) }
+      after: { pt: Groq `gpt-oss-120b` (LLaMA 3.3 descontinuado), en: Groq `gpt-oss-120b` (LLaMA 3.3 discontinued) }
+    - label: { pt: Decisão crítica, en: Critical decision }
+      before: { pt: toda com o LLM, en: entirely with the LLM }
+      after: { pt: regra do legado em função Python determinística, en: legacy rule in a deterministic Python function }
   contact:
     emailUser: lucascruzcorp
     emailDomain: gmail.com

@@ -7,7 +7,7 @@ import { formatMonthYear } from '../lib/date';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { name, tagline, heroAlt: ALT, livingNote, sections } = (await getEntry('site', 'site'))!.data;
+const { name, tagline, heroAlt: ALT, livingNote, heroLabels } = (await getEntry('site', 'site'))!.data;
 // Sizes are the uncropped width: at most 560 px tall is about 420 px wide; on phones about 75vw.
 const sizes = '(min-width: 60rem) 420px, min(75vw, 420px)';
 const glow = { class: 'glow' };
@@ -22,12 +22,12 @@ const glow = { class: 'glow' };
     <a class="half" href="#fundamentals">
       <Picture class="figure casual" src={casual} alt={ALT.casual[lang]} formats={['avif', 'webp']}
         widths={[320, 480, 640, 774]} sizes={sizes} pictureAttributes={glow} loading="eager" fetchpriority="high" />
-      <span class="label">{sections.fundamentals.title[lang]}</span>
+      <span class="label">{heroLabels.mao.title[lang]}</span>
     </a>
     <a class="half" href="#ai" data-side="ia">
       <Picture class="figure terno" src={terno} alt={ALT.terno[lang]} formats={['avif', 'webp']}
         widths={[320, 480, 640, 774, 1086]} sizes={sizes} pictureAttributes={glow} loading="eager" />
-      <span class="label">{sections.ai.title[lang]}</span>
+      <span class="label">{heroLabels.ia.title[lang]}</span>
     </a>
   </div>
 </div>

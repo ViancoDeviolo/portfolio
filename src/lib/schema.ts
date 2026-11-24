@@ -29,6 +29,7 @@ const common = {
   status: z.enum(STATUS),
   updated: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
   nextSteps: z.array(l10n).min(1).max(3).optional(),
+  lastChange: l10n.optional(),
 };
 
 export const projectSchema = z.discriminatedUnion('side', [
@@ -50,7 +51,18 @@ export const siteSchema = z.object({
   workflow: z.array(z.object({ title: l10n, body: l10n })).length(3),
   workflowFooter: l10n,
   stackGroups: z.array(z.object({ label: l10n, items: z.array(str) })),
-  about: z.array(l10n),
+  about: l10n,
+  heroLabels: z.object({ mao: z.object({ title: l10n, sub: l10n }), ia: z.object({ title: l10n, sub: l10n }) }),
+  method: z.array(l10n).length(3),
+  comparison: z.object({
+    prompt: l10n,
+    answers: z
+      .array(z.object({ ai: z.enum(['Claude', 'GPT', 'Gemini', 'Copilot']), excerpt: l10n }))
+      .max(4)
+      .refine((a) => new Set(a.map((x) => x.ai)).size === a.length, 'IA repetida'),
+    conclusion: l10n.optional(),
+  }),
+  evolution: z.array(z.object({ label: l10n, before: l10n, after: l10n })).min(1),
   contact: z.object({ emailUser: str, emailDomain: str, linkedin: z.url(), github: z.url() }),
   statusLabels: z.object(Object.fromEntries(STATUS.map((s) => [s, l10n])) as Record<(typeof STATUS)[number], typeof l10n>),
 });

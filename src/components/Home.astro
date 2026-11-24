@@ -5,8 +5,6 @@ import Section from './Section.astro';
 import ProjectCard from './ProjectCard.astro';
 import BuildingCard from './BuildingCard.astro';
 import Workflow from './Workflow.astro';
-import Stack from './Stack.astro';
-import About from './About.astro';
 import Contact from './Contact.astro';
 import { getCollection, getEntry } from 'astro:content';
 import type { Lang } from '../lib/i18n';
@@ -30,7 +28,5 @@ const side = (s: 'fund' | 'ia') => projects.filter((p) => p.data.side === s);
     </div>
   </Section>
   <Workflow lang={lang} />
-  <Stack lang={lang} />
-  <About lang={lang} />
   <Contact lang={lang} />
 </Base>

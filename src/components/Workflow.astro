@@ -4,7 +4,7 @@ import Section from './Section.astro';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { workflow, workflowFooter, sections } = (await getEntry('site', 'site'))!.data;
+const { workflow, workflowFooter, heroLabels } = (await getEntry('site', 'site'))!.data;
 const last = workflow.length - 1;
 ---
 <Section id="workflow" lang={lang} accent="ia">
@@ -17,7 +17,7 @@ const last = workflow.length - 1;
           <p>{s.body[lang]}</p>
           {i === last && (
             <a class="to-fund" href="#fundamentals">
-              {sections.fundamentals.title[lang]}
+              {heroLabels.mao.title[lang]}
               <span aria-hidden="true">↑</span>
             </a>
           )}

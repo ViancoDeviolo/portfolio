@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.use({ javaScriptEnabled: false });
 
-const SECTIONS = ['fundamentals', 'ai', 'workflow', 'stack', 'about', 'contact'];
+const SECTIONS = ['fundamentals', 'ai', 'workflow', 'contact'];
 const cases = [
   { base: '/', other: '/en/', at: 'arroba' },
   { base: '/en/', other: '/', at: 'at' },
@@ -10,7 +10,7 @@ const cases = [
 
 for (const { base, other, at } of cases) {
   test.describe(`${base} sem JS`, () => {
-    test('as seis seções aparecem com título e conteúdo', async ({ page }) => {
+    test('as quatro seções aparecem com título e conteúdo', async ({ page }) => {
       await page.goto(base);
       for (const id of SECTIONS) {
         const s = page.locator(`#${id}`);

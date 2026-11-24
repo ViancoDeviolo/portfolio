@@ -1,6 +1,6 @@
 export type Lang = 'pt' | 'en';
 
-export const SECTION_IDS = ['fundamentals', 'ai', 'workflow', 'stack', 'about', 'contact'] as const;
+export const SECTION_IDS = ['living', 'ai', 'fundamentals', 'workflow', 'contact'] as const;
 export type SectionId = (typeof SECTION_IDS)[number];
 
 export const ROUTES: Record<'home' | 'privacy' | 'terms', Record<Lang, string>> = {
