@@ -69,6 +69,18 @@ describe('projetos', () => {
       for (const e of p.evidence) expect(card).toContain(e.label[lang]);
     }
 
+    // toda mídia de toda ficha aparece: a primeira na moldura (tela 03) ou no card (tela 04), as outras na fileira compacta
+    for (const p of projects) {
+      expect($(`#p-${p.id} figure.media`).length, p.id).toBe(p.media.length);
+      if (p.side === 'ia') expect($(`#p-${p.id} [data-media-frame] figure.media`).length, p.id).toBe(1);
+      const videos = $(`#p-${p.id} video`).nodes.map((v) => v.attrs);
+      const alts = $(`#p-${p.id} img`).nodes.map((i) => i.attrs.alt);
+      for (const m of p.media) {
+        if (m.kind === 'video') expect(videos.some((v) => v.src === m.src && v['aria-label'] === m.alt[lang]), m.src).toBe(true);
+        else expect(alts, m.src).toContain(m.alt[lang]);
+      }
+    }
+
     // decimal no formato do idioma; nenhum valor de evidência em português na página em inglês
     expect($('#p-calculadoras dd').text()).toBe(lang === 'pt' ? '0,63 0,62' : '0.63 0.62');
     expect($('#p-analitic-blitz dd').text()).toContain(lang === 'pt' ? '2021 a 2025' : '2021 to 2025');

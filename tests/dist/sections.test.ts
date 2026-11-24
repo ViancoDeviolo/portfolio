@@ -21,6 +21,10 @@ describe.each([
     expect($('#about').length).toBe(0);
   });
 
+  it('tela 03 mostra a introdução logo abaixo do título', () => {
+    expect($('#ai p.ai-intro').text()).toBe(site.sections.ai.intro[lang]);
+  });
+
   it('navegação aponta para Projetos (#living), Como eu uso IA, Fundamentos e Contato', () => {
     const hrefs = $('header nav a').nodes.map((a) => a.attrs.href.replace(/^.*#/, '#'));
     expect(hrefs).toEqual(['#living', '#workflow', '#fundamentals', '#contact']);

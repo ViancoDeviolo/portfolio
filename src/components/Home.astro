@@ -26,9 +26,18 @@ const nextOf = (i: number) =>
   <Living lang={lang} />
   <Section id="ai" lang={lang} tone="ia" heading={false}>
     <h2 id="ai-title" class="eyebrow kicker"><span aria-hidden="true">{sections.ai.kicker[lang]} · </span>{sections.ai.title[lang]}</h2>
+    <p class="ai-intro">{sections.ai.intro![lang]}</p>
     {ia.map((p, i) => <ProjectScreen id={p.id} p={p.data} lang={lang} index={i} total={ia.length} next={nextOf(i)} />)}
   </Section>
   <Fundamentals lang={lang} />
   <Workflow lang={lang} />
   <Contact lang={lang} />
 </Base>
+
+<style>
+  .ai-intro {
+    max-width: 30rem;
+    font-size: var(--t-lead);
+    line-height: 1.5;
+  }
+</style>

@@ -23,6 +23,8 @@ const L = {
   pt: { problem: 'O problema', role: 'Meu papel', aiDid: 'O que a IA fez', iDecided: 'O que eu decidi' },
   en: { problem: 'The problem', role: 'My role', aiDid: 'What AI did', iDecided: 'What I decided' },
 }[lang];
+// A primeira mídia da ficha vai na moldura; as outras, numa fileira compacta abaixo dela.
+const [lead, ...more] = p.media;
 const nn = (n: number) => String(n).padStart(2, '0');
 ---
 <article id={`p-${id}`} class="ai-screen" data-ai-screen aria-labelledby={`p-${id}-title`}>
@@ -44,8 +46,14 @@ const nn = (n: number) => String(n).padStart(2, '0');
   </div>
 
   <div class="frame-wrap" data-media-frame>
-    <ProjectMedia media={p.media[0]} lang={lang} uid={`${id}-m0`} />
+    <ProjectMedia media={lead} lang={lang} uid={`${id}-m0`} />
   </div>
+
+  {more.length > 0 && (
+    <div class="more-media">
+      {more.map((m, i) => <ProjectMedia media={m} lang={lang} uid={`${id}-m${i + 1}`} small />)}
+    </div>
+  )}
 
   <div class="blocks">
     <div class="block" data-block="problem">
@@ -133,6 +141,14 @@ const nn = (n: number) => String(n).padStart(2, '0');
     min-width: 0;
   }
 
+  .more-media {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+    gap: var(--s-3);
+    align-items: start;
+    min-width: 0;
+  }
+
   .blocks {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
@@ -205,6 +221,7 @@ const nn = (n: number) => String(n).padStart(2, '0');
       grid-template-areas:
         'intro counter'
         'intro frame'
+        'intro more'
         'blocks blocks'
         '. next';
       column-gap: var(--s-7);
@@ -214,6 +231,7 @@ const nn = (n: number) => String(n).padStart(2, '0');
     .counter { grid-area: counter; }
     .intro { grid-area: intro; }
     .frame-wrap { grid-area: frame; }
+    .more-media { grid-area: more; }
     .blocks { grid-area: blocks; grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .next { grid-area: next; }
   }

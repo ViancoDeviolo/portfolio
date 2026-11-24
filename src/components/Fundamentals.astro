@@ -36,6 +36,11 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
           <p>{d.proves[lang]}</p>
           <Evidence evidence={d.evidence} lang={lang} />
           <ProjectMedia media={d.media[0]} lang={lang} uid={`${p.id}-m0`} />
+          {d.media.length > 1 && (
+            <div class="more-media">
+              {d.media.slice(1).map((m, i) => <ProjectMedia media={m} lang={lang} uid={`${p.id}-m${i + 1}`} small />)}
+            </div>
+          )}
           <StatusBadge status={d.status} updated={d.updated} lang={lang} />
           {d.nextSteps && (
             <div class="next-steps">
@@ -128,6 +133,13 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
   .card[data-tone='ink'] :global(a.pill:hover) {
     background: var(--c-mao);
     color: var(--c-ink);
+  }
+
+  .more-media {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
+    gap: var(--s-2);
+    align-items: start;
   }
 
   .card.soon {
