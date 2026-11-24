@@ -5,7 +5,7 @@ Todas auto-hospedadas, sem requisição a terceiros. Subconjunto latino (o mesmo
 | Arquivo | Família | Origem | Licença | Tamanho |
 |---|---|---|---|---|
 | `instrument-serif-italic-latin.woff2` | Instrument Serif Italic 400 | `@fontsource/instrument-serif` 5.3.0 (projeto: https://github.com/Instrument/instrument-serif) | SIL Open Font License 1.1 | 22.128 bytes |
-| `archivo-900-latin.woff2` | Archivo Black-weight 900 | `@fontsource/archivo` 5.3.0 (projeto: https://github.com/Omnibus-Type/Archivo) | SIL Open Font License 1.1 | 13.548 bytes |
+| `archivo-900-latin.woff2` | Archivo 900 | `@fontsource/archivo` 5.3.0 (projeto: https://github.com/Omnibus-Type/Archivo) | SIL Open Font License 1.1 | 13.548 bytes |
 | `inter-400-latin.woff2` | Inter 400 | `@fontsource/inter` 5.3.0 (projeto: https://github.com/rsms/inter) | SIL Open Font License 1.1 | 23.664 bytes |
 | `inter-500-latin.woff2` | Inter 500 | `@fontsource/inter` 5.3.0 | SIL Open Font License 1.1 | 24.272 bytes |
 | `inter-600-latin.woff2` | Inter 600 | `@fontsource/inter` 5.3.0 | SIL Open Font License 1.1 | 24.452 bytes |

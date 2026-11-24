@@ -15,11 +15,7 @@
   --line: rgb(237 235 230 / 0.14);
   --accent: var(--accent-fund);
 
-  /* Tipografia: Instrument Serif itálico (à mão), Archivo 900 (IA), Inter (texto e interface), DM Mono (código). */
-  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
-  --font-block: 'Archivo', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  /* Tipografia: Instrument Serif itálico (à mão), Archivo 900 (IA), Inter (texto e interface), DM Mono (código). Famílias definidas no @theme de global.css. */
   --weight-text: 400;
   --weight-strong: 500;
   --t-h1: clamp(2.375rem, 1.6rem + 3.4vw, 4.5rem); /* 38 → 72 */
