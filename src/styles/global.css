@@ -1,10 +1,54 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
+@theme {
+  --color-mao: var(--c-mao);
+  --color-ia: var(--c-ia);
+  --color-ink: var(--c-ink);
+  --color-paper: var(--c-paper);
+  --color-ok: var(--c-ok);
+  --font-serif: var(--font-serif);
+  --font-block: var(--font-block);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
 @font-face {
-  font-family: 'Instrument Sans';
-  src: url('/fonts/instrument-sans-latin.woff2') format('woff2');
-  font-weight: 400 700;
+  font-family: 'Instrument Serif';
+  src: url('/fonts/instrument-serif-italic-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-900-latin.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-600-latin.woff2') format('woff2');
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -116,6 +160,18 @@ a {
   outline-offset: 3px;
   border-radius: 2px;
   scroll-margin-block: var(--s-2); /* o anel não encosta na borda da tela nem no cabeçalho */
+}
+
+.t-mao {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.t-ia {
+  font-family: var(--font-block);
+  font-weight: 900;
+  letter-spacing: -0.04em;
 }
 
 .wrap {

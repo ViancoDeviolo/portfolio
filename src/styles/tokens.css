@@ -1,16 +1,24 @@
 :root {
-  /* Paleta fixa (spec 5.2). Cor só em acentos. */
-  --bg: #0f0f10;
-  --text: #edebe6;
+  /* Paleta do redesign: amarelo = à mão, laranja = IA, preto = neutro. Texto sobre amarelo/laranja é sempre --c-ink. */
+  --c-mao: #ffc83d;
+  --c-ia: #ff5a1f;
+  --c-ink: #0f0f10;
+  --c-paper: #edebe6;
+  --c-ok: #55db9c; /* só o selo "concluído" */
+  /* Aliases dos componentes antigos; removidos nas Tasks 6-7. */
+  --bg: var(--c-ink);
+  --text: var(--c-paper);
   --muted: #8a8a8e;
-  --accent-fund: #ffc83d;
-  --accent-ia: #ff5a1f;
+  --accent-fund: var(--c-mao);
+  --accent-ia: var(--c-ia);
   --header-h: 4.5rem; /* altura fixa do cabeçalho; também é o scroll-padding */
   --line: rgb(237 235 230 / 0.14);
   --accent: var(--accent-fund);
 
-  /* Tipografia: Instrument Sans (texto e títulos) + DM Mono (só terminal e código). */
-  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  /* Tipografia: Instrument Serif itálico (à mão), Archivo 900 (IA), Inter (texto e interface), DM Mono (código). */
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+  --font-block: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'DM Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
   --weight-text: 400;
   --weight-strong: 500;

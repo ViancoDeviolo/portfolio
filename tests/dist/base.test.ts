@@ -1,3 +1,4 @@
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { load } from './html';
 import { SITE_URL } from '../../astro.config.mjs';
@@ -30,5 +31,30 @@ describe('layout base', () => {
       expect(html).not.toMatch(/\sstyle\s*=/i);
       expect(html).not.toMatch(/<script\b(?![^>]*\bsrc=)/i);
     }
+  });
+});
+
+describe('fontes', () => {
+  const fontes = [
+    'instrument-serif-italic-latin',
+    'archivo-900-latin',
+    'inter-400-latin',
+    'inter-500-latin',
+    'inter-600-latin',
+  ];
+  const css = () =>
+    readdirSync('dist/_astro')
+      .filter((f) => f.endsWith('.css'))
+      .map((f) => readFileSync(`dist/_astro/${f}`, 'utf8'))
+      .join('\n');
+
+  it.each(fontes)('%s existe em dist/fonts e é usada no CSS', (nome) => {
+    expect(existsSync(`dist/fonts/${nome}.woff2`)).toBe(true);
+    expect(css()).toContain(`/fonts/${nome}.woff2`);
+  });
+
+  it('não usa URL externa de fonte', () => {
+    expect(css()).not.toMatch(/url\(\s*['"]?(https?:)?\/\//);
+    expect(load('index.html').html).not.toMatch(/fonts\.(googleapis|gstatic)\.com/);
   });
 });
