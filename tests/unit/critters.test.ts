@@ -49,9 +49,19 @@ describe('step', () => {
     const c = { ...base, kind: 'figurante' as const, x: 100 };
     expect(dist(step(c, cursor, 0.1, RULES), cursor)).toBeGreaterThan(100);
   });
-  it('figurante a 200 px não reage', () => {
+  it('figurante a 200 px não foge: passeia na velocidade normal', () => {
     const c = { ...base, kind: 'figurante' as const, x: 200 };
-    expect(step(c, cursor, 0.1, RULES)).toMatchObject({ x: 200, y: 0 });
+    const n = step(c, cursor, 0.1, RULES);
+    expect(Math.hypot(n.vx, n.vy)).toBeCloseTo(RULES.speed);
+    expect(n.x).not.toBe(200);
+  });
+  it('figurante que saiu do raio volta à velocidade normal', () => {
+    let c = { ...base, kind: 'figurante' as const, x: 100 };
+    c = step(c, cursor, 0.1, RULES);
+    expect(Math.hypot(c.vx, c.vy)).toBeCloseTo(RULES.fleeSpeed);
+    c = step({ ...c, x: 200 }, cursor, 0.1, RULES);
+    expect(Math.hypot(c.vx, c.vy)).toBeCloseTo(RULES.speed);
+    expect(c.vx).toBeGreaterThan(0);
   });
   it('sem cursor anda e alterna o quadro', () => {
     let c = base;

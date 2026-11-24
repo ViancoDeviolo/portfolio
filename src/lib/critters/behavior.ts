@@ -18,19 +18,19 @@ const STRIDE = 8; // px andados por troca de quadro
 /** Determinística: sem cursor, mantém a velocidade (ou começa a andar para a direita). */
 export function step(c: Critter, cursor: { x: number; y: number } | null, dt: number, rules: Rules): Critter {
   let { vx, vy } = c;
-  if (cursor) {
+  const d = cursor ? Math.hypot(cursor.x - c.x, cursor.y - c.y) : Infinity;
+  if (cursor && c.kind === 'projeto') {
     const dx = cursor.x - c.x;
     const dy = cursor.y - c.y;
-    const d = Math.hypot(dx, dy);
-    if (c.kind === 'projeto') {
-      if (d <= rules.followStop) [vx, vy] = [0, 0];
-      else [vx, vy] = [(dx / d) * rules.speed, (dy / d) * rules.speed];
-    } else if (d < rules.fleeRadius) {
-      const s = d === 0 ? 1 : d; // em cima do cursor: foge para a esquerda
-      [vx, vy] = d === 0 ? [-rules.fleeSpeed, 0] : [(-dx / s) * rules.fleeSpeed, (-dy / s) * rules.fleeSpeed];
-    }
-  } else if (vx === 0 && vy === 0) {
-    vx = rules.speed;
+    if (d <= rules.followStop) [vx, vy] = [0, 0];
+    else [vx, vy] = [(dx / d) * rules.speed, (dy / d) * rules.speed];
+  } else if (cursor && c.kind === 'figurante' && d < rules.fleeRadius) {
+    // em cima do cursor (d === 0): foge para a esquerda
+    [vx, vy] = d === 0 ? [-rules.fleeSpeed, 0] : [((c.x - cursor.x) / d) * rules.fleeSpeed, ((c.y - cursor.y) / d) * rules.fleeSpeed];
+  } else {
+    // passeio: mantém a direção, volta à velocidade normal; parado, começa pela direita
+    const m = Math.hypot(vx, vy);
+    [vx, vy] = m === 0 ? [rules.speed, 0] : [(vx / m) * rules.speed, (vy / m) * rules.speed];
   }
   const x = c.x + vx * dt;
   const y = c.y + vy * dt;
