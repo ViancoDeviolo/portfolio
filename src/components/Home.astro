@@ -32,11 +32,15 @@ const nextOf = (i: number) =>
   <Fundamentals lang={lang} />
   <Workflow lang={lang} />
   <Contact lang={lang} />
+  {/* Bichinhos em pixel art (scripts/critters.ts): vazio no HTML, montado depois do load. Fica no fim para o Tab passar por eles por último. */}
+  <div class="critters" data-critters></div>
 </Base>
 
 <script>
   import { reveal, whenIdle } from '../scripts/reveal';
   whenIdle(() => reveal(document.querySelectorAll<HTMLElement>('#ai [data-reveal]')));
+  // Módulo à parte, baixado só quando a página está livre: não pesa no LCP.
+  whenIdle(() => import('../scripts/critters').then((m) => m.start(document.querySelector<HTMLElement>('[data-critters]')!)));
 </script>
 
 <style>
@@ -52,6 +56,49 @@ const nextOf = (i: number) =>
     inset: 0;
     z-index: -2;
     background: var(--c-ia);
+  }
+
+  /* Camada dos bichinhos: origem no topo da página; cada um se posiciona por transform. */
+  .critters {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5; /* sobre os fundos das telas, sob o cabeçalho (10) */
+  }
+
+  .critters :global([data-critter]) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--c-ink);
+    transform-origin: center;
+  }
+
+  .critters :global([data-kind='figurante']) {
+    pointer-events: none;
+  }
+
+  .critters :global([data-critter] svg) {
+    display: block;
+    max-width: none; /* a camada tem largura 0; o reset global de svg encolheria o desenho */
+    overflow: visible;
+    fill: currentColor;
+  }
+
+  /* Tela 06 (preta): amarelo, laranja ou claro; o anel de foco acompanha a cor. */
+  .critters :global([data-ink='mao']) {
+    --accent: var(--c-mao);
+    color: var(--c-mao);
+  }
+
+  .critters :global([data-ink='ia']) {
+    --accent: var(--c-ia);
+    color: var(--c-ia);
+  }
+
+  .critters :global([data-ink='paper']) {
+    --accent: var(--c-paper);
+    color: var(--c-paper);
   }
 
   .ai-intro {

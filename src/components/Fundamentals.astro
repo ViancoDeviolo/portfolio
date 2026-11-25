@@ -29,7 +29,7 @@ const L = { pt: { next: 'Próximos passos' }, en: { next: 'Next steps' } }[lang]
       const d = p.data;
       if (d.side !== 'fund') return null;
       return (
-        <article id={`p-${p.id}`} class="card" data-tilt data-tone={p.id === 'banco-java' ? 'ink' : 'mao'} aria-labelledby={`p-${p.id}-title`}>
+        <article id={`p-${p.id}`} class="card" data-tilt data-critter-avoid data-tone={p.id === 'banco-java' ? 'ink' : 'mao'} aria-labelledby={`p-${p.id}-title`}>
           <ul class="stack eyebrow" aria-label="Stack" translate="no">{d.stack.map((s) => <li>{s}</li>)}</ul>
           <h3 id={`p-${p.id}-title`} class="t-mao">{d.title[lang]}</h3>
           <p>{d.problem[lang]}</p>
