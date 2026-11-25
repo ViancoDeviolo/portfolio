@@ -91,6 +91,6 @@
 
 ## 6. Verificação antes de publicar
 
-- [x] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`. Na v1, todas as categorias 100. No redesign (24/11/2026) as metas passaram a ser as da spec 7: desktop 1,00 em tudo; celular com performance de 0,91 a 0,98 na home (meta ≥ 0,85), LCP de 2,27 a 2,55 s entre execuções (meta < 2,5 s; a asserção passa, mas há execuções isoladas acima) e acessibilidade, boas práticas e SEO em 1,00
+- [ ] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`. Na v1, todas as categorias 100. No redesign (24/11/2026) valem as metas da spec 7. Desktop: 1,00 em tudo. Celular: performance de 0,91 a 0,99 (meta ≥ 0,85) e acessibilidade, boas práticas e SEO em 1,00. **Pendente: LCP do celular.** A asserção do LHCI passa porque usa a melhor de três execuções (agregação padrão). A mediana da home, porém, ficou entre 2,27 e 2,57 s conforme a rodada; na última, 2,50 s em `/` e 2,57 s em `/en/`, contra a meta de < 2,5 s
 - [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
 - [x] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. — textos legais revisados em 2026-11-23 e vídeos em 2026-11-22
