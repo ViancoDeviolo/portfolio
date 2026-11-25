@@ -9,9 +9,13 @@ const interact = async (page: Page) => {
   await page.keyboard.press('Shift');
 };
 
+// Sem WebGL2 (ex.: navegador headless sem GL), o certo é o globo estático: o teste afirma esse caminho em vez de pular.
+const webgl2 = (page: Page) => page.evaluate(() => !!document.createElement('canvas').getContext('webgl2'));
+
 test('cena 3D assume a capa e a tela 02 com um único canvas', async ({ page }, info) => {
   test.skip(noWebgl(info.project.name));
   await page.goto('/');
+  if (!(await webgl2(page))) return assertStatic(page);
   await page.waitForLoadState('load');
   await page.waitForTimeout(1000);
   expect(await page.locator('canvas').count(), 'sem interação, nada de cena').toBe(0);
@@ -29,6 +33,7 @@ test('o laço da cena para longe das telas do globo e volta na tela 02', async (
   test.skip(noWebgl(info.project.name));
   // conta as chamadas de desenho WebGL: é o canvas da cena quem desenha
   await page.addInitScript(() => {
+    if (typeof WebGL2RenderingContext === 'undefined') return;
     const draw = WebGL2RenderingContext.prototype.drawArrays;
     WebGL2RenderingContext.prototype.drawArrays = function (...args) {
       (window as any).__draws = ((window as any).__draws ?? 0) + 1;
@@ -36,6 +41,7 @@ test('o laço da cena para longe das telas do globo e volta na tela 02', async (
     };
   });
   await page.goto('/');
+  if (!(await webgl2(page))) return assertStatic(page);
   await interact(page);
   await expect(page.locator('html')).toHaveAttribute('data-globe-live', '', { timeout: 15_000 });
   await expect(page.locator('html')).not.toHaveAttribute('data-globe-paused');
@@ -53,6 +59,10 @@ test('o laço da cena para longe das telas do globo e volta na tela 02', async (
 
 const staysStatic = async (page: Page) => {
   await page.goto('/');
+  await assertStatic(page);
+};
+
+async function assertStatic(page: Page) {
   await interact(page);
   await page.waitForTimeout(1500); // tempo de sobra para a cena tentar montar
   await toLiving(page);
