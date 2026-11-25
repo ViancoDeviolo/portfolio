@@ -1,38 +1,24 @@
 ---
 import { getEntry } from 'astro:content';
+import Title from './Title.astro';
 import type { Lang, SectionId } from '../lib/i18n';
 
 interface Props {
   id: SectionId;
   lang: Lang;
-  accent?: 'fund' | 'ia';
+  tone: 'mao' | 'ia' | 'split' | 'ink'; // fundo da tela; o cabeçalho copia o tom (scripts/header-tone.ts)
+  heading?: boolean; // false: a tela desenha o próprio h2
 }
 
-const { id, lang, accent = 'fund' } = Astro.props;
-const { title, intro } = (await getEntry('site', 'site'))!.data.sections[id];
+const { id, lang, tone, heading = true } = Astro.props;
+const { kicker, title } = (await getEntry('site', 'site'))!.data.sections[id];
 ---
-<section id={id} class="section" data-side={accent} aria-labelledby={`${id}-title`}>
-  <div class="wrap">
-    <div class="section-head">
-      <h2 id={`${id}-title`}>{title[lang]}</h2>
-      {intro && <p class="lead">{intro[lang]}</p>}
-    </div>
-    <slot />
-  </div>
+<section id={id} class="screen" data-tone={tone} aria-labelledby={`${id}-title`}>
+  {heading && (
+    <>
+      <p class="eyebrow kicker">{kicker[lang]}</p>
+      <Title id={`${id}-title`} text={title[lang]} />
+    </>
+  )}
+  <slot />
 </section>
-
-<style>
-  .section {
-    padding-block: var(--s-8) var(--s-9);
-  }
-
-  .section-head {
-    display: grid;
-    gap: var(--s-3);
-    margin-bottom: var(--s-7);
-  }
-
-  h2 {
-    color: var(--accent);
-  }
-</style>

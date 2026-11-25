@@ -29,6 +29,7 @@ const common = {
   status: z.enum(STATUS),
   updated: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
   nextSteps: z.array(l10n).min(1).max(3).optional(),
+  lastChange: l10n.optional(),
 };
 
 export const projectSchema = z.discriminatedUnion('side', [
@@ -37,21 +38,46 @@ export const projectSchema = z.discriminatedUnion('side', [
 ]);
 
 const sections = Object.fromEntries(
-  SECTION_IDS.map((id) => [id, z.object({ title: l10n, intro: l10n.optional() })]),
-) as Record<SectionId, z.ZodObject<{ title: typeof l10n; intro: z.ZodOptional<typeof l10n> }>>;
+  SECTION_IDS.map((id) => [id, z.object({ kicker: l10n, title: l10n, intro: l10n.optional() })]),
+) as Record<SectionId, z.ZodObject<{ kicker: typeof l10n; title: typeof l10n; intro: z.ZodOptional<typeof l10n> }>>;
 
 export const siteSchema = z.object({
   name: str,
   tagline: l10n,
   heroAlt: z.object({ casual: l10n, terno: l10n }),
-  livingNote: l10n,
+  heroBadge: l10n,
   sections: z.object(sections),
   studyingNow: z.array(l10n).min(1),
-  workflow: z.array(z.object({ title: l10n, body: l10n })).length(3),
-  workflowFooter: l10n,
-  stackGroups: z.array(z.object({ label: l10n, items: z.array(str) })),
-  about: z.array(l10n),
+  about: l10n,
+  heroLabels: z.object({ mao: z.object({ title: l10n, sub: l10n }), ia: z.object({ title: l10n, sub: l10n }) }),
+  nav: z.array(z.object({ id: z.enum(SECTION_IDS), label: l10n })).min(1),
+  method: z.array(l10n).length(3),
+  comparison: z.object({
+    prompt: l10n,
+    answers: z
+      .array(z.object({ ai: z.enum(['Claude', 'GPT', 'Gemini', 'Copilot']), excerpt: l10n }))
+      .max(4)
+      .refine((a) => new Set(a.map((x) => x.ai)).size === a.length, 'IA repetida'),
+    conclusion: l10n.optional(),
+  }),
+  evolution: z.array(z.object({ label: l10n, before: l10n, after: l10n })).min(1),
   contact: z.object({ emailUser: str, emailDomain: str, linkedin: z.url(), github: z.url() }),
+  // Rótulos da interface das telas 02 a 06.
+  ui: z.object({
+    legend: z.object({ mao: l10n, ia: l10n }),
+    next: l10n,
+    result: l10n,
+    codeBy: l10n,
+    nextCard: z.object({ kicker: l10n, title: l10n, body: l10n }),
+    request: l10n,
+    answerOf: l10n,
+    highlight: l10n,
+    evolution: z.object({ title: l10n, before: l10n, after: l10n }),
+    studying: l10n,
+    cv: l10n,
+    footerNote: l10n,
+    navLabel: l10n,
+  }),
   statusLabels: z.object(Object.fromEntries(STATUS.map((s) => [s, l10n])) as Record<(typeof STATUS)[number], typeof l10n>),
 });
 

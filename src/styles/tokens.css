@@ -1,17 +1,14 @@
 :root {
-  /* Paleta fixa (spec 5.2). Cor só em acentos. */
-  --bg: #0f0f10;
-  --text: #edebe6;
-  --muted: #8a8a8e;
-  --accent-fund: #ffc83d;
-  --accent-ia: #ff5a1f;
+  /* Paleta do redesign: amarelo = à mão, laranja = IA, preto = neutro. Texto sobre amarelo/laranja é sempre --c-ink. */
+  --c-mao: #ffc83d;
+  --c-ia: #ff5a1f;
+  --c-ink: #0f0f10;
+  --c-paper: #edebe6;
+  --c-ok: #55db9c; /* só o selo "concluído" */
+  --accent: var(--c-ink); /* cor do anel de foco; as telas pretas trocam por amarelo */
   --header-h: 4.5rem; /* altura fixa do cabeçalho; também é o scroll-padding */
-  --line: rgb(237 235 230 / 0.14);
-  --accent: var(--accent-fund);
 
-  /* Tipografia: Instrument Sans (texto e títulos) + DM Mono (só terminal e código). */
-  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  /* Tipografia: Instrument Serif itálico (à mão), Archivo 900 (IA), Inter (texto e interface), DM Mono (código). Famílias definidas no @theme de global.css. */
   --weight-text: 400;
   --weight-strong: 500;
   --t-h1: clamp(2.375rem, 1.6rem + 3.4vw, 4.5rem); /* 38 → 72 */
@@ -43,8 +40,9 @@
   /* Layout */
   --wrap: 80rem;
   --gut: clamp(1rem, 5.5vw, 5rem);
+  --band: clamp(10rem, 22vw, 24rem); /* largura da retícula da capa, centrada na tela */
+  --edge: clamp(1rem, 3.4vw, 3rem); /* margem lateral da capa e do cabeçalho, de ponta a ponta */
   --target: 2.75rem;
-  --radius: 0.75rem;
 
   /* Movimento */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -52,6 +50,9 @@
   --dur-hover: 200ms;
 }
 
-[data-side='ia'] {
-  --accent: var(--accent-ia);
+/* Celular: o cabeçalho ganha uma segunda linha, com as pílulas da navegação (Header.astro). */
+@media (max-width: 47.99rem) {
+  :root {
+    --header-h: 6.75rem;
+  }
 }

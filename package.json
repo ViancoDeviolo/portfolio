@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/build-pdf.mjs",
+    "build": "astro build && node scripts/csp-hashes.mjs && node scripts/build-pdf.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run --project unit",
@@ -17,8 +17,21 @@
     "@axe-core/playwright": "4.14.0",
     "@lhci/cli": "0.16.1",
     "@playwright/test": "1.65.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.187.0",
     "astro": "7.4.13",
     "typescript": "6.0.3",
     "vitest": "5.1.1"
+  },
+  "dependencies": {
+    "@astrojs/react": "7.1.9",
+    "@react-three/fiber": "9.8.2",
+    "@tailwindcss/vite": "4.3.5",
+    "gsap": "3.15.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwindcss": "4.3.5",
+    "three": "0.187.0"
   }
 }

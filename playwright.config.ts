@@ -12,5 +12,7 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    // Sem WebGL: a cena 3D não monta e o globo estático fica (tests/e2e/motion.spec.ts).
+    { name: 'no-webgl', testMatch: /motion\.spec\.ts/, use: { ...devices['Desktop Chrome'], launchOptions: { args: ['--disable-3d-apis'] } } },
   ],
 });

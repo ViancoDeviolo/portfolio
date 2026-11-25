@@ -1,9 +1,54 @@
+@import 'tailwindcss';
 @import './tokens.css';
 
+@theme {
+  --color-mao: var(--c-mao);
+  --color-ia: var(--c-ia);
+  --color-ink: var(--c-ink);
+  --color-paper: var(--c-paper);
+  --color-ok: var(--c-ok);
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+  --font-block: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+
 @font-face {
-  font-family: 'Instrument Sans';
-  src: url('/fonts/instrument-sans-latin.woff2') format('woff2');
-  font-weight: 400 700;
+  font-family: 'Instrument Serif';
+  src: url('/fonts/instrument-serif-italic-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo-900-latin.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-600-latin.woff2') format('woff2');
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -24,7 +69,7 @@
 
 html {
   scroll-padding-top: var(--header-h);
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -38,8 +83,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--c-paper);
+  color: var(--c-ink);
   font-family: var(--font-sans);
   font-size: var(--t-body);
   font-weight: var(--weight-text);
@@ -90,6 +135,12 @@ svg {
   height: auto;
 }
 
+/* Com height: auto, o Chrome só considera "dimensões explícitas" de uma imagem lazy se a proporção vier do CSS
+   (aviso no console). Navegador sem attr() tipado descarta a linha e usa a proporção dos atributos, como antes. */
+:where(img[width][height]) { /* sem especificidade: o aspect-ratio dos componentes (ex.: .figure da capa) vence */
+  aspect-ratio: attr(width type(<number>)) / attr(height type(<number>));
+}
+
 code,
 kbd,
 pre,
@@ -101,7 +152,7 @@ a {
   color: inherit;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  transition: text-decoration-color var(--dur-hover) ease, color var(--dur-hover) ease;
+  transition: text-decoration-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -117,6 +168,18 @@ a {
   scroll-margin-block: var(--s-2); /* o anel não encosta na borda da tela nem no cabeçalho */
 }
 
+.t-mao {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.t-ia {
+  font-family: var(--font-block);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
 .wrap {
   width: 100%;
   max-width: var(--wrap);
@@ -124,58 +187,79 @@ a {
   padding-inline: var(--gut);
 }
 
-.lead {
-  font-size: var(--t-lead);
-  color: var(--muted);
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--s-5);
-}
-
-@media (min-width: 64rem) {
-  .cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-6);
-  }
-}
-
 .eyebrow {
-  color: var(--muted);
   font-size: var(--t-label);
-  font-weight: var(--weight-strong);
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-/* Lista rótulo → valor com filetes (Stack, Contato). */
-.rows {
-  margin: 0;
+/* Telas 02 a 06: cada uma ocupa ao menos a tela, de borda a borda como a capa. */
+.screen {
+  min-height: calc(100svh - var(--header-h));
+  padding: var(--s-5) var(--edge) var(--s-8);
+  overflow-x: clip;
 }
 
-.rows .row {
-  display: grid;
-  gap: var(--s-2);
-  padding-block: var(--s-4);
-  border-top: 1px solid var(--line);
+[data-tone='mao'] {
+  background: var(--c-mao);
+  color: var(--c-ink);
 }
 
-.rows .row:last-child {
-  border-bottom: 1px solid var(--line);
+[data-tone='ia'] {
+  background: var(--c-ia);
+  color: var(--c-ink);
 }
 
-.rows dd {
-  margin: 0;
+[data-tone='split'] {
+  background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 0);
+  color: var(--c-ink);
 }
 
-@media (min-width: 48rem) {
-  .rows .row {
-    grid-template-columns: 16rem minmax(0, 1fr);
-    gap: var(--s-5);
-    align-items: baseline;
-  }
+[data-tone='ink'] {
+  --accent: var(--c-mao);
+  background: var(--c-ink);
+  color: var(--c-paper);
+}
+
+/* Título em dupla tipográfica (Title.astro): serifado em cima, Archivo embaixo. */
+/* O corpo segue a largura da coluna do título (cqi), para cada palavra caber inteira numa linha:
+   o Archivo 900 mede cerca de 0,53em por letra; 18cqi cabe palavras de até 10 letras ("respostas.", "conversar."),
+   e .long (14cqi) cabe até 13 ("construction."). */
+.title {
+  container-type: inline-size;
+  line-height: 0.92;
+  letter-spacing: normal;
+}
+
+.title > span {
+  display: block;
+  font-size: min(9.25rem, 18cqi);
+}
+
+.title.long > span {
+  font-size: min(6.5rem, 14cqi);
+}
+
+.title > .t-mao {
+  font-size: min(9.6rem, 20cqi);
+  line-height: 1;
+}
+
+.title.long > .t-mao {
+  font-size: min(6.75rem, 15cqi);
+}
+
+[data-tone='ink'] .title .t-mao {
+  color: var(--c-mao);
+}
+
+[data-tone='ink'] .title .t-ia {
+  color: var(--c-ia);
+}
+
+.kicker {
+  margin-bottom: var(--s-3);
 }
 
 .skip-link {
@@ -187,8 +271,8 @@ a {
   align-items: center;
   min-height: var(--target);
   padding-inline: var(--s-4);
-  background: var(--text);
-  color: var(--bg);
+  background: var(--c-ink);
+  color: var(--c-paper);
   font-weight: var(--weight-strong);
   border-radius: var(--s-2);
   text-decoration: none;

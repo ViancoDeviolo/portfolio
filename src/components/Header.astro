@@ -1,45 +1,171 @@
 ---
+import { getEntry } from 'astro:content';
 import SkipLink from './SkipLink.astro';
 import LangSwitch from './LangSwitch.astro';
 import { ROUTES, type Lang } from '../lib/i18n';
 const { lang, path, name } = Astro.props as { lang: Lang; path: string; name: string };
+const { nav, ui } = (await getEntry('site', 'site'))!.data;
 ---
 <header class="site-header">
   <SkipLink lang={lang} />
-  <div class="wrap bar">
+  <div class="bar">
     <a class="name" href={ROUTES.home[lang]}>{name}</a>
+    <nav class="nav" aria-label={ui.navLabel[lang]}>
+      {nav.map((n) => <a class="pill" href={`${ROUTES.home[lang]}#${n.id}`}>{n.label[lang]}</a>)}
+    </nav>
     <LangSwitch lang={lang} path={path} />
   </div>
 </header>
 
 <style>
+  /* Mesmo fundo da capa (retícula e cores divididas na borda direita dela): no topo o cabeçalho some dentro dela. */
   .site-header {
+    --accent: var(--c-ink);
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--bg);
+    background:
+      url('/halftone.svg') 50% 0 / var(--band) auto no-repeat,
+      linear-gradient(to right, var(--c-mao) calc(50% + var(--band) / 2), var(--c-ia) 0);
+    color: var(--c-ink);
+  }
+
+  /* Fora da capa, o cabeçalho assume o fundo da tela que está embaixo dele (scripts/header-tone.ts). Sem JS, fica o da capa. */
+  .site-header[data-tone='ia'] {
+    background: var(--c-ia);
+  }
+
+  .site-header[data-tone='mao'] {
+    background: var(--c-mao);
+  }
+
+  .site-header[data-tone='split'] {
+    background: linear-gradient(to right, var(--c-mao) 50%, var(--c-ia) 0);
+  }
+
+  .site-header[data-tone='paper'] {
+    background: var(--c-paper);
+  }
+
+  .site-header[data-tone='ink'] {
+    --accent: var(--c-mao);
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  .site-header[data-tone='ink'] .bar :global(.lang-switch) {
+    background: var(--c-paper);
+    color: var(--c-ink);
   }
 
   .bar {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: min(var(--s-4), 5vw);
-    flex-wrap: nowrap;
     height: var(--header-h);
+    padding-inline: var(--edge);
   }
 
   .name {
     display: inline-flex;
     align-items: center;
     min-height: var(--target);
-    font-size: var(--t-lead);
-    font-weight: var(--weight-strong);
-    letter-spacing: var(--track-h2);
+    font-size: var(--t-small);
+    font-weight: 600;
     text-decoration: none;
+  }
+
+  /* Celular: a capa divide amarelo em cima e laranja embaixo (Hero.astro); o cabeçalho fica no amarelo do topo. */
+  @media (max-width: 47.99rem) {
+    .site-header {
+      background: var(--c-mao);
+    }
+
+    /* Nome e PT / EN na primeira linha; as pílulas embaixo, numa faixa que rola de lado quando não cabem. */
+    .bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-content: center;
+      row-gap: var(--s-1);
+    }
+
+    .nav {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      min-height: var(--target); /* a área de toque das pílulas cabe inteira na faixa, sem rolagem vertical */
+      margin-inline: calc(-1 * var(--edge));
+      padding-inline: var(--edge);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .bar :global(.lang-switch) {
+      grid-area: 1 / 2;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .nav {
+      position: absolute;
+      left: 50%;
+      translate: -50% 0;
+      display: flex;
+      gap: var(--s-2);
+    }
+  }
+
+  .pill,
+  .bar :global(.lang-switch) {
+    position: relative;
+    min-height: 2.25rem;
+    padding-inline: var(--s-4);
+    border-radius: 999px;
+    font-size: var(--t-small);
+    font-weight: var(--weight-strong);
+    text-decoration: none;
+  }
+
+  /* A pílula tem 36 px; a área de toque se estende até os 44 px de --target. */
+  .pill::after,
+  .bar :global(.lang-switch)::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: var(--target);
+    translate: 0 -50%;
+  }
+
+  /* Fundo sólido: as pílulas ficam sobre a retícula e a troca de cor; o texto preto segue legível. */
+  .pill {
+    flex: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px solid var(--c-ink);
+    background: var(--c-mao);
+    color: var(--c-ink); /* texto sobre amarelo é sempre preto, também no cabeçalho da tela 06 */
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
+  }
+
+  .bar :global(.lang-switch) {
+    border: 0;
+    background: var(--c-ink);
+    color: var(--c-paper);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pill:hover {
+      background: var(--c-ink);
+      color: var(--c-paper);
+    }
   }
 </style>
 
 <script>
   import '../scripts/focus';
+  import '../scripts/header-tone';
 </script>

@@ -31,7 +31,8 @@ describe('páginas legais', () => {
     expect($('h1').length).toBe(1);
     expect($('html').attr('lang')).toBe(langOf(f) === 'pt' ? 'pt-BR' : 'en');
     for (const a of $('a[href]').nodes.filter((n) => /^https?:/.test(n.attrs.href))) expect(a.attrs.rel).toBe('noopener noreferrer');
-    expect($.html).not.toMatch(/<style\b|\sstyle\s*=|<script\b(?![^>]*\bsrc=)/i);
+    // <style> embutido só com hash na CSP (security.test.ts); atributo style e script embutido, nunca.
+    expect($.html).not.toMatch(/\sstyle\s*=|<script\b(?![^>]*\bsrc=)/i);
   });
 
   it.each(['privacidade/index.html', 'en/privacy/index.html'])('%s: contato sem endereço completo no HTML', (f) => {

@@ -1,27 +1,61 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { ids, load } from './html';
+import { parse } from 'yaml'; // transitiva (vem com o Astro)
+import { ids, load, text } from './html';
+import { SECTION_IDS } from '../../src/lib/i18n';
+
+const site = parse(readFileSync('src/content/site.yaml', 'utf8')).site;
+const snippet = readFileSync('src/content/snippets/calculadora-ideiaV1.py', 'utf8');
+const AIS = ['Claude', 'GPT', 'Gemini', 'Copilot'] as const;
 
 describe.each([
-  ['index.html', '/lucas-cruz-cv.pdf', 'lucascruzcorp [arroba] gmail.com'],
-  ['en/index.html', '/lucas-cruz-cv-en.pdf', 'lucascruzcorp [at] gmail.com'],
-] as const)('seções %s', (file, cv, noscript) => {
+  ['index.html', 'pt', '/lucas-cruz-cv.pdf', 'lucascruzcorp [arroba] gmail.com'],
+  ['en/index.html', 'en', '/lucas-cruz-cv-en.pdf', 'lucascruzcorp [at] gmail.com'],
+] as const)('seções %s', (file, lang, cv, noscript) => {
   const $ = load(file);
 
-  it('seções na ordem do §5.4', () => {
-    expect(ids($('main > section'))).toEqual(['fundamentals', 'ai', 'workflow', 'stack', 'about', 'contact']);
+  it('telas na ordem de SECTION_IDS, cada uma com h2; sem Stack nem Sobre', () => {
+    expect(ids($('main > section'))).toEqual(['top', ...SECTION_IDS]);
+    for (const id of SECTION_IDS) expect($(`section#${id} h2`).length, id).toBeGreaterThan(0);
+    expect($('#stack').length).toBe(0);
+    expect($('#about').length).toBe(0);
   });
 
-  it('fluxo em 3 passos, sem logos, passo 3 aponta para Fundamentos', () => {
-    expect($('#workflow ol > li').length).toBe(3);
+  it('tela 03 mostra a introdução logo abaixo do título', () => {
+    expect($('#ai p.ai-intro').text()).toBe(site.sections.ai.intro[lang]);
+  });
+
+  it('navegação aponta para Projetos (#living), Como eu uso IA, Fundamentos e Contato', () => {
+    const hrefs = $('header nav a').nodes.map((a) => a.attrs.href.replace(/^.*#/, '#'));
+    expect(hrefs).toEqual(['#living', '#workflow', '#fundamentals', '#contact']);
+  });
+
+  it('tela 04 mostra o snippet inteiro, sem edição', () => {
+    expect($('#fundamentals pre').length).toBe(1);
+    expect($('#fundamentals pre').text()).toBe(text(snippet));
+    // quebras de linha preservadas: o <pre> traz o arquivo tal como está
+    const raw = $.html.match(/<pre[^>]*data-snippet[^>]*>([\s\S]*?)<\/pre>/)?.[1] ?? '';
+    expect(raw.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&')).toBe(snippet.trimEnd());
+  });
+
+  it('tela 05: método, pedido, respostas reais e evolução; nenhuma IA sem resposta', () => {
+    const wf = $('#workflow').text();
+    expect($('#workflow ol.method > li').length).toBe(3);
+    for (const m of site.method) expect(wf).toContain(m[lang]);
+    expect(wf).toContain(site.comparison.prompt[lang]);
+    const answered = site.comparison.answers.map((a: { ai: string }) => a.ai);
+    expect([...answered].sort()).toEqual(['Copilot', 'GPT', 'Gemini']); // hoje: sem Claude
+    for (const ai of AIS) expect(wf.includes(ai), ai).toBe(answered.includes(ai));
+    expect($('#workflow [data-answer]').length).toBe(answered.length >= 3 ? answered.length : 0);
+    for (const e of site.evolution) expect(wf).toContain(e.label[lang]);
     expect($('#workflow img').length).toBe(0);
-    // dentro da lista e depois do início do 3º (e último) item: o link está no passo 3, não no rodapé da seção
-    const third = $('#workflow ol > li').nodes[2];
-    expect($('#workflow ol > li a[href=#fundamentals]').nodes.some((a) => a.start > third.start)).toBe(true);
   });
 
-  it('stack sem barras de nível nem logos', () => {
-    expect($('#stack img').length + $('#stack progress').length + $('#stack meter').length).toBe(0);
-    expect($('#stack').text()).toContain('Java');
+  it('tela 06: estudando agora e o texto curto sobre mim', () => {
+    const c = $('#contact').text();
+    expect(site.studyingNow).toHaveLength(3);
+    for (const s of site.studyingNow) expect(c).toContain(s[lang]);
+    expect(c).toContain(site.about[lang]);
   });
 
   it('e-mail sem literal no HTML', () => {

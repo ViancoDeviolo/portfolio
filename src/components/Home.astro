@@ -1,36 +1,109 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from './Hero.astro';
+import Living from './Living.astro';
 import Section from './Section.astro';
-import ProjectCard from './ProjectCard.astro';
-import BuildingCard from './BuildingCard.astro';
+import ProjectScreen from './ProjectScreen.astro';
+import Fundamentals from './Fundamentals.astro';
 import Workflow from './Workflow.astro';
-import Stack from './Stack.astro';
-import About from './About.astro';
 import Contact from './Contact.astro';
 import { getCollection, getEntry } from 'astro:content';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { name, tagline } = (await getEntry('site', 'site'))!.data;
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const side = (s: 'fund' | 'ia') => projects.filter((p) => p.data.side === s);
+const { name, tagline, sections, heroLabels } = (await getEntry('site', 'site'))!.data;
+const ia = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .flatMap((p) => (p.data.side === 'ia' ? [{ id: p.id, data: p.data }] : []));
+// "próximo" do último projeto leva à tela seguinte.
+const nextOf = (i: number) =>
+  i < ia.length - 1
+    ? { href: `#p-${ia[i + 1].id}`, label: ia[i + 1].data.title[lang] }
+    : { href: '#fundamentals', label: heroLabels.mao.title[lang] };
 ---
 <Base lang={lang} title={name} description={tagline[lang]} route="home">
   <Hero lang={lang} />
-  <Section id="fundamentals" lang={lang}>
-    <div class="cards">
-      {side('fund').map((p) => <ProjectCard id={p.id} p={p.data} lang={lang} />)}
-      <BuildingCard lang={lang} />
-    </div>
+  <Living lang={lang} />
+  <Section id="ai" lang={lang} tone="ia" heading={false}>
+    <h2 id="ai-title" class="eyebrow kicker"><span aria-hidden="true">{sections.ai.kicker[lang]} · </span>{sections.ai.title[lang]}</h2>
+    <p class="ai-intro" data-reveal>{sections.ai.intro![lang]}</p>
+    {ia.map((p, i) => <ProjectScreen id={p.id} p={p.data} lang={lang} index={i} total={ia.length} next={nextOf(i)} />)}
   </Section>
-  <Section id="ai" lang={lang} accent="ia">
-    <div class="cards">
-      {side('ia').map((p) => <ProjectCard id={p.id} p={p.data} lang={lang} />)}
-    </div>
-  </Section>
+  <Fundamentals lang={lang} />
   <Workflow lang={lang} />
-  <Stack lang={lang} />
-  <About lang={lang} />
   <Contact lang={lang} />
+  {/* Bichinhos em pixel art (scripts/critters.ts): vazio no HTML, montado depois do load. Fica no fim para o Tab passar por eles por último. */}
+  <div class="critters" data-critters></div>
 </Base>
+
+<script>
+  import { reveal, whenIdle } from '../scripts/reveal';
+  whenIdle(() => reveal(document.querySelectorAll<HTMLElement>('#ai [data-reveal]')));
+  // Módulo à parte, baixado só quando a página está livre: não pesa no LCP.
+  whenIdle(() => import('../scripts/critters').then((m) => m.start(document.querySelector<HTMLElement>('[data-critters]')!)));
+</script>
+
+<style>
+  /* Com a cena 3D viva, o fundo laranja das telas 02 e 03 desce para baixo do canvas fixo (ver Hero.astro). */
+  :global(html[data-globe-live]) :global(:is(#living, #ai)) {
+    position: relative;
+    background: none;
+  }
+
+  :global(html[data-globe-live]) :global(:is(#living, #ai))::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: var(--c-ia);
+  }
+
+  /* Camada dos bichinhos: origem no topo da página; cada um se posiciona por transform. */
+  .critters {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5; /* sobre os fundos das telas, sob o cabeçalho (10) */
+  }
+
+  .critters :global([data-critter]) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--c-ink);
+    transform-origin: center;
+  }
+
+  .critters :global([data-kind='figurante']) {
+    pointer-events: none;
+  }
+
+  .critters :global([data-critter] svg) {
+    display: block;
+    max-width: none; /* a camada tem largura 0; o reset global de svg encolheria o desenho */
+    overflow: visible;
+    fill: currentColor;
+  }
+
+  /* Tela 06 (preta): amarelo, laranja ou claro; o anel de foco acompanha a cor. */
+  .critters :global([data-ink='mao']) {
+    --accent: var(--c-mao);
+    color: var(--c-mao);
+  }
+
+  .critters :global([data-ink='ia']) {
+    --accent: var(--c-ia);
+    color: var(--c-ia);
+  }
+
+  .critters :global([data-ink='paper']) {
+    --accent: var(--c-paper);
+    color: var(--c-paper);
+  }
+
+  .ai-intro {
+    max-width: 30rem;
+    font-size: var(--t-lead);
+    line-height: 1.5;
+  }
+</style>

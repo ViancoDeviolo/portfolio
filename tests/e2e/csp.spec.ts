@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 
-// O preview não aplica o _headers do Cloudflare: injeta a CSP real nas respostas HTML e exige zero violações.
-const csp = readFileSync('public/_headers', 'utf8').match(/Content-Security-Policy:\s*(.+)/)![1].trim();
+// O preview não aplica o _headers do Cloudflare: injeta a CSP real, com os hashes (dist/_headers), nas respostas HTML e exige zero violações.
+const csp = readFileSync('dist/_headers', 'utf8').match(/Content-Security-Policy:\s*(.+)/)![1].trim();
 
 for (const path of ['/', '/en/privacy/']) {
   test(`CSP sem violações em ${path}`, async ({ page }) => {
@@ -31,6 +31,8 @@ for (const path of ['/', '/en/privacy/']) {
     if (path === '/') {
       expect(await page.locator('video').count()).toBeGreaterThan(0);
       expect(await page.locator('script[src]').count()).toBeGreaterThan(0);
+      await expect(page.locator('html')).toHaveAttribute('data-globe-live', '', { timeout: 15_000 });
+      expect(await page.locator('canvas').count()).toBe(1); // a cena 3D carregou sob a CSP real
     }
     expect(await page.evaluate(() => (window as any).__csp ?? [])).toEqual([]);
     expect(problems).toEqual([]);

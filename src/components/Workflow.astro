@@ -1,75 +1,124 @@
 ---
 import { getEntry } from 'astro:content';
 import Section from './Section.astro';
+import Comparison from './Comparison.astro';
+import Ticks from './Ticks.astro';
 import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
-const { workflow, workflowFooter, sections } = (await getEntry('site', 'site'))!.data;
-const last = workflow.length - 1;
+const { method, evolution, ui } = (await getEntry('site', 'site'))!.data;
 ---
-<Section id="workflow" lang={lang} accent="ia">
-  <ol class="steps">
-    {
-      workflow.map((s, i) => (
-        <li>
-          <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-          <h3>{s.title[lang]}</h3>
-          <p>{s.body[lang]}</p>
-          {i === last && (
-            <a class="to-fund" href="#fundamentals">
-              {sections.fundamentals.title[lang]}
-              <span aria-hidden="true">↑</span>
-            </a>
-          )}
-        </li>
-      ))
-    }
+<Section id="workflow" lang={lang} tone="split">
+  <ol class="method">
+    {method.map((m) => <li>{m[lang]}</li>)}
   </ol>
-  <p class="foot">{workflowFooter[lang]}</p>
+
+  <Comparison lang={lang} />
+
+  <table class="evolution">
+    <caption class="eyebrow">{ui.evolution.title[lang]}</caption>
+    <thead>
+      <tr>
+        <td></td>
+        <th scope="col">{ui.evolution.before[lang]}</th>
+        <th scope="col">{ui.evolution.after[lang]}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {evolution.map((e) => (
+        <tr>
+          <th scope="row">{e.label[lang]}</th>
+          <td><Ticks text={e.before[lang]} /></td>
+          <td><Ticks text={e.after[lang]} /></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <div class="dusk" data-dusk aria-hidden="true"></div>
 </Section>
 
 <style>
-  .steps {
+  /* Metade amarela, metade laranja (spec 4, tela 05). */
+  :global(#workflow) {
     display: grid;
-    gap: var(--s-6);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  li {
-    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     align-content: start;
-    gap: var(--s-3);
-    padding-top: var(--s-5);
-    border-top: 1px solid var(--line);
+    gap: var(--s-6);
   }
 
-  .num {
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: var(--t-small);
-    font-variant-numeric: tabular-nums;
+  /* A página escurece até o preto da 06 (spec 5): uma faixa depois de todo o texto da 05, que vai do fundo
+     dividido ao preto e encosta no #contact. Rolar por ela é o escurecimento; nenhum texto fica por baixo,
+     e por ser só cor, vale igual sem JS e com movimento reduzido. */
+  .dusk {
+    height: 45svh;
+    margin: 0 calc(-1 * var(--edge)) calc(-1 * var(--s-8));
+    background: linear-gradient(to bottom, transparent, var(--c-ink));
   }
 
-  .to-fund {
-    display: inline-flex;
-    align-items: center;
+  .method {
+    display: grid;
     gap: var(--s-2);
-    justify-self: start;
-    min-height: var(--target);
-    color: var(--accent-fund);
-    font-weight: var(--weight-strong);
+    margin: 0;
+    padding-left: 1.4em;
+    list-style: decimal;
+    font-size: var(--t-lead);
   }
 
-  .foot {
-    margin-top: var(--s-7);
-    color: var(--muted);
+  .evolution {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--t-small);
   }
 
-  @media (min-width: 52rem) {
-    .steps {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+  caption {
+    padding-bottom: var(--s-3);
+    text-align: left;
+  }
+
+  .evolution th,
+  .evolution td {
+    padding: var(--s-3) var(--s-3) var(--s-3) 0;
+    border-top: 1.5px solid var(--c-ink);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: var(--t-label);
+  }
+
+  tbody th {
+    font-weight: 600;
+  }
+
+  @media (min-width: 64rem) {
+    :global(#workflow) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: calc(2 * var(--edge));
+    }
+
+    :global(#workflow) > :global(*) {
+      grid-column: 1 / -1;
+    }
+
+    :global(#workflow) > :global(.kicker),
+    :global(#workflow) > :global(.title) {
+      grid-column: 1;
+    }
+
+    :global(#workflow) > .method {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: center;
+    }
+
+    /* Tabela inteira na metade laranja: "hoje" fica do lado da IA. */
+    :global(#workflow) > .evolution {
+      grid-column: 2;
     }
   }
 </style>

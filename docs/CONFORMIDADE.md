@@ -61,10 +61,22 @@
 - [ ] Teste real: leitor de tela (NVDA no Windows) em pelo menos a home e um projeto. (Lucas, após o deploy)
 - [x] Automático: axe (via Playwright) sem violações + `web-design-guidelines` sem pendências. — `tests/e2e/a11y.spec.ts` (WCAG 2.2 AA, 6 páginas); `web-design-guidelines` aplicada, ver `.superpowers/sdd/2026-11-22-portfolio-v1/task-16-report.md`
 
+> **Adiado em 24/11/2026 (decisão do Lucas, redesign):** a acessibilidade avançada (auditoria axe completa, leitores de tela, contraste AA em todos os estados) fica para depois do redesign. Segue mantido o mínimo: `prefers-reduced-motion` respeitado, texto alternativo em fotos, prints e vídeos, e links e botões alcançáveis por teclado com foco visível.
+
+**Pendências adiadas encontradas no portão de qualidade do redesign (24/11/2026), sem bloquear:**
+- [ ] Etiquetas do globo (tela 02) com 31 a 36 px de altura e bichinhos de projeto com cerca de 40 px: abaixo dos 44 px recomendados para toque no celular (passam no mínimo de 24 px do WCAG 2.2).
+- [ ] Texto corrido das fichas da tela 03 em 14 px (19 de 22 parágrafos): avaliar 15 a 16 px para leitura.
+- [ ] Os bichinhos de projeto são links e entram na ordem do Tab (até um por tela): conferir com leitor de tela se ajudam ou atrapalham.
+- [ ] Contraste AA nos estados de hover e foco e no texto sobre a divisa amarelo/laranja da tela 05 e sobre a retícula da capa: só o estado de repouso é coberto pelo axe.
+- [ ] Anel de foco das pílulas do cabeçalho cortado em cerca de 1 px na faixa rolável do celular.
+- [ ] O globo 3D (tela 02) tem equivalente em lista de links, mas a cena em si não é anunciada; conferir com NVDA se a lista basta.
+- [ ] Foco perdido no Chromium ao sair, com Tab, do último controle nativo de um vídeo que já tocou: o foco vai para o `<body>` em ~3 a 6% das vezes (`keyboard.spec.ts:24` instável). Causa isolada; a correção depende de decisão do Lucas (tirar os controles nativos da ordem do Tab ou criar controles próprios).
+- [ ] Teste com leitor de tela (NVDA) na home nova, nas duas línguas.
+
 ## 5. Segurança
 
 - [x] **[obrigatório] Cabeçalhos HTTP** (configurados na hospedagem): — `public/_headers` + `tests/unit/headers.test.ts` e `tests/dist/security.test.ts` (inclui `X-Frame-Options: DENY`); conferir a resposta real após o deploy
-  - `Content-Security-Policy` restritiva (`default-src 'self'`; sem `unsafe-inline` em script)
+  - `Content-Security-Policy` restritiva (`default-src 'self'`; sem `unsafe-inline`; desde o redesign o CSS vai embutido no HTML e cada `<style>` entra no `style-src` só pelo hash `sha256-` gerado no build)
   - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
   - `X-Content-Type-Options: nosniff`
   - `Referrer-Policy: strict-origin-when-cross-origin`
@@ -80,6 +92,6 @@
 
 ## 6. Verificação antes de publicar
 
-- [x] Lighthouse ≥ 95 em Performance, Acessibilidade, Boas práticas e SEO — nas duas línguas, mobile e desktop. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, home e política nas duas línguas, todas as categorias 100
+- [x] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, 5 execuções por URL, performance e LCP medidos pela mediana. Na v1, todas as categorias 100. No redesign (25/11/2026, HEAD `e4f46a0`) valem as metas da spec 7. Desktop: 1,00 em tudo. Celular: performance de 0,90 a 0,98 (meta ≥ 0,85); LCP com mediana de 2,35 s em `/` e em `/en/`, pior execução 2,37 s (meta < 2,5 s); acessibilidade, boas práticas e SEO em 1,00. O ganho veio do CSS embutido no HTML, com hash na CSP.
 - [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
 - [x] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. — textos legais revisados em 2026-11-23 e vídeos em 2026-11-22

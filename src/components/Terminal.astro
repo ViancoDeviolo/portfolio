@@ -11,16 +11,15 @@ if (body === undefined) throw new Error(`terminal: arquivo não encontrado: ${fi
 
 <style>
   .term {
-    border: 1px solid var(--line);
-    border-radius: var(--s-2);
-    background: rgb(0 0 0 / 0.35);
+    border-radius: 0.75rem;
+    background: var(--c-ink);
+    color: var(--c-paper);
     min-width: 0;
   }
 
   .term-title {
     padding: var(--s-2) var(--s-4);
-    border-bottom: 1px solid var(--line);
-    color: var(--muted);
+    border-bottom: 1px solid color-mix(in srgb, var(--c-paper) 20%, transparent);
     font-family: var(--font-mono);
     font-size: var(--t-label);
   }
@@ -32,7 +31,6 @@ if (body === undefined) throw new Error(`terminal: arquivo não encontrado: ${fi
     padding: var(--s-3) var(--s-4);
     font-size: var(--t-label);
     line-height: 1.55;
-    color: var(--text);
     overscroll-behavior: contain;
   }
 </style>

@@ -1,0 +1,10 @@
+---
+// Retícula da capa: a mesma imagem do cabeçalho (/halftone.svg, gerada no build), continuada logo abaixo dele.
+---
+<div class="halftone" data-halftone aria-hidden="true"></div>
+
+<style>
+  .halftone {
+    background: url('/halftone.svg') 0 calc(-1 * var(--header-h)) / 100% auto no-repeat;
+  }
+</style>

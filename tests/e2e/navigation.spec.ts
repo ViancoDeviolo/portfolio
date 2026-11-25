@@ -10,9 +10,9 @@ for (const base of ['/', '/en/']) {
     await expect(page.locator('#fundamentals')).toBeInViewport();
   });
 
-  test(`${base}: metade de terno leva a Engenharia com IA`, async ({ page }) => {
+  test(`${base}: metade de terno leva a Engenharia de IA`, async ({ page }) => {
     await page.goto(base);
-    await page.getByRole('link', { name: /Engenharia com IA|AI engineering/ }).first().click();
+    await page.getByRole('link', { name: /Engenharia de IA|AI engineering/ }).first().click();
     await expect(page).toHaveURL(/#ai$/);
     await expect(page.locator('#ai')).toBeInViewport();
   });

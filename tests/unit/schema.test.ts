@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { projectSchema } from '../../src/lib/schema';
+import { projectSchema, siteSchema } from '../../src/lib/schema';
 
 const L = { pt: 'x', en: 'x' };
 const base = () => ({
@@ -48,5 +48,45 @@ describe('projectSchema', () => {
     bad({ ...validIa(), media: [{ kind: 'video', src: '/media/x.mp4', alt: L }] });
     bad({ ...validIa(), updated: '2026-13' });
     bad({ ...validIa(), nextSteps: [L, L, L, L] });
+  });
+});
+
+describe('lastChange', () => {
+  it('é opcional e exige PT e EN quando presente', () => {
+    expect(projectSchema.safeParse(validIa()).success).toBe(true);
+    expect(projectSchema.safeParse({ ...validIa(), lastChange: L }).success).toBe(true);
+    bad({ ...validIa(), lastChange: { pt: 'x' } });
+  });
+});
+
+describe('siteSchema: telas novas', () => {
+  const site = () => ({
+    name: 'x', tagline: L, heroAlt: { casual: L, terno: L }, heroBadge: L,
+    sections: Object.fromEntries(['living', 'ai', 'fundamentals', 'workflow', 'contact'].map((k) => [k, { kicker: L, title: L }])),
+    studyingNow: [L], about: L,
+    ui: {
+      legend: { mao: L, ia: L }, next: L, result: L, codeBy: L, nextCard: { kicker: L, title: L, body: L },
+      request: L, answerOf: L, highlight: L, evolution: { title: L, before: L, after: L }, studying: L, cv: L, footerNote: L, navLabel: L,
+    },
+    contact: { emailUser: 'a', emailDomain: 'b.c', linkedin: 'https://a.b', github: 'https://a.b' },
+    statusLabels: { concluido: L, 'em-evolucao': L, 'em-desenvolvimento': L },
+    heroLabels: { mao: { title: L, sub: L }, ia: { title: L, sub: L } },
+    nav: [{ id: 'ai', label: L }],
+    method: [L, L, L],
+    comparison: { prompt: L, answers: [{ ai: 'Gemini', excerpt: L }, { ai: 'Copilot', excerpt: L }, { ai: 'GPT', excerpt: L }] },
+    evolution: [{ label: L, before: L, after: L }],
+  });
+  const badSite = (o: object) => expect(siteSchema.safeParse(o).success).toBe(false);
+  it('aceita comparação com 3 respostas e sem conclusion', () => {
+    expect(siteSchema.safeParse(site()).error?.issues).toBeUndefined();
+  });
+  it('rejeita IA desconhecida e IA repetida', () => {
+    const s = site();
+    badSite({ ...s, comparison: { ...s.comparison, answers: [{ ai: 'Bard', excerpt: L }] } });
+    badSite({ ...s, comparison: { ...s.comparison, answers: [{ ai: 'GPT', excerpt: L }, { ai: 'GPT', excerpt: L }] } });
+  });
+  it('rejeita method com 2 itens e evolution vazia', () => {
+    badSite({ ...site(), method: [L, L] });
+    badSite({ ...site(), evolution: [] });
   });
 });

@@ -1,0 +1,247 @@
+---
+import { getEntry } from 'astro:content';
+import ProjectMedia from './ProjectMedia.astro';
+import StatusBadge from './StatusBadge.astro';
+import Evidence from './Evidence.astro';
+import ProjectLinks from './ProjectLinks.astro';
+import Terminal from './Terminal.astro';
+import type { Project } from '../lib/schema';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  id: string;
+  p: Extract<Project, { side: 'ia' }>;
+  lang: Lang;
+  index: number; // 0-based
+  total: number;
+  next: { href: string; label: string };
+}
+
+const { id, p, lang, index, total, next } = Astro.props;
+const { ui } = (await getEntry('site', 'site'))!.data;
+const L = {
+  pt: { problem: 'O problema', role: 'Meu papel', aiDid: 'O que a IA fez', iDecided: 'O que eu decidi' },
+  en: { problem: 'The problem', role: 'My role', aiDid: 'What AI did', iDecided: 'What I decided' },
+}[lang];
+// A primeira mídia da ficha vai na moldura; as outras, numa fileira compacta abaixo dela.
+const [lead, ...more] = p.media;
+const nn = (n: number) => String(n).padStart(2, '0');
+---
+<article id={`p-${id}`} class="ai-screen" data-ai-screen aria-labelledby={`p-${id}-title`}>
+  <p class="counter eyebrow" data-counter>{nn(index + 1)} / {nn(total)}</p>
+
+  <div class="intro">
+    <ul class="stack eyebrow" aria-label="Stack" translate="no">
+      {p.stack.map((s) => <li>{s}</li>)}
+    </ul>
+    <h3 id={`p-${id}-title`} class="t-ia">{p.title[lang]}</h3>
+    <StatusBadge status={p.status} updated={p.updated} lang={lang} />
+    <ProjectLinks p={p} lang={lang} />
+    {p.team && (
+      <details class="more">
+        <summary>{L.role}</summary>
+        <p>{p.team.role[lang]}</p>
+      </details>
+    )}
+  </div>
+
+  <div class="frame-wrap" data-media-frame>
+    <ProjectMedia media={lead} lang={lang} uid={`${id}-m0`} />
+  </div>
+
+  {more.length > 0 && (
+    <div class="more-media">
+      {more.map((m, i) => <ProjectMedia media={m} lang={lang} uid={`${id}-m${i + 1}`} small />)}
+    </div>
+  )}
+
+  <div class="blocks">
+    <div class="block" data-reveal data-block="problem">
+      <p class="eyebrow">{L.problem}</p>
+      <p>{p.problem[lang]}</p>
+    </div>
+    <div class="block" data-reveal data-block="iDecided">
+      <p class="eyebrow">{p.iDecidedLabel?.[lang] ?? L.iDecided}</p>
+      <p>{p.iDecided[lang]}</p>
+    </div>
+    <div class="block" data-reveal data-block="aiDid">
+      <p class="eyebrow">{L.aiDid}</p>
+      <p>{p.aiDid[lang]}</p>
+    </div>
+    <div class="block" data-reveal data-block="evidence">
+      <p class="eyebrow">{ui.result[lang]}</p>
+      <Evidence evidence={p.evidence} lang={lang} />
+      {p.terminal && (
+        <details class="more">
+          <summary>{p.terminal.title[lang]}</summary>
+          <Terminal file={p.terminal.file} title={p.terminal.title[lang]} />
+        </details>
+      )}
+      {p.nextSteps && <ul class="next-steps">{p.nextSteps.map((s) => <li>{s[lang]}</li>)}</ul>}
+    </div>
+  </div>
+
+  <a class="next" href={next.href} data-next>{ui.next[lang]} · <strong>{next.label}</strong> <span aria-hidden="true">↓</span></a>
+</article>
+
+<style>
+  .ai-screen {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+    min-height: calc(100svh - var(--header-h));
+    padding-block: var(--s-7);
+    border-top: 1.5px solid var(--c-ink);
+  }
+
+  .ai-screen:first-of-type {
+    border-top: 0;
+    padding-top: var(--s-5);
+  }
+
+  .counter {
+    justify-self: end;
+    margin: 0;
+  }
+
+  .intro {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--s-4);
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li + li::before {
+    content: '·';
+    margin-right: var(--s-2);
+  }
+
+  h3 {
+    font-size: clamp(2.75rem, 1.5rem + 4.5vw, 6rem);
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  /* Moldura pontilhada (spec 3.3); a cena 3D (Task 8) a redesenha com as partículas do globo. */
+  .frame-wrap {
+    padding: var(--s-4);
+    border: 4px dotted var(--c-ink);
+    border-radius: 1.25rem;
+    align-self: start;
+    min-width: 0;
+  }
+
+  /* As partículas da cena 3D formaram a moldura desta tela: o pontilhado do CSS sai. */
+  .frame-wrap[data-globe-frame] {
+    border-color: transparent;
+  }
+
+  .frame-wrap {
+    transition: border-color var(--dur-hover) var(--ease-out);
+  }
+
+  .more-media {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+    gap: var(--s-3);
+    align-items: start;
+    min-width: 0;
+  }
+
+  .blocks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--s-6);
+  }
+
+  .block {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    padding-top: var(--s-3);
+    border-top: 1.5px solid var(--c-ink);
+    min-width: 0;
+  }
+
+  .block > p:not(.eyebrow) {
+    font-size: var(--t-small);
+    line-height: 1.55;
+  }
+
+  .more summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+    font-size: var(--t-small);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .more p {
+    max-width: 40rem;
+    font-size: var(--t-small);
+  }
+
+  .next-steps {
+    margin: 0;
+    padding-left: 1.1em;
+    list-style: disc;
+    font-size: var(--t-small);
+  }
+
+  .next {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    min-height: var(--target);
+    font-size: var(--t-small);
+    text-decoration: none;
+  }
+
+  .next strong {
+    font-family: var(--font-block);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .next:hover strong {
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .ai-screen {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      grid-template-areas:
+        'intro counter'
+        'intro frame'
+        'intro more'
+        'blocks blocks'
+        '. next';
+      column-gap: var(--s-7);
+      row-gap: var(--s-5);
+    }
+
+    .counter { grid-area: counter; }
+    .intro { grid-area: intro; }
+    .frame-wrap { grid-area: frame; }
+    .more-media { grid-area: more; }
+    .blocks { grid-area: blocks; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .next { grid-area: next; }
+  }
+</style>

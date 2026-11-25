@@ -4,7 +4,7 @@ import { SITE_URL } from '../../astro.config.mjs';
 
 // shortcut: regex over Astro's predictable output; simple selectors (tag, #id, .class, [attr=value]) plus the descendant and child (>) combinators.
 // Selectors split on whitespace, so an attribute value with a space ([alt="a b"]) is unsupported; move to a real parser if a test needs one.
-type Node = { tag: string; attrs: Record<string, string>; start: number; end: number };
+type Node = { tag: string; attrs: Record<string, string>; start: number; end: number; selfClosing?: boolean };
 
 const ATTR = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g;
 
@@ -53,14 +53,18 @@ const ENT: Record<string, string> = { '#39': "'", '#x27': "'", quot: '"', lt: '<
 export const load = (file: string) => parse(readFileSync(join('dist', file), 'utf8'));
 
 export function parse(source: string) {
-  const html = source.replace(/<!--[\s\S]*?-->/g, '');
+  const raw = source.replace(/<!--[\s\S]*?-->/g, '');
+  // Corpo de <script>/<style> embutido vira espaços do mesmo tamanho: o JS do runtime das ilhas tem "<" que não é tag.
+  const html = raw.replace(/(<(script|style)\b[^>]*>)([\s\S]*?)(<\/\2>)/gi, (_, a, _t, body, b) => a + ' '.repeat(body.length) + b);
   const nodes: Node[] = [...html.matchAll(/<([a-z][\w-]*)\b([^>]*)>/gi)].map((m) => ({
     tag: m[1].toLowerCase(),
     attrs: parseAttrs(m[2]),
     start: m.index! + m[0].length,
     end: -1,
+    selfClosing: m[2].trimEnd().endsWith('/'), // SVG: <circle ... />
   }));
-  const end = (n: Node) => (n.end < 0 ? (n.end = VOID.has(n.tag) ? n.start : closeOf(html, n.tag, n.start)) : n.end);
+  const end = (n: Node) =>
+    n.end < 0 ? (n.end = VOID.has(n.tag) || n.selfClosing ? n.start : closeOf(html, n.tag, n.start)) : n.end;
   const inside = (a: Node, c: Node) => a.start < c.start && c.start < end(a);
   const parentOf = (c: Node) => nodes.findLast((a) => a.start < c.start && inside(a, c));
   const $ = (sel: string) => {
@@ -89,7 +93,7 @@ export function parse(source: string) {
       nodes: found,
     };
   };
-  $.html = html;
+  $.html = raw;
   return $;
 }
 

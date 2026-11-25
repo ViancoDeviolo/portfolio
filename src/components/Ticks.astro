@@ -1,0 +1,5 @@
+---
+// Trecho entre crases no site.yaml (ex.: `gpt-oss-120b`) vira <code>.
+const { text } = Astro.props as { text: string };
+---
+{text.split('`').map((t, i) => (i % 2 ? <code translate="no">{t}</code> : t))}
