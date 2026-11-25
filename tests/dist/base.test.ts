@@ -38,13 +38,15 @@ describe('fontes', () => {
     'inter-500-latin',
     'inter-600-latin',
   ];
-  // CSS em arquivo e o embutido na home (astro.config: inlineStylesheets 'always').
+  // CSS em arquivo e o embutido em cada página (astro.config: inlineStylesheets 'always').
   const css = () =>
     [
       ...readdirSync('dist/_astro')
         .filter((f) => f.endsWith('.css'))
         .map((f) => readFileSync(`dist/_astro/${f}`, 'utf8')),
-      ...[...readFileSync('dist/index.html', 'utf8').matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1]),
+      ...readdirSync('dist', { recursive: true })
+        .filter((f) => String(f).endsWith('.html'))
+        .flatMap((f) => [...readFileSync(`dist/${f}`, 'utf8').matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1])),
     ].join('\n');
 
   it.each(fontes)('%s existe em dist/fonts e é usada no CSS', (nome) => {
