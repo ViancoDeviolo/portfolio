@@ -45,9 +45,19 @@ test.describe('desktop', () => {
     const p = page.locator('[data-critter][data-kind="projeto"]').first();
     await expect(p).toHaveAttribute('href', /^#p-[a-z-]+$/);
     await expect(p).toHaveAttribute('aria-label', /\S/);
+    // só mouse/toque: não entra na ordem do Tab
+    await expect(p).toHaveAttribute('tabindex', '-1');
     const f = page.locator('[data-critter][data-kind="figurante"]').first();
     await expect(f).toHaveAttribute('aria-hidden', 'true');
     await expect(f).toHaveCSS('pointer-events', 'none');
+  });
+
+  test('o Tab nunca para num bichinho de projeto', async ({ page }) => {
+    await ready(page);
+    const stops = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>('a[data-critter]')].filter((e) => e.tabIndex >= 0).length,
+    );
+    expect(stops).toBe(0);
   });
 
   test('nenhum bichinho rouba o clique de um link ou botão', async ({ page }) => {
@@ -142,6 +152,14 @@ test.describe('desktop', () => {
     const after = await page.evaluate(() => [...document.querySelectorAll('[data-critter]')].map((e) => e.getBoundingClientRect().toJSON()));
     expect(after).toEqual(before);
   });
+});
+
+// O PDF do currículo é gerado em mídia print depois do networkidle, quando os bichinhos já montaram.
+test('na impressão, nenhum bichinho aparece', async ({ page }) => {
+  await ready(page);
+  await page.emulateMedia({ media: 'print' });
+  const shown = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-critter]')].filter((e) => e.getClientRects().length).length);
+  expect(shown).toBe(0);
 });
 
 test.describe('celular', () => {

@@ -63,6 +63,7 @@ export function start(layer: HTMLElement) {
       if (stage.id === 'contact') el.dataset.ink = INKS[(i + j) % INKS.length];
       if (kind === 'projeto') {
         (el as HTMLAnchorElement).href = `#p-${pid}`;
+        el.tabIndex = -1; // só mouse/toque: o teclado chega a cada projeto pela esfera e pelas seções
         el.setAttribute('aria-label', title!);
       } else el.setAttribute('aria-hidden', 'true');
       el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><path/></svg>`;
