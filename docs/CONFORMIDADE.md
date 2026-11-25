@@ -70,6 +70,7 @@
 - [ ] Contraste AA nos estados de hover e foco e no texto sobre a divisa amarelo/laranja da tela 05 e sobre a retícula da capa: só o estado de repouso é coberto pelo axe.
 - [ ] Anel de foco das pílulas do cabeçalho cortado em cerca de 1 px na faixa rolável do celular.
 - [ ] O globo 3D (tela 02) tem equivalente em lista de links, mas a cena em si não é anunciada; conferir com NVDA se a lista basta.
+- [ ] Foco perdido no Chromium ao sair, com Tab, do último controle nativo de um vídeo que já tocou: o foco vai para o `<body>` em ~3 a 6% das vezes (`keyboard.spec.ts:24` instável). Causa isolada; a correção depende de decisão do Lucas (tirar os controles nativos da ordem do Tab ou criar controles próprios).
 - [ ] Teste com leitor de tela (NVDA) na home nova, nas duas línguas.
 
 ## 5. Segurança
@@ -91,6 +92,6 @@
 
 ## 6. Verificação antes de publicar
 
-- [x] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, 5 execuções por URL, performance e LCP medidos pela mediana. Na v1, todas as categorias 100. No redesign (24/11/2026) valem as metas da spec 7. Desktop: 1,00 em tudo. Celular: performance de 0,93 a 0,98 (meta ≥ 0,85); LCP com mediana de 2,30 s em `/` e 2,28 s em `/en/`, pior execução 2,36 s (meta < 2,5 s); acessibilidade, boas práticas e SEO em 1,00. O ganho veio do CSS embutido no HTML, com hash na CSP.
+- [x] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, 5 execuções por URL, performance e LCP medidos pela mediana. Na v1, todas as categorias 100. No redesign (25/11/2026, HEAD `e4f46a0`) valem as metas da spec 7. Desktop: 1,00 em tudo. Celular: performance de 0,90 a 0,98 (meta ≥ 0,85); LCP com mediana de 2,35 s em `/` e em `/en/`, pior execução 2,37 s (meta < 2,5 s); acessibilidade, boas práticas e SEO em 1,00. O ganho veio do CSS embutido no HTML, com hash na CSP.
 - [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
 - [x] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. — textos legais revisados em 2026-11-23 e vídeos em 2026-11-22
