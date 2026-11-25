@@ -63,6 +63,15 @@
 
 > **Adiado em 24/11/2026 (decisão do Lucas, redesign):** a acessibilidade avançada (auditoria axe completa, leitores de tela, contraste AA em todos os estados) fica para depois do redesign. Segue mantido o mínimo: `prefers-reduced-motion` respeitado, texto alternativo em fotos, prints e vídeos, e links e botões alcançáveis por teclado com foco visível.
 
+**Pendências adiadas encontradas no portão de qualidade do redesign (24/11/2026), sem bloquear:**
+- [ ] Etiquetas do globo (tela 02) com 31 a 36 px de altura e bichinhos de projeto com cerca de 40 px: abaixo dos 44 px recomendados para toque no celular (passam no mínimo de 24 px do WCAG 2.2).
+- [ ] Texto corrido das fichas da tela 03 em 14 px (19 de 22 parágrafos): avaliar 15 a 16 px para leitura.
+- [ ] Os bichinhos de projeto são links e entram na ordem do Tab (até um por tela): conferir com leitor de tela se ajudam ou atrapalham.
+- [ ] Contraste AA nos estados de hover e foco e no texto sobre a divisa amarelo/laranja da tela 05 e sobre a retícula da capa: só o estado de repouso é coberto pelo axe.
+- [ ] Anel de foco das pílulas do cabeçalho cortado em cerca de 1 px na faixa rolável do celular.
+- [ ] O globo 3D (tela 02) tem equivalente em lista de links, mas a cena em si não é anunciada; conferir com NVDA se a lista basta.
+- [ ] Teste com leitor de tela (NVDA) na home nova, nas duas línguas.
+
 ## 5. Segurança
 
 - [x] **[obrigatório] Cabeçalhos HTTP** (configurados na hospedagem): — `public/_headers` + `tests/unit/headers.test.ts` e `tests/dist/security.test.ts` (inclui `X-Frame-Options: DENY`); conferir a resposta real após o deploy
@@ -82,6 +91,6 @@
 
 ## 6. Verificação antes de publicar
 
-- [x] Lighthouse ≥ 95 em Performance, Acessibilidade, Boas práticas e SEO — nas duas línguas, mobile e desktop. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, home e política nas duas línguas, todas as categorias 100
+- [x] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`. Na v1, todas as categorias 100. No redesign (24/11/2026) as metas passaram a ser as da spec 7: desktop 1,00 em tudo; celular com performance de 0,91 a 0,98 na home (meta ≥ 0,85), LCP de 2,27 a 2,55 s entre execuções (meta < 2,5 s; a asserção passa, mas há execuções isoladas acima) e acessibilidade, boas práticas e SEO em 1,00
 - [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
 - [x] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. — textos legais revisados em 2026-11-23 e vídeos em 2026-11-22
