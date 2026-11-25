@@ -4,13 +4,13 @@ import SkipLink from './SkipLink.astro';
 import LangSwitch from './LangSwitch.astro';
 import { ROUTES, type Lang } from '../lib/i18n';
 const { lang, path, name } = Astro.props as { lang: Lang; path: string; name: string };
-const { nav } = (await getEntry('site', 'site'))!.data;
+const { nav, ui } = (await getEntry('site', 'site'))!.data;
 ---
 <header class="site-header">
   <SkipLink lang={lang} />
   <div class="bar">
     <a class="name" href={ROUTES.home[lang]}>{name}</a>
-    <nav class="nav" aria-label={lang === 'pt' ? 'Seções' : 'Sections'}>
+    <nav class="nav" aria-label={ui.navLabel[lang]}>
       {nav.map((n) => <a class="pill" href={`${ROUTES.home[lang]}#${n.id}`}>{n.label[lang]}</a>)}
     </nav>
     <LangSwitch lang={lang} path={path} />

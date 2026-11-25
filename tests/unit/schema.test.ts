@@ -61,12 +61,12 @@ describe('lastChange', () => {
 
 describe('siteSchema: telas novas', () => {
   const site = () => ({
-    name: 'x', tagline: L, heroAlt: { casual: L, terno: L }, livingNote: L, heroBadge: L,
+    name: 'x', tagline: L, heroAlt: { casual: L, terno: L }, heroBadge: L,
     sections: Object.fromEntries(['living', 'ai', 'fundamentals', 'workflow', 'contact'].map((k) => [k, { kicker: L, title: L }])),
     studyingNow: [L], about: L,
     ui: {
       legend: { mao: L, ia: L }, next: L, result: L, codeBy: L, nextCard: { kicker: L, title: L, body: L },
-      request: L, answerOf: L, highlight: L, evolution: { title: L, before: L, after: L }, studying: L, cv: L, footerNote: L,
+      request: L, answerOf: L, highlight: L, evolution: { title: L, before: L, after: L }, studying: L, cv: L, footerNote: L, navLabel: L,
     },
     contact: { emailUser: 'a', emailDomain: 'b.c', linkedin: 'https://a.b', github: 'https://a.b' },
     statusLabels: { concluido: L, 'em-evolucao': L, 'em-desenvolvimento': L },

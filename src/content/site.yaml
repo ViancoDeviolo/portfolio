@@ -11,9 +11,6 @@ site:
     terno:
       pt: Lucas de perfil, de braços cruzados, com terno bege e camisa branca
       en: Lucas in profile, arms crossed, wearing a beige suit and a white shirt
-  livingNote:
-    pt: 'Portfólio vivo: os projetos continuam evoluindo. Atualizado em {date}.'
-    en: 'Living portfolio: the projects keep evolving. Updated {date}.'
   heroBadge: { pt: 'portfólio vivo · projetos em evolução', en: 'living portfolio · projects in progress' }
   sections:
     living:
@@ -122,6 +119,7 @@ site:
     studying: { pt: Estudando agora, en: Studying now }
     cv: { pt: Currículo em PDF, en: Résumé (PDF) }
     footerNote: { pt: portfólio vivo, en: living portfolio }
+    navLabel: { pt: Seções, en: Sections }
   statusLabels:
     concluido: { pt: Concluído, en: Completed }
     em-evolucao: { pt: Em evolução, en: Evolving }

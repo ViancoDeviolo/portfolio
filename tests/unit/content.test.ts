@@ -29,8 +29,6 @@ describe('conteúdo do site', () => {
 
   it('site.yaml e fichas passam nos esquemas', () => {
     expect(siteSchema.safeParse(site).error?.issues).toBeUndefined();
-    expect(site.livingNote.pt).toContain('{date}');
-    expect(site.livingNote.en).toContain('{date}');
     expect(projects).toHaveLength(7);
     for (const { id, ...p } of projects) expect(projectSchema.safeParse(p).error?.issues, id).toBeUndefined();
   });

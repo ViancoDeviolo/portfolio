@@ -45,7 +45,6 @@ export const siteSchema = z.object({
   name: str,
   tagline: l10n,
   heroAlt: z.object({ casual: l10n, terno: l10n }),
-  livingNote: l10n,
   heroBadge: l10n,
   sections: z.object(sections),
   studyingNow: z.array(l10n).min(1),
@@ -77,6 +76,7 @@ export const siteSchema = z.object({
     studying: l10n,
     cv: l10n,
     footerNote: l10n,
+    navLabel: l10n,
   }),
   statusLabels: z.object(Object.fromEntries(STATUS.map((s) => [s, l10n])) as Record<(typeof STATUS)[number], typeof l10n>),
 });
