@@ -135,6 +135,12 @@ svg {
   height: auto;
 }
 
+/* Com height: auto, o Chrome só considera "dimensões explícitas" de uma imagem lazy se a proporção vier do CSS
+   (aviso no console). Navegador sem attr() tipado descarta a linha e usa a proporção dos atributos, como antes. */
+:where(img[width][height]) { /* sem especificidade: o aspect-ratio dos componentes (ex.: .figure da capa) vence */
+  aspect-ratio: attr(width type(<number>)) / attr(height type(<number>));
+}
+
 code,
 kbd,
 pre,
@@ -146,7 +152,7 @@ a {
   color: inherit;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  transition: text-decoration-color var(--dur-hover) ease, color var(--dur-hover) ease;
+  transition: text-decoration-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {

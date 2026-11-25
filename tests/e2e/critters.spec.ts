@@ -86,7 +86,7 @@ test.describe('desktop', () => {
       await page.waitForTimeout(200);
       plan = await page.evaluate(() => {
         // pelos retângulos, não por elementFromPoint: a foto da capa não recebe ponteiro, mas é evitada
-        const rects = [...document.querySelectorAll(':is(h1, h2, h3, p, li, pre, a, button, img, video, [data-critter-avoid], header):not([data-critter])')]
+        const rects = [...document.querySelectorAll(':is(h1, h2, h3, p, li, pre, td, th, dt, dd, summary, a, button, img, video, [data-critter-avoid], header):not([data-critter])')]
           .map((e) => e.getBoundingClientRect())
           .filter((r) => r.width && r.height);
         const free = (x: number, y: number) => !rects.some((r) => x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 8 && y <= r.bottom + 8);

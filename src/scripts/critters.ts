@@ -5,7 +5,7 @@ import { RULES, step, blocked, capPerViewport, type Critter } from '../lib/critt
 import { SPRITES, EXTRA_NAMES, PROJECT_CRITTERS, spriteRects, spriteFrame1, type Box } from '../lib/critters/sprites';
 import { reduce } from './reveal';
 
-const AVOID = ':is(h1, h2, h3, p, li, pre, a, button, img, video, [data-critter-avoid]):not([data-critter])';
+const AVOID = ':is(h1, h2, h3, p, li, pre, td, th, dt, dd, summary, a, button, img, video, [data-critter-avoid]):not([data-critter])';
 const STAGES = '#top, #living, [data-ai-screen], #fundamentals, #workflow, #contact';
 const PAD = 8; // folga em volta do que é evitado
 const FOLLOW = 320; // o de projeto só segue um cursor que chegou perto

@@ -16,7 +16,13 @@ const watchTone = () => {
   for (const z of zones) toneWatch.observe(z);
 };
 
+// Só depois do load: offsetHeight força o layout da página inteira, e antes do LCP isso vira uma tarefa longa no celular.
+// Até lá o cabeçalho fica com o tom do HTML (o da capa), que é o certo para quem ainda está no topo.
 if (siteHeader && zones.length) {
-  watchTone();
-  addEventListener('resize', watchTone);
+  const arm = () => {
+    watchTone();
+    addEventListener('resize', watchTone);
+  };
+  if (document.readyState === 'complete') arm();
+  else addEventListener('load', arm, { once: true });
 }

@@ -148,7 +148,7 @@ const { nav } = (await getEntry('site', 'site'))!.data;
     border: 1.5px solid var(--c-ink);
     background: var(--c-mao);
     color: var(--c-ink); /* texto sobre amarelo é sempre preto, também no cabeçalho da tela 06 */
-    transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
   }
 
   .bar :global(.lang-switch) {

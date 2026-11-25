@@ -10,8 +10,9 @@ import type { Lang } from '../lib/i18n';
 
 const { lang } = Astro.props as { lang: Lang };
 const { heroAlt: ALT, heroBadge, heroLabels } = (await getEntry('site', 'site'))!.data;
-// Cada foto mede 0,45 × a altura da capa (cerca de 370 px a 1440×900); no celular, cerca de 45vw.
-const sizes = '(min-width: 48rem) 380px, 45vw';
+// A caixa de cada foto tem cerca de 370 × 830 px a 1440×900 e a foto a cobre (object-fit: cover): a largura desenhada
+// fica perto de 630 px. No celular continua 45vw: subir puxa um arquivo maior para o LCP (foto casual).
+const sizes = '(min-width: 48rem) 640px, 45vw';
 ---
 <section id="top" class="hero" data-hero data-tone="hero" aria-labelledby="hero-name">
   <Halftone />

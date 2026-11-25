@@ -47,8 +47,11 @@ test('320: os números-link das evidências têm área de toque de 44 px', async
   const links = page.locator('.evidence dd a');
   expect(await links.count()).toBeGreaterThan(0);
   for (const a of await links.all()) {
-    const hits = await a.evaluate((el) => {
+    const hits = await a.evaluate(async (el) => {
       el.scrollIntoView({ block: 'center' }); // longe do cabeçalho fixo, que cobriria o ponto de cima
+      // a entrada com a rolagem (scripts/reveal.ts) desloca o bloco 1rem por 600 ms: mede depois que ela termina
+      await new Promise(requestAnimationFrame);
+      for (let n: Element | null = el; n; n = n.parentElement) await Promise.all(n.getAnimations().map((x) => x.finished));
       const r = el.getBoundingClientRect();
       const x = r.left + r.width / 2;
       const y = r.top + r.height / 2;

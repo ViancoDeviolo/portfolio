@@ -87,7 +87,7 @@ const show = answers.length >= 3;
 
   /* A resposta em destaque (scripts/answers.ts) vira o cartão preto; a troca de cor é curta e sem movimento. */
   .answer {
-    transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease;
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
   }
 
   .answer[data-active] {
@@ -121,7 +121,7 @@ const show = answers.length >= 3;
     font-size: var(--t-small);
     font-weight: 600;
     cursor: pointer;
-    transition: background-color var(--dur-hover) ease, color var(--dur-hover) ease, transform var(--dur-press) var(--ease-out);
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out), transform var(--dur-press) var(--ease-out);
   }
 
   .pick-btn[aria-pressed='true'] {
