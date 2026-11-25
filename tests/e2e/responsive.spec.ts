@@ -76,3 +76,74 @@ for (const vp of [{ width: 1440, height: 900 }, { width: 768, height: 1024 }, { 
       );
       expect(over).toEqual([]);
     });
+
+// Celular e tablet (Task 11): a página inteira cabe na largura, nas duas línguas.
+for (const width of [360, 390, 768])
+  for (const base of ['/', '/en/'])
+    test(`${width} ${base}: a página cabe na largura`, async ({ page }) => {
+      await page.setViewportSize({ width, height: width < 768 ? 800 : 1024 });
+      await page.goto(base);
+      await page.evaluate(() => document.fonts.ready);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    });
+
+const settled = (page: Page) =>
+  page.locator('.name > span, .duo .figure').evaluateAll((els) => Promise.all(els.flatMap((e) => e.getAnimations().map((a) => a.finished))));
+
+for (const base of ['/', '/en/']) {
+  test(`390 ${base}: na capa a divisa fica horizontal, amarelo em cima e laranja embaixo`, async ({ page, context }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(base);
+    await settled(page);
+    const png = (await page.locator('[data-hero]').screenshot({ animations: 'disabled' })).toString('base64');
+    // Lê os pixels numa página em branco: a CSP do site não deixa carregar imagem data:.
+    const blank = await context.newPage();
+    const [top, bottom] = await blank.evaluate(async (b64) => {
+      const img = new Image();
+      img.src = `data:image/png;base64,${b64}`;
+      await img.decode();
+      const c = document.createElement('canvas');
+      c.width = img.width;
+      c.height = img.height;
+      const g = c.getContext('2d')!;
+      g.drawImage(img, 0, 0);
+      const x = Math.round(img.width / 2);
+      return [2, img.height - 3].map((y) => [...g.getImageData(x, y, 1, 1).data.slice(0, 3)]);
+    }, png);
+    const near = (rgb: number[], hex: number[]) => rgb.every((v, i) => Math.abs(v - hex[i]) <= 12);
+    expect(near(top, [0xff, 0xc8, 0x3d]), `topo ${top}`).toBe(true);
+    expect(near(bottom, [0xff, 0x5a, 0x1f]), `fim ${bottom}`).toBe(true);
+  });
+
+  for (const width of [360, 390])
+    test(`${width} ${base}: o nome fica em duas linhas e cabe na largura`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto(base);
+      await page.evaluate(() => document.fonts.ready);
+      await settled(page);
+      const [a, b] = await page.locator('.name > span').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().toJSON()));
+      expect(b.top).toBeGreaterThan(a.top + a.height / 2);
+      for (const r of [a, b]) {
+        expect(r.left).toBeGreaterThanOrEqual(0);
+        expect(r.right).toBeLessThanOrEqual(width);
+      }
+    });
+
+  test(`390 ${base}: a navegação aparece e cada pílula tem área de toque de 44 px`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(base);
+    const targets = page.locator('.site-header :is(.pill, .lang-switch)');
+    expect(await targets.count()).toBe(5); // quatro pílulas e o PT / EN
+    for (const t of await targets.all()) {
+      await t.scrollIntoViewIfNeeded(); // a faixa das pílulas rola de lado se não couber
+      await expect(t).toBeVisible();
+      const hits = await t.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        return [y - 21, y + 21].map((yy) => el.contains(document.elementFromPoint(x, yy)));
+      });
+      expect(hits).toEqual([true, true]);
+    }
+  });
+}

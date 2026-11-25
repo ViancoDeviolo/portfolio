@@ -263,4 +263,90 @@ const sizes = '(min-width: 48rem) 380px, 45vw';
       text-underline-offset: 0.12em;
     }
   }
+  /* Celular (sem esboço; decidido na Task 11): a divisa vira horizontal, com o amarelo em cima e o laranja embaixo.
+     Uma coluna: selo, nome em duas linhas e "à mão" no amarelo; as fotos sobre a retícula; "IA" no laranja, embaixo.
+     Cada coisa tem a sua linha, então os rótulos nunca encostam nas fotos. */
+  @media (max-width: 47.99rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto auto 1fr auto;
+      row-gap: var(--s-3);
+      padding-bottom: var(--s-6);
+      --hero-bg: var(--c-mao); /* o laranja vem da retícula, que desce até o fim da capa */
+    }
+
+    .name {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin-top: 0;
+      font-size: min(30vw, 15svh);
+      line-height: 0.85;
+    }
+
+    .name > .t-ia {
+      align-self: flex-end;
+    }
+
+    .label.mao {
+      grid-row: 3;
+    }
+
+    .label.ia {
+      grid-row: 5;
+    }
+
+    /* As fotos ocupam a linha que sobra, encostadas no topo dela; a linha corta as pernas.
+       contain: size impede que o tamanho natural das fotos estique a linha. */
+    .duo {
+      position: relative;
+      grid-row: 4;
+      left: auto;
+      bottom: auto;
+      width: auto;
+      height: auto;
+      min-height: 10rem;
+      translate: none;
+      justify-content: center;
+      contain: size;
+      overflow: clip;
+    }
+
+    .duo :global(picture) {
+      height: min(116%, (100vw - 2 * var(--edge)) / 0.9);
+    }
+
+    /* Retícula e globo presos à linha das fotos (um filho absoluto de grid usa a área dele). */
+    .hero :global([data-globe-static]) {
+      grid-row: 4 / 5; /* com uma linha só, o fim "auto" de um filho absoluto seria a borda da capa */
+      grid-column: 1 / -1;
+      top: 0;
+      height: 100%;
+    }
+
+    /* A retícula desce do meio das fotos até o fim da capa: uma faixa de pontos e o laranja cheio embaixo.
+       A imagem é a faixa vertical do desktop girada 90° no ::before (os pontos pequenos no amarelo, em cima). */
+    .hero :global([data-halftone]) {
+      --t: 6rem; /* espessura da faixa */
+      grid-row: 4 / -1;
+      grid-column: 1 / -1;
+      inset: 45% calc(-1 * var(--edge)) calc(-1 * var(--s-6));
+      width: auto;
+      height: auto;
+      translate: none;
+      overflow: clip;
+      background: linear-gradient(to bottom, transparent calc(var(--t) - 1px), var(--c-ia) 0);
+    }
+
+    .hero :global([data-halftone])::before {
+      content: '';
+      position: absolute;
+      top: calc(var(--t) / 2 - 50vw);
+      left: calc(50% - var(--t) / 2);
+      width: var(--t);
+      height: 100vw;
+      rotate: 90deg;
+      background: url('/halftone.svg') 0 0 / 100% auto no-repeat;
+    }
+  }
 </style>

@@ -49,3 +49,10 @@
   --dur-press: 160ms;
   --dur-hover: 200ms;
 }
+
+/* Celular: o cabeçalho ganha uma segunda linha, com as pílulas da navegação (Header.astro). */
+@media (max-width: 47.99rem) {
+  :root {
+    --header-h: 6.75rem;
+  }
+}
