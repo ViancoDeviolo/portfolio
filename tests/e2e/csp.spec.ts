@@ -31,8 +31,14 @@ for (const path of ['/', '/en/privacy/']) {
     if (path === '/') {
       expect(await page.locator('video').count()).toBeGreaterThan(0);
       expect(await page.locator('script[src]').count()).toBeGreaterThan(0);
-      await expect(page.locator('html')).toHaveAttribute('data-globe-live', '', { timeout: 15_000 });
-      expect(await page.locator('canvas').count()).toBe(1); // a cena 3D carregou sob a CSP real
+      if (await page.evaluate(() => !!document.createElement('canvas').getContext('webgl2'))) {
+        await expect(page.locator('html')).toHaveAttribute('data-globe-live', '', { timeout: 15_000 });
+        expect(await page.locator('canvas').count()).toBe(1); // a cena 3D carregou sob a CSP real
+      } else {
+        // sem WebGL2 o certo é o globo estático (tests/e2e/motion.spec.ts)
+        expect(await page.locator('canvas').count()).toBe(0);
+        await expect(page.locator('[data-hero] [data-globe-static]')).toBeVisible();
+      }
     }
     expect(await page.evaluate(() => (window as any).__csp ?? [])).toEqual([]);
     expect(problems).toEqual([]);
