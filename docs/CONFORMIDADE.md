@@ -75,7 +75,7 @@
 ## 5. Segurança
 
 - [x] **[obrigatório] Cabeçalhos HTTP** (configurados na hospedagem): — `public/_headers` + `tests/unit/headers.test.ts` e `tests/dist/security.test.ts` (inclui `X-Frame-Options: DENY`); conferir a resposta real após o deploy
-  - `Content-Security-Policy` restritiva (`default-src 'self'`; sem `unsafe-inline` em script)
+  - `Content-Security-Policy` restritiva (`default-src 'self'`; sem `unsafe-inline`; desde o redesign o CSS vai embutido no HTML e cada `<style>` entra no `style-src` só pelo hash `sha256-` gerado no build)
   - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
   - `X-Content-Type-Options: nosniff`
   - `Referrer-Policy: strict-origin-when-cross-origin`
@@ -91,6 +91,6 @@
 
 ## 6. Verificação antes de publicar
 
-- [ ] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`. Na v1, todas as categorias 100. No redesign (24/11/2026) valem as metas da spec 7. Desktop: 1,00 em tudo. Celular: performance de 0,91 a 0,99 (meta ≥ 0,85) e acessibilidade, boas práticas e SEO em 1,00. **Pendente: LCP do celular.** A asserção do LHCI passa porque usa a melhor de três execuções (agregação padrão). A mediana da home, porém, ficou entre 2,27 e 2,57 s conforme a rodada; na última, 2,50 s em `/` e 2,57 s em `/en/`, contra a meta de < 2,5 s
+- [x] Lighthouse nas duas línguas, mobile e desktop, home e política. — `npx lhci autorun` (mobile) e `--config=lighthouserc.desktop.cjs`, 5 execuções por URL, performance e LCP medidos pela mediana. Na v1, todas as categorias 100. No redesign (24/11/2026) valem as metas da spec 7. Desktop: 1,00 em tudo. Celular: performance de 0,93 a 0,98 (meta ≥ 0,85); LCP com mediana de 2,30 s em `/` e 2,28 s em `/en/`, pior execução 2,36 s (meta < 2,5 s); acessibilidade, boas práticas e SEO em 1,00. O ganho veio do CSS embutido no HTML, com hash na CSP.
 - [x] Playwright e2e: troca PT/EN, todos os links, navegação só por teclado, vídeos com reduced-motion. — `tests/e2e/` (lang, navigation, keyboard, video, nojs, responsive, a11y, csp)
 - [x] Revisão humana (Lucas) de todos os textos legais e de cada vídeo. — textos legais revisados em 2026-11-23 e vídeos em 2026-11-22
